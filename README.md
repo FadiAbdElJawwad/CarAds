@@ -1,16 +1,26 @@
-# car_ads
+# CarAds 🚗
+**A modern, robust Car E-commerce Mobile Application built with Flutter and Firebase.**
 
-A Flutter mobile application for Car E-commerce built with MVC architecture, using Firebase as backend and Provider for state management.
+---
 
-## Getting Started
+## 📖 Introduction
+**CarAds** is a specialized e-commerce platform for buying and selling cars. It provides a seamless experience for users to browse listings, view detailed car specifications, and manage their advertisements. The app is designed with performance and scalability in mind.
 
-This project is a starting point for a Flutter application.
+## ✨ Key Features
+- **User Authentication:** Secure Sign-up and Login using **Firebase Auth**.
+- **Car Listings:** Explore a wide range of cars with high-quality images and descriptions.
+- **Advanced Search:** Filter cars by model, price, and year.
+- **Real-time Database:** All car data and user actions are synced instantly via **Cloud Firestore**.
+- **State Management:** Uses **Provider** for clean and efficient state handling.
+- **Media Upload:** Users can upload car photos directly to **Firebase Storage**.
 
-A few resources to get you started if this is your first Flutter project:
+## 🏗️ Architecture & Folder Structure
+This project follows the **MVC (Model-View-Controller)** design pattern to ensure separation of concerns and maintainability.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```text
+lib/
+├── models/      # Data structures (e.g., CarModel, UserModel)
+├── views/       # UI Screens and Widgets
+├── controllers/ # Business logic and State handling
+├── services/    # Firebase & API integration logic
+└── main.dart    # Application entry point
