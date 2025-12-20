@@ -1,3 +1,6 @@
+import 'package:car_ads/routes/app_router.dart';
+import 'package:car_ads/routes/router_generator.dart';
+import 'package:car_ads/routes/screen_name.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,37 +13,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
 
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(),
-    );
-  }
-}
+      onGenerateRoute: RoutGenerator.onGenerateRoute,
+      navigatorKey: AppRouter.navigatorKey,
+      initialRoute: ScreenName.splash,
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, });
-
-
-
-
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-
-
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-
+      // home: const MyHomePage(),
     );
   }
 }
