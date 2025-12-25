@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../model/data/model/onbording_model.dart';
-import '../../../routes/app_router.dart';
-import '../../../routes/screen_name.dart';
-import '../../shared/primary_button.dart';
+import '../../../../common/primary_button.dart';
+import '../../../../routes/app_router.dart';
+import '../../../../routes/screen_name.dart';
+import '../model/onbording_model.dart';
 
 class OnbordingScreen extends StatefulWidget {
   const OnbordingScreen({super.key});
-
   @override
   State<OnbordingScreen> createState() => _OnbordingScreenState();
 }
@@ -20,10 +19,12 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
   void initState() {
     super.initState();
     _pageController = PageController();
-    // checkIfAlreadyLogin();
   }
-
-
+@override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +57,6 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
                     ),
                   )
               ),
-
               const SizedBox(
                 height: 20,
               ),
@@ -93,34 +93,33 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
               ),
               const SizedBox(height: 50,),
               PrimaryButton(
-                color: Colors.black,
+
                 text: _currentPage == 2 ? 'Join Now As A User' : 'Next',
                 onPressed: () {
-                  // final lastIndex = onbordingList.length - 1;
-                  _currentPage == 2 ?AppRouter.goToAndRemove(screenName: ScreenName.login):
-                    _pageController.animateToPage(
-                      _currentPage + 1,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    )  ;
-
+                  _currentPage == 2 ? AppRouter.goToAndRemove(
+                      screenName: ScreenName.login) :
+                  _pageController.animateToPage(
+                    _currentPage + 1,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
                 },
               ),
               SizedBox(height: 16,),
               Visibility(
                   visible: _currentPage == 2,
                   child: PrimaryButton(
-                      color: Colors.black,
+
                       text: 'Join Now As A Showrooms',
                       onPressed: () {
-                        AppRouter.goToAndRemove(screenName: ScreenName.login) ;
+                        AppRouter.goToAndRemove(screenName: ScreenName.login);
                       }
                   )
 
               ),
               TextButton(
                   onPressed: () {
-                    AppRouter.goToAndRemove(screenName: ScreenName.login) ;
+                    AppRouter.goToAndRemove(screenName: ScreenName.login);
                   },
                   child: const Text('Skip',
                     style: TextStyle(
@@ -134,7 +133,8 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
 
             ],
           ),
-        ));
+        )
+    );
   }
 }
 

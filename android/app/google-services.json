@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "547812847012",
+    "project_id": "car-ads-a3d2e",
+    "storage_bucket": "car-ads-a3d2e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547812847012:android:316e2bed4c28b0f8fba531",
+        "android_client_info": {
+          "package_name": "com.example.car_ads"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6KnO2Giw0ALdH1TABLxoTKfBnWOkeudY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

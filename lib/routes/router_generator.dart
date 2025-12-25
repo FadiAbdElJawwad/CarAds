@@ -1,9 +1,10 @@
 import 'package:car_ads/routes/screen_name.dart';
 import 'package:flutter/material.dart';
-import '../main.dart';
-import '../view/pages/auth/login_screen.dart';
-import '../view/pages/auth/onbording_screen.dart';
-import '../view/pages/auth/splash_screen.dart';
+import '../features/auth/view/home_screen.dart';
+import '../features/auth/view/login_screen.dart';
+import '../features/auth/view/onbording_screen.dart';
+import '../features/auth/view/sign_up_screen.dart';
+import '../features/auth/view/splash_screen.dart';
 
 
 class RoutGenerator {
@@ -18,6 +19,12 @@ class RoutGenerator {
         break;
         case ScreenName.login:
         result = const LoginScreen();
+        break;
+        case ScreenName.signUpScreen:
+        result = const SignUpScreen();
+        break;
+        case ScreenName.home:
+        result = const HomeScreen();
         break;
 
       default:
