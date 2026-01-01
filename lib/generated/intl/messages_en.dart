@@ -21,17 +21,91 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
-  static Map<String, Function> _notInlinedMessages(_) =>
-      <String, Function>{
-        "pageHomeConfirm": MessageLookupByLibrary.simpleMessage(
-          "Page home confirm",
-        ),
-        "splashTitle": MessageLookupByLibrary.simpleMessage(
-          "Welcome to CarAds App",
-        ),
-        "splashBody": MessageLookupByLibrary.simpleMessage(
-          "Your Gateway to Car Showrooms and Rental Offices",
-        ),
-      };
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "alreadyHaveAccount": MessageLookupByLibrary.simpleMessage(
+      "Already have an account?",
+    ),
+    "authenticationError": MessageLookupByLibrary.simpleMessage(
+      "Authentication error",
+    ),
+    "dontHaveAccount": MessageLookupByLibrary.simpleMessage(
+      "Don\'t have an account?",
+    ),
+    "email": MessageLookupByLibrary.simpleMessage("Email Address"),
+    "emptyEmail": MessageLookupByLibrary.simpleMessage(
+      "Please Enter Your Email Address",
+    ),
+    "emptyMobile": MessageLookupByLibrary.simpleMessage(
+      "Please Enter Your Mobile Number",
+    ),
+    "emptyName": MessageLookupByLibrary.simpleMessage("Please Enter Your Name"),
+    "emptyPassword": MessageLookupByLibrary.simpleMessage(
+      "Please Enter Your Password",
+    ),
+    "forgotPassword": MessageLookupByLibrary.simpleMessage(
+      "Forgot Your Password?",
+    ),
+    "incorrectEmail": MessageLookupByLibrary.simpleMessage(
+      "Please Enter A Valid Email Address",
+    ),
+    "incorrectPassword": MessageLookupByLibrary.simpleMessage(
+      "Password must be at least 6 characters long",
+    ),
+    "invalidCredential": MessageLookupByLibrary.simpleMessage(
+      "Invalid email or password.",
+    ),
+    "login": MessageLookupByLibrary.simpleMessage("Login"),
+    "loginBody": MessageLookupByLibrary.simpleMessage(
+      "Sign in to your account and get back on track with CarAds",
+    ),
+    "loginTitle": MessageLookupByLibrary.simpleMessage(
+      "Welcome Back to CarAds!",
+    ),
+    "name": MessageLookupByLibrary.simpleMessage("Full Name"),
+    "next": MessageLookupByLibrary.simpleMessage("Next"),
+    "onbordingModelBody1": MessageLookupByLibrary.simpleMessage(
+      "CarAds is your ultimate destination for car showrooms and rental offices advertising. Whether you\'re a car showroom owner or looking to rent a vehicle, our platform has got you covered!",
+    ),
+    "onbordingModelBody2": MessageLookupByLibrary.simpleMessage(
+      "Are you a car showroom or rental office owner? Create your special account now! Easily manage and promote your ads within a few taps. Reach a broader audience, receive inquiries with CarAds",
+    ),
+    "onbordingModelBody3": MessageLookupByLibrary.simpleMessage(
+      "Discover a wide range of car advertisements tailored to your preferences. Browse through various car models, rental offers, and exclusive deals from local showrooms. With CarAds",
+    ),
+    "onbordingModelTitle1": MessageLookupByLibrary.simpleMessage(
+      "Welcome to CarAds App",
+    ),
+    "onbordingModelTitle2": MessageLookupByLibrary.simpleMessage(
+      "Effortless Ads Management",
+    ),
+    "onbordingModelTitle3": MessageLookupByLibrary.simpleMessage(
+      "Explore Your Options",
+    ),
+    "pageHomeConfirm": MessageLookupByLibrary.simpleMessage(
+      "Page home confirm",
+    ),
+    "password": MessageLookupByLibrary.simpleMessage("Password"),
+    "showroomsJoin": MessageLookupByLibrary.simpleMessage(
+      "Join Now As A Showrooms",
+    ),
+    "signUp": MessageLookupByLibrary.simpleMessage("Sign Up"),
+    "signUpBody": MessageLookupByLibrary.simpleMessage(
+      "Create your account and become a part of CarAds community\'s",
+    ),
+    "signUpTitle": MessageLookupByLibrary.simpleMessage("Join CarAds Today!"),
+    "skip": MessageLookupByLibrary.simpleMessage("Skip"),
+    "splashBody": MessageLookupByLibrary.simpleMessage(
+      "Your Gateway to Car Showrooms and Rental Offices",
+    ),
+    "splashTitle": MessageLookupByLibrary.simpleMessage(
+      "Welcome to CarAds App",
+    ),
+    "usedEmail": MessageLookupByLibrary.simpleMessage(
+      "The account already exists for that email.",
+    ),
+    "userJoin": MessageLookupByLibrary.simpleMessage("Join Now As A User"),
+    "weakPassword": MessageLookupByLibrary.simpleMessage(
+      "The password provided is too weak.",
+    ),
+  };
 }

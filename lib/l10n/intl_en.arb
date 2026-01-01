@@ -1,3 +1,43 @@
 {
-  "pageHomeConfirm": "Page home confirm"
+  "pageHomeConfirm": "Page home confirm",
+  "splashTitle": "Welcome to CarAds App",
+  "splashBody": "Your Gateway to Car Showrooms and Rental Offices",
+
+  "onbordingModelTitle1": "Welcome to CarAds App",
+  "onbordingModelBody1": "CarAds is your ultimate destination for car showrooms and rental offices advertising. Whether you're a car showroom owner or looking to rent a vehicle, our platform has got you covered!",
+  "onbordingModelTitle2": "Effortless Ads Management",
+  "onbordingModelBody2": "Are you a car showroom or rental office owner? Create your special account now! Easily manage and promote your ads within a few taps. Reach a broader audience, receive inquiries with CarAds",
+  "onbordingModelTitle3": "Explore Your Options",
+  "onbordingModelBody3": "Discover a wide range of car advertisements tailored to your preferences. Browse through various car models, rental offers, and exclusive deals from local showrooms. With CarAds",
+
+  "next": "Next",
+  "skip": "Skip",
+  "userJoin": "Join Now As A User",
+  "showroomsJoin": "Join Now As A Showrooms",
+
+  "login": "Login",
+  "loginTitle": "Welcome Back to CarAds!",
+  "loginBody": "Sign in to your account and get back on track with CarAds",
+  "dontHaveAccount": "Don't have an account?",
+  "signUp": "Sign Up",
+  "signUpTitle": "Join CarAds Today!",
+  "signUpBody": "Create your account and become a part of CarAds community's",
+  "alreadyHaveAccount": "Already have an account?",
+  "forgotPassword": "Forgot Your Password?",
+  "email": "Email Address",
+  "name": "Full Name",
+  "password": "Password",
+  "invalidCredential": "Invalid email or password.",
+  "authenticationError": "Authentication error",
+  "weakPassword": "The password provided is too weak.",
+  "usedEmail": "The account already exists for that email.",
+
+  "emptyName": "Please Enter Your Name",
+  "emptyMobile": "Please Enter Your Mobile Number",
+  "emptyEmail": "Please Enter Your Email Address",
+  "incorrectEmail": "Please Enter A Valid Email Address",
+  "emptyPassword": "Please Enter Your Password",
+  "incorrectPassword": "Password must be at least 6 characters long"
+
+
 }

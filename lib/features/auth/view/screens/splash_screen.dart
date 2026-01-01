@@ -2,8 +2,9 @@ import 'package:car_ads/core/constant/color_manager.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../../../routes/app_router.dart';
-import '../../../../routes/screen_name.dart';
+import '../../../../../routes/app_router.dart';
+import '../../../../../routes/screen_name.dart';
+import '../../../../generated/l10n.dart';
 
 
 
@@ -25,6 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
             screenName: ScreenName.home) :
         AppRouter.goToAndRemove(screenName: ScreenName.onbording) ;
   }
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -39,9 +41,9 @@ class _SplashScreenState extends State<SplashScreen> {
       body:Column(
         children: [
           Image.asset(ImagesManager.splash,),
-          Text('Welcome to CarAds App',style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
+          Text(S.of(context).splashTitle,style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),),
           SizedBox(height: 10,),
-          Text('Your Gateway to Car Showrooms and Rental Offices',style: TextStyle(fontSize: 12, color: Colors.white),)
+          Text(S.of(context).splashBody,style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),)
         ],
       )
     );

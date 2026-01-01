@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../../common/primary_button.dart';
-import '../../../../routes/app_router.dart';
-import '../../../../routes/screen_name.dart';
-import '../model/onbording_model.dart';
+import '../../../../../common/primary_button.dart';
+import '../../../../../routes/app_router.dart';
+import '../../../../../routes/screen_name.dart';
+import '../../../../generated/l10n.dart';
+import '../../model/onbording_model.dart';
+import '../widgets/slider_indicator.dart';
 
 class OnbordingScreen extends StatefulWidget {
   const OnbordingScreen({super.key});
@@ -13,6 +15,7 @@ class OnbordingScreen extends StatefulWidget {
 class _OnbordingScreenState extends State<OnbordingScreen> {
   late PageController _pageController;
   int _currentPage = 0;
+  late List<OnbordingModel> onbordingData;
   late bool selected;
 
   @override
@@ -20,11 +23,19 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
     super.initState();
     _pageController = PageController();
   }
-@override
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    onbordingData = onbordingList(context);
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,10 +58,10 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
                             });
                           },
                           controller: _pageController,
-                          itemCount: onbordingList.length,
+                          itemCount: onbordingData.length,
                           itemBuilder: (context, i) {
                             return Image.asset(
-                              onbordingList[i].image!,
+                              onbordingData[i].image!,
                               width: 167,
                             );
                           }),
@@ -61,21 +72,14 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
                 height: 20,
               ),
               Text(
-                onbordingList[_currentPage].title!,
+                onbordingData[_currentPage].title!,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 22, fontWeight: FontWeight.bold,
-                    color: Colors.black
-                ),
-              ),
+                style: Theme.of(context).textTheme.titleLarge),
               SizedBox(height: 24,),
               Text(
-                onbordingList[_currentPage].body!,
+                onbordingData[_currentPage].body!,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black
-                ),
+                style: Theme.of(context).textTheme.bodyMedium
               ),
               const Spacer(flex: 1,),
               Row(
@@ -93,8 +97,11 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
               ),
               const SizedBox(height: 50,),
               PrimaryButton(
-
-                text: _currentPage == 2 ? 'Join Now As A User' : 'Next',
+                text: _currentPage == 2 ? S
+                    .of(context)
+                    .userJoin : S
+                    .of(context)
+                    .next,
                 onPressed: () {
                   _currentPage == 2 ? AppRouter.goToAndRemove(
                       screenName: ScreenName.login) :
@@ -109,19 +116,21 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
               Visibility(
                   visible: _currentPage == 2,
                   child: PrimaryButton(
-
-                      text: 'Join Now As A Showrooms',
+                      text: S
+                          .of(context)
+                          .showroomsJoin,
                       onPressed: () {
                         AppRouter.goToAndRemove(screenName: ScreenName.login);
                       }
                   )
-
               ),
               TextButton(
                   onPressed: () {
                     AppRouter.goToAndRemove(screenName: ScreenName.login);
                   },
-                  child: const Text('Skip',
+                  child: Text(S
+                      .of(context)
+                      .skip,
                     style: TextStyle(
                         fontSize: 14,
                         color: Colors.black
@@ -134,28 +143,6 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
             ],
           ),
         )
-    );
-  }
-}
-
-class SliderIndicator extends StatelessWidget {
-  final bool selected;
-  final int currentPage;
-
-  const SliderIndicator(
-      {super.key, required this.selected, required this.currentPage});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 9,
-      width: selected ? 35 : 9,
-      decoration: BoxDecoration(
-          color: selected
-              ? Colors.black
-              : Colors.grey,
-          borderRadius: BorderRadius.circular(25)
-      ),
     );
   }
 }

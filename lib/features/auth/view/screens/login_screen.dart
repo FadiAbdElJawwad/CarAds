@@ -1,0 +1,166 @@
+import 'package:car_ads/core/constant/images_manager.dart';
+import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:provider/provider.dart';
+import '../../../../common/primary_button.dart';
+import '../../../../common/primary_text_field.dart';
+import '../../../../core/extension/string_validation.dart';
+import '../../../../generated/l10n.dart';
+import '../../../../routes/app_router.dart';
+import '../../../../routes/screen_name.dart';
+import '../../logic/provider/auth_provider.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey<FormState> formState = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AuthProvider>(
+        builder: (context, authProvider, child) {
+          return ModalProgressHUD(
+            inAsyncCall: authProvider.isLoading,
+            child: Scaffold(
+                body: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Form(
+                    key: formState,
+                    child: SingleChildScrollView(
+                      child: SafeArea(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 60,
+                            ),
+                            Image.asset(ImagesManager.registration),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Text(
+                              S
+                                  .of(context)
+                                  .loginTitle,
+                              style: Theme.of(context).textTheme.titleLarge
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              S
+                                  .of(context)
+                                  .loginBody,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium
+                            ),
+                            const SizedBox(
+                              height: 32,
+                            ),
+                            PrimaryTextField(
+                              controller: emailController,
+                              validator: (value) {
+                                return value!.validateEmail(context);
+                              },
+                              hint: S
+                                  .of(context)
+                                  .email,
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            PrimaryTextField(
+                              controller: passwordController,
+                              validator: (value) {
+                                return value!.validatePassword(context);
+                              },
+                              hint: S
+                                  .of(context)
+                                  .password,
+                              obscureText: true,
+                              keyboardType: TextInputType.visiblePassword,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      S
+                                          .of(context)
+                                          .forgotPassword,
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.grey),
+                                    ))
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            PrimaryButton(
+                              text: S
+                                  .of(context)
+                                  .login,
+                              onPressed: () {
+                                if (formState.currentState!.validate()) {
+                                  authProvider.loginUser(
+                                    context: context,
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                  );
+                                }
+                              },
+                            ),
+                            const SizedBox(
+                              height: 32,
+                            ),
+                            Row(mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    S
+                                        .of(context)
+                                        .dontHaveAccount,
+                                    style: TextStyle(fontSize: 12,
+                                        color: Colors.grey),
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        AppRouter.goTo(
+                                            screenName: ScreenName
+                                                .signUpScreen);
+                                      },
+                                      child: Text(
+                                        S
+                                            .of(context)
+                                            .signUp,
+                                        style: Theme.of(context).textTheme.bodyMedium,
+                                      )),
+                                ]),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )),
+          );
+        });
+  }
+}
