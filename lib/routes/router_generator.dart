@@ -1,7 +1,7 @@
 import 'package:car_ads/routes/screen_name.dart';
 import 'package:flutter/material.dart';
 import '../features/ nav_button_bar/view/screens/nav_button_bar.dart';
-import '../features/auth/view/home_screen.dart';
+import '../features/ nav_button_bar/view/screens/home_screen.dart';
 import '../features/auth/view/screens/login_screen.dart';
 import '../features/auth/view/screens/onbording_screen.dart';
 import '../features/auth/view/screens/sign_up_screen.dart';

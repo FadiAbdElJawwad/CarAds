@@ -1,89 +1,96 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../../../core/extension/shared_preferences.dart';
-import '../../../../generated/l10n.dart';
-import '../../../../routes/app_router.dart';
-import '../../../../routes/screen_name.dart';
+import '../../model/auth_state.dart';
 import '../helper/auth_service.dart';
-import '../helper/show_snack_bar.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FlutterSecureStorage storage = const FlutterSecureStorage();
-  bool _isLoading = false;
 
-  bool get isLoading => _isLoading;
+  AuthState _state = const AuthState();
+  AuthState get state => _state;
 
-  void _setLoading(bool value) {
-    _isLoading = value;
+  void _setState(AuthState newState) {
+    _state = newState;
     notifyListeners();
   }
 
   Future<void> signUpUser({
-    required BuildContext context,
     required String name,
     required String email,
     required String password,
   }) async {
-    _setLoading(true);
+    _setState(const AuthState(status: AuthStatus.loading));
     try {
-      await _authService.registerUser(
+      final userCredential = await _authService.signUpUser(
         email: email,
         password: password,
       );
-      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+
+      if (userCredential.user != null) {
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
+          'name': name,
+          'email': email,
+        });
+      }
 
       await storage.write(key: 'name', value: name);
-      logindata.setBool('login', true);
+      await storage.write(key: 'login', value: 'true');
+
+      _setState(const AuthState(status: AuthStatus.success));
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        showSnackBar(context, S
-            .of(context)
-            .weakPassword);
-      } else if (e.code == 'email-already-in-use') {
-        showSnackBar(context, S
-            .of(context)
-            .usedEmail);
-      } else {
-        showSnackBar(context, e.message ?? 'An error occurred');
-      }
-    } finally {
-      _setLoading(false);
+      _setState(AuthState(
+        status: AuthStatus.failure,
+        errorKey: e.code,
+        fallbackMessage: e.message,
+      ));
+    } catch (e) {
+      _setState(AuthState(
+        status: AuthStatus.failure,
+        fallbackMessage: e.toString(),
+      ));
     }
   }
 
+
   Future<void> loginUser({
-    required BuildContext context,
     required String email,
     required String password,
   }) async {
-    _setLoading(true);
+    _setState(const AuthState(status: AuthStatus.loading));
+
     try {
-      await _authService.loginUser(
-        email: email,
-        password: password,
-      );
-      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+      final userCredential = await _authService.loginUser(email: email, password: password);
+      String? name = email.split('@').first; // Fallback name
 
-      final name = email
-          .split('@')
-          .first;
-      await storage.write(key: 'name', value: name);
-
-      logindata.setBool('login', true);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'invalid-credential') {
-        showSnackBar(context, S
-            .of(context)
-            .invalidCredential);
-      } else {
-        showSnackBar(context, S
-            .of(context)
-            .authenticationError);
+      if (userCredential.user != null) {
+        final doc = await _firestore.collection('users').doc(userCredential.user!.uid).get();
+        if (doc.exists && doc.data()!.containsKey('name')) {
+          name = doc.data()!['name'];
+        }
       }
-    } finally {
-      _setLoading(false);
+      await storage.write(key: 'name', value: name);
+      await storage.write(key: 'login', value: 'true');
+
+      _setState(const AuthState(status: AuthStatus.success));
+    } on FirebaseAuthException catch (e) {
+      _setState(AuthState(
+        status: AuthStatus.failure,
+        errorKey: e.code,
+        fallbackMessage: e.message,
+      ));
+    } catch (e) {
+      _setState(AuthState(
+        status: AuthStatus.failure,
+        fallbackMessage: e.toString(),
+      ));
     }
+  }
+
+  void resetState() {
+    _setState(const AuthState(status: AuthStatus.initial));
   }
 }

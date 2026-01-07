@@ -8,6 +8,11 @@ class ImagesManager {
     static const String onbording_2 = '$pngPath/onbording_2.png';
     static const String onbording_3 = '$pngPath/onbording_3.png';
     static const String registration = '$pngPath/registration.png';
+    static const String toyota = '$pngPath/toyota.png';
+    static const String hyundai = '$pngPath/hyundai.png';
+    static const String mazda = '$pngPath/mazda.png';
+    static const String mercedesBenz = '$pngPath/mercedesBenz.png';
+    static const String audi = '$pngPath/audi.png';
 
     static const String home = '$svgPath/home.svg';
     static const String selectedHome = '$svgPath/selectedHome.svg';
@@ -21,7 +26,10 @@ class ImagesManager {
     static const String selectedProfile = '$svgPath/selectedProfile.svg';
     static const String request = '$svgPath/request.svg';
     static const String selectedRequest = '$svgPath/selectedRequest.svg';
-    static const String Request = '$svgPath/Request.svg';
+    static const String notification = '$svgPath/notification.svg';
+    static const String gear = '$svgPath/gear.svg';
+    static const String seats = '$svgPath/seats.svg';
+    static const String fuel = '$svgPath/fuel.svg';
 
 
 

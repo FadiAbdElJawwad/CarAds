@@ -8,6 +8,8 @@ import '../../../../core/extension/string_validation.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../routes/app_router.dart';
 import '../../../../routes/screen_name.dart';
+import '../../logic/helper/auth_ui_helper.dart';
+import '../../logic/helper/show_snack_bar.dart';
 import '../../logic/provider/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,6 +24,26 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  void _handleLogin() async {
+    if (!formState.currentState!.validate()) return;
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    await authProvider.loginUser(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+
+    if (!mounted) return;
+
+    if (authProvider.state.isSuccess) {
+      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+    } else if (authProvider.state.isFailure) {
+      final message = AuthUIHelper.getErrorMessage(context, authProvider.state);
+      showSnackBar(context, message);
+    }
+  }
+
   @override
   void dispose() {
     emailController.dispose();
@@ -34,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           return ModalProgressHUD(
-            inAsyncCall: authProvider.isLoading,
+            inAsyncCall: authProvider.state.isLoading,
             child: Scaffold(
                 body: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -53,20 +75,26 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 16,
                             ),
                             Text(
-                              S
-                                  .of(context)
-                                  .loginTitle,
-                              style: Theme.of(context).textTheme.titleLarge
+                                S
+                                    .of(context)
+                                    .loginTitle,
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .titleLarge
                             ),
                             const SizedBox(
                               height: 4,
                             ),
                             Text(
-                              S
-                                  .of(context)
-                                  .loginBody,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyMedium
+                                S
+                                    .of(context)
+                                    .loginBody,
+                                textAlign: TextAlign.center,
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodyMedium
                             ),
                             const SizedBox(
                               height: 32,
@@ -116,18 +144,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 24,
                             ),
                             PrimaryButton(
-                              text: S
-                                  .of(context)
-                                  .login,
-                              onPressed: () {
-                                if (formState.currentState!.validate()) {
-                                  authProvider.loginUser(
-                                    context: context,
-                                    email: emailController.text,
-                                    password: passwordController.text,
-                                  );
-                                }
-                              },
+                                text: S
+                                    .of(context)
+                                    .login,
+                                onPressed: _handleLogin
                             ),
                             const SizedBox(
                               height: 32,
@@ -151,7 +171,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                         S
                                             .of(context)
                                             .signUp,
-                                        style: Theme.of(context).textTheme.bodyMedium,
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyMedium,
                                       )),
                                 ]),
                           ],

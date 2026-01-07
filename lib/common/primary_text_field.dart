@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../core/constant/color_manager.dart';
 
 class PrimaryTextField extends StatefulWidget {
@@ -13,6 +12,7 @@ class PrimaryTextField extends StatefulWidget {
     this.onChanged,
     this.controller,
     this.onSaved,
+    this.onSubmitted,
   });
 
   final Function(dynamic value)? onSaved;
@@ -24,6 +24,7 @@ class PrimaryTextField extends StatefulWidget {
   final Widget? visibilityIcon;
   final String? Function(String?)? validator;
   final String? Function(String?)? onChanged;
+  final String? Function(String?)? onSubmitted;
 
   @override
   State<PrimaryTextField> createState() => _PrimaryTextFieldState();
@@ -45,7 +46,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
 
     return TextFormField(
       keyboardType: widget.keyboardType,
-
+      onFieldSubmitted: widget.onSubmitted,
       validator: widget.validator,
       onChanged: widget.onChanged,
       controller: widget.controller,

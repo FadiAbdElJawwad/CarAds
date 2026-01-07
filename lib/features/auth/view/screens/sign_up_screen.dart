@@ -7,12 +7,13 @@ import '../../../../core/constant/images_manager.dart';
 import '../../../../core/extension/string_validation.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../routes/app_router.dart';
+import '../../../../routes/screen_name.dart';
+import '../../logic/helper/auth_ui_helper.dart';
+import '../../logic/helper/show_snack_bar.dart';
 import '../../logic/provider/auth_provider.dart';
-
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
-
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
@@ -31,12 +32,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
+  Future<void> _handleSignUp() async {
+    if (!formState.currentState!.validate()) return;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    await authProvider.signUpUser(
+      name: nameController.text,
+      email: emailController.text,
+      password: passwordController.text,
+    );
+
+    if (!mounted) return;
+
+    if (authProvider.state.isSuccess) {
+      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+    } else if (authProvider.state.isFailure) {
+      final message = AuthUIHelper.getErrorMessage(context, authProvider.state);
+      showSnackBar(context, message);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
         return ModalProgressHUD(
-          inAsyncCall: authProvider.isLoading,
+          inAsyncCall: authProvider.state.isLoading,
           child: Scaffold(
               body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -55,22 +76,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             height: 16,
                           ),
                           Text(
-                            S
-                                .of(context)
-                                .signUpTitle,
+                            S.of(context).signUpTitle,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 4,
                           ),
-                          Text(
-                            S
-                                .of(context)
-                                .signUpBody,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium
-                          ),
-                          SizedBox(
+                          Text(S.of(context).signUpBody,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium),
+                          const SizedBox(
                             height: 32,
                           ),
                           PrimaryTextField(
@@ -78,12 +93,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             validator: (value) {
                               return value!.validateName(context);
                             },
-                            hint: S
-                                .of(context)
-                                .name,
+                            hint: S.of(context).name,
                             keyboardType: TextInputType.name,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           PrimaryTextField(
@@ -91,12 +104,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             validator: (value) {
                               return value!.validateEmail(context);
                             },
-                            hint: S
-                                .of(context)
-                                .email,
+                            hint: S.of(context).email,
                             keyboardType: TextInputType.emailAddress,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           PrimaryTextField(
@@ -104,9 +115,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             validator: (value) {
                               return value!.validatePassword(context);
                             },
-                            hint: S
-                                .of(context)
-                                .password,
+                            hint: S.of(context).password,
                             obscureText: true,
                             keyboardType: TextInputType.visiblePassword,
                           ),
@@ -119,32 +128,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               TextButton(
                                   onPressed: () {},
                                   child: Text(
-                                    S
-                                        .of(context)
-                                        .forgotPassword,
-                                    style: TextStyle(
+                                    S.of(context).forgotPassword,
+                                    style: const TextStyle(
                                         fontSize: 12, color: Colors.grey),
                                   ))
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 24,
                           ),
                           PrimaryButton(
-                            text: S
-                                .of(context)
-                                .signUp,
-                            onPressed: () {
-                              if (formState.currentState!.validate()) {
-                                authProvider.signUpUser(
-                                  context: context,
-                                  name: nameController.text,
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                );
-                              }
-                            },
-                          ),
+                              text: S.of(context).signUp, onPressed: _handleSignUp),
                           const SizedBox(
                             height: 32,
                           ),
@@ -152,22 +146,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  S
-                                      .of(context)
-                                      .alreadyHaveAccount,
-                                  style:
-                                  TextStyle(fontSize: 12, color: Colors.grey),
+                                  S.of(context).alreadyHaveAccount,
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.grey),
                                 ),
                                 TextButton(
                                     onPressed: () {
                                       AppRouter.back();
                                     },
                                     child: Text(
-                                      S
-                                          .of(context)
-                                          .login,
-                                      style: TextStyle(
-                                          fontSize: 12, color: Colors.black),
+                                      S.of(context).login,
+                                      style: Theme.of(context).textTheme.bodyMedium,
                                     )),
                               ]),
                         ],

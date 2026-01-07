@@ -44,6 +44,7 @@ dependencies:
   flutter_native_splash: ^2.4.7
   flutter_svg: ^2.2.3
   provider: ^6.1.5+1
+  cloud_firestore: ^6.1.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -101,10 +102,13 @@ flutter_intl:
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/images/png/logo.png
+  image: assets/images/png/splash_image.png
   color_dark: "#121212"
-  image_dark: assets/images/png/logo.png
+  # image_dark: assets/images/png/logo.png
+  android: true
+  ios: true
+
 
   android_12:
-    image: assets/images/png/logo.png
+    image: assets/images/png/splash_image_12.png
     icon_background_color: "#FFFFFF"

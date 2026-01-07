@@ -58,7 +58,8 @@ class NavButtonItem extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight
+                        .normal,
                   ),
                 )
               ],

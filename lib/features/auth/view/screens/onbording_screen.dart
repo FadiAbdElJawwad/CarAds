@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../../common/primary_button.dart';
 import '../../../../../routes/app_router.dart';
 import '../../../../../routes/screen_name.dart';
@@ -16,7 +17,7 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
   late PageController _pageController;
   int _currentPage = 0;
   late List<OnbordingModel> onbordingData;
-  late bool selected;
+  final storage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -36,11 +37,19 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
     super.dispose();
   }
 
+  Future<void> _completeOnboarding() async {
+    await storage.write(key: 'onboarding', value: 'true');
+    if (mounted) {
+      AppRouter.goToAndRemove(screenName: ScreenName.login);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -72,14 +81,14 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
                 height: 20,
               ),
               Text(
-                onbordingData[_currentPage].title!,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge),
-              SizedBox(height: 24,),
+                  onbordingData[_currentPage].title!,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 24,),
               Text(
-                onbordingData[_currentPage].body!,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium
+                  onbordingData[_currentPage].body!,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium
               ),
               const Spacer(flex: 1,),
               Row(
@@ -103,47 +112,40 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
                     .of(context)
                     .next,
                 onPressed: () {
-                  _currentPage == 2 ? AppRouter.goToAndRemove(
-                      screenName: ScreenName.login) :
-                  _pageController.animateToPage(
-                    _currentPage + 1,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
+                  if (_currentPage == 2) {
+                    _completeOnboarding();
+                  } else {
+                    _pageController.animateToPage(
+                      _currentPage + 1,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  }
                 },
               ),
-              SizedBox(height: 16,),
+              const SizedBox(height: 16,),
               Visibility(
                   visible: _currentPage == 2,
                   child: PrimaryButton(
                       text: S
                           .of(context)
                           .showroomsJoin,
-                      onPressed: () {
-                        AppRouter.goToAndRemove(screenName: ScreenName.login);
-                      }
+                      onPressed: _completeOnboarding
                   )
               ),
               TextButton(
-                  onPressed: () {
-                    AppRouter.goToAndRemove(screenName: ScreenName.login);
-                  },
+                  onPressed: _completeOnboarding,
                   child: Text(S
                       .of(context)
                       .skip,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black
-                    ),
+                      style: Theme.of(context).textTheme.bodyMedium
                   )),
               const SizedBox(
                 height: 40,
               ),
-
             ],
           ),
         )
     );
   }
 }
-

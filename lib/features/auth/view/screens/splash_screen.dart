@@ -7,7 +7,6 @@ import '../../../../../routes/screen_name.dart';
 import '../../../../generated/l10n.dart';
 
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -23,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 3));
     String? name = await storage.read(key: 'name');
     (name != null && name.isNotEmpty)  ? AppRouter.goToAndRemove(
-            screenName: ScreenName.home) :
+            screenName: ScreenName.navButtonBar) :
         AppRouter.goToAndRemove(screenName: ScreenName.onbording) ;
   }
   @override
@@ -33,7 +32,6 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkAuth();
 
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

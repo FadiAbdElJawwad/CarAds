@@ -37,7 +37,13 @@
   "emptyEmail": "Please Enter Your Email Address",
   "incorrectEmail": "Please Enter A Valid Email Address",
   "emptyPassword": "Please Enter Your Password",
-  "incorrectPassword": "Password must be at least 6 characters long"
+  "incorrectPassword": "Password must be at least 6 characters long",
+
+  "home": "Home",
+  "explore": "Explore",
+  "add": "Add",
+  "history": "History",
+  "profile": "Profile"
 
 
 }

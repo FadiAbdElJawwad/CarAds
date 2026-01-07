@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constant/images_manager.dart';
-import '../../../auth/view/home_screen.dart';
+import '../../../../generated/l10n.dart';
+import 'home_screen.dart';
 import '../widgets/nav_button_item.dart';
 
 class NavButtonBar extends StatefulWidget {
@@ -33,9 +34,9 @@ class _NavButtonBarState extends State<NavButtonBar> {
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), topRight: Radius.circular(10))),
         height: 80,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -46,7 +47,9 @@ class _NavButtonBarState extends State<NavButtonBar> {
               onPressed: () => _onItemTapped(0, const HomeScreen()),
               selectedIcon: ImagesManager.selectedHome,
               unselectedIcon: ImagesManager.home,
-              label: 'Home',
+              label: S
+                  .of(context)
+                  .home,
               screen: const HomeScreen(),
             ),
             NavButtonItem(
@@ -55,7 +58,9 @@ class _NavButtonBarState extends State<NavButtonBar> {
               onPressed: () => _onItemTapped(1, const HomeScreen()),
               selectedIcon: ImagesManager.selectedExplore,
               unselectedIcon: ImagesManager.explore,
-              label: 'Explore',
+              label: S
+                  .of(context)
+                  .explore,
               screen: const HomeScreen(),
             ),
             NavButtonItem(
@@ -64,7 +69,9 @@ class _NavButtonBarState extends State<NavButtonBar> {
               onPressed: () => _onItemTapped(2, const HomeScreen()),
               selectedIcon: ImagesManager.selectedAdd,
               unselectedIcon: ImagesManager.add,
-              label: 'Add',
+              label: S
+                  .of(context)
+                  .add,
               screen: const HomeScreen(),
             ),
             NavButtonItem(
@@ -73,7 +80,9 @@ class _NavButtonBarState extends State<NavButtonBar> {
               onPressed: () => _onItemTapped(3, const HomeScreen()),
               selectedIcon: ImagesManager.selectedHistory,
               unselectedIcon: ImagesManager.history,
-              label: 'History',
+              label: S
+                  .of(context)
+                  .history,
               screen: const HomeScreen(),
             ),
             NavButtonItem(
@@ -82,14 +91,14 @@ class _NavButtonBarState extends State<NavButtonBar> {
               onPressed: () => _onItemTapped(4, const HomeScreen()),
               selectedIcon: ImagesManager.selectedProfile,
               unselectedIcon: ImagesManager.profile,
-              label: 'Profile',
+              label: S
+                  .of(context)
+                  .profile,
               screen: const HomeScreen(),
             ),
-
           ],
         ),
       ),
     );
   }
 }
-

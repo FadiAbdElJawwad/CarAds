@@ -4,51 +4,43 @@ import 'package:car_ads/routes/screen_name.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'core/theme/app_theme.dart';
+import 'core/themes/light_theme.dart';
 import 'features/auth/logic/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'generated/l10n.dart';
 
-void main() async{
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const CarAds());
-}
 
-class CarAds extends StatefulWidget {
-  const CarAds({super.key});
-  @override
-  State<CarAds> createState() => _CarAdsState();
-}
+  const storage = FlutterSecureStorage();
 
-class _CarAdsState extends State<CarAds> {
-  @override
-  void initState() {
-    super.initState();
-    initialization();
+  final onboarding = await storage.read(key: 'onboarding');
+  final login = await storage.read(key: 'login');
+
+  String initialScreen;
+
+  if (onboarding == null) {
+    initialScreen = ScreenName.onbording;
+  } else if (login == null) {
+    initialScreen = ScreenName.login;
+  } else {
+    initialScreen = ScreenName.navButtonBar;
   }
 
-  void initialization() async {
-    const storage = FlutterSecureStorage();
-    String? name = await storage.read(key: 'name');
-    String initialScreen = (name != null && name.isNotEmpty)
-        ? ScreenName.home
-        : ScreenName.onbording;
+  runApp(CarAds(
+    initialScreen: initialScreen,
+  ));
+}
 
-    await Future.delayed(const Duration(seconds: 2));
-    FlutterNativeSplash.remove();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      AppRouter.goToAndRemove(screenName: initialScreen);
-    });
-  }
-
+class CarAds extends StatelessWidget {
+  const CarAds({super.key, required this.initialScreen});
+  final String initialScreen;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -63,12 +55,12 @@ class _CarAdsState extends State<CarAds> {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        locale: Locale('ar'),
+        locale: const Locale('en'),
         supportedLocales: S.delegate.supportedLocales,
         theme: AppTheme.lightTheme,
         onGenerateRoute: RoutGenerator.onGenerateRoute,
         navigatorKey: AppRouter.navigatorKey,
-        initialRoute: ScreenName.splash,
+        initialRoute: initialScreen,
       ),
     );
   }
