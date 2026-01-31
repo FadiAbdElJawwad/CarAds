@@ -47,6 +47,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "forgotPassword": MessageLookupByLibrary.simpleMessage(
       "Forgot Your Password?",
     ),
+    "forgotPasswordBody": MessageLookupByLibrary.simpleMessage(
+      "No worries! We\'ll help you reset your password. Just enter your registered Phone Number, and we\'ll send you a code to reset your password.",
+    ),
     "history": MessageLookupByLibrary.simpleMessage("History"),
     "home": MessageLookupByLibrary.simpleMessage("Home"),
     "incorrectEmail": MessageLookupByLibrary.simpleMessage(
@@ -58,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidCredential": MessageLookupByLibrary.simpleMessage(
       "Invalid email or password.",
     ),
+    "invalidEmail": MessageLookupByLibrary.simpleMessage("Invalid email."),
     "login": MessageLookupByLibrary.simpleMessage("Login"),
     "loginBody": MessageLookupByLibrary.simpleMessage(
       "Sign in to your account and get back on track with CarAds",

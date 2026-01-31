@@ -254,6 +254,16 @@ class S {
     );
   }
 
+  /// `No worries! We'll help you reset your password. Just enter your registered Phone Number, and we'll send you a code to reset your password.`
+  String get forgotPasswordBody {
+    return Intl.message(
+      'No worries! We\'ll help you reset your password. Just enter your registered Phone Number, and we\'ll send you a code to reset your password.',
+      name: 'forgotPasswordBody',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Email Address`
   String get email {
     return Intl.message('Email Address', name: 'email', desc: '', args: []);
@@ -274,6 +284,16 @@ class S {
     return Intl.message(
       'Invalid email or password.',
       name: 'invalidCredential',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid email.`
+  String get invalidEmail {
+    return Intl.message(
+      'Invalid email.',
+      name: 'invalidEmail',
       desc: '',
       args: [],
     );

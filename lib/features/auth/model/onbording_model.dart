@@ -1,6 +1,6 @@
 import '../../../core/constant/images_manager.dart';
-import '../../../generated/l10n.dart';
 import 'package:flutter/material.dart';
+import '../../../core/extension/responsive_layout_extension.dart';
 
 class OnbordingModel {
   OnbordingModel({this.image , this.body , this.title});
@@ -14,30 +14,24 @@ List<OnbordingModel>onbordingList(BuildContext context) {
   return [
     OnbordingModel(
       image: ImagesManager.onbording_1,
-      title: S
-          .of(context)
+      title: context.loc
           .onbordingModelTitle1,
-      body: S
-          .of(context)
+      body: context.loc
           .onbordingModelBody1,
 
     ),
     OnbordingModel(
       image: ImagesManager.onbording_2,
-      title: S
-          .of(context)
+      title: context.loc
           .onbordingModelTitle2,
-      body: S
-          .of(context)
+      body: context.loc
           .onbordingModelBody2,
     ),
     OnbordingModel(
       image: ImagesManager.onbording_3,
-      title: S
-          .of(context)
+      title: context.loc
           .onbordingModelTitle3,
-      body: S
-          .of(context)
+      body: context.loc
           .onbordingModelBody3,
     ),
   ];

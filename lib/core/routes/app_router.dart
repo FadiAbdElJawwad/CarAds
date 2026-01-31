@@ -15,6 +15,10 @@ class AppRouter {
     navigatorKey.currentState!.pop();
   }
 
+  static void backTo({required String screenName}) {
+    navigatorKey.currentState!.popUntil((route) => route.settings.name == screenName);
+  }
+
   static void mayBack() {
     navigatorKey.currentState!.maybePop();
   }

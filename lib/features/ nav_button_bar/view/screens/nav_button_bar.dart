@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constant/images_manager.dart';
 import '../../../../generated/l10n.dart';
-import 'home_screen.dart';
+import '../../../home/view/screens/car_ads_screen.dart';
+import '../../../home/view/screens/home_screen.dart';
 import '../widgets/nav_button_item.dart';
 
 class NavButtonBar extends StatefulWidget {
@@ -44,57 +45,57 @@ class _NavButtonBarState extends State<NavButtonBar> {
             NavButtonItem(
               itemIndex: 0,
               currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(0, const HomeScreen()),
+              onPressed: () => _onItemTapped(0,  HomeScreen()),
               selectedIcon: ImagesManager.selectedHome,
               unselectedIcon: ImagesManager.home,
               label: S
                   .of(context)
                   .home,
-              screen: const HomeScreen(),
+              screen:  CarAdsScreen(),
             ),
             NavButtonItem(
               itemIndex: 1,
               currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(1, const HomeScreen()),
+              onPressed: () => _onItemTapped(1, CarAdsScreen()),
               selectedIcon: ImagesManager.selectedExplore,
               unselectedIcon: ImagesManager.explore,
               label: S
                   .of(context)
                   .explore,
-              screen: const HomeScreen(),
+              screen: HomeScreen(),
             ),
             NavButtonItem(
               itemIndex: 2,
               currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(2, const HomeScreen()),
+              onPressed: () => _onItemTapped(2,  HomeScreen()),
               selectedIcon: ImagesManager.selectedAdd,
               unselectedIcon: ImagesManager.add,
               label: S
                   .of(context)
                   .add,
-              screen: const HomeScreen(),
+              screen:  HomeScreen(),
             ),
             NavButtonItem(
               itemIndex: 3,
               currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(3, const HomeScreen()),
+              onPressed: () => _onItemTapped(3,  HomeScreen()),
               selectedIcon: ImagesManager.selectedHistory,
               unselectedIcon: ImagesManager.history,
               label: S
                   .of(context)
                   .history,
-              screen: const HomeScreen(),
+              screen:  HomeScreen(),
             ),
             NavButtonItem(
               itemIndex: 4,
               currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(4, const HomeScreen()),
+              onPressed: () => _onItemTapped(4,  HomeScreen()),
               selectedIcon: ImagesManager.selectedProfile,
               unselectedIcon: ImagesManager.profile,
               label: S
                   .of(context)
                   .profile,
-              screen: const HomeScreen(),
+              screen:  HomeScreen(),
             ),
           ],
         ),

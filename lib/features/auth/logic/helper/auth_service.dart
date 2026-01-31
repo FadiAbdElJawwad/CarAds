@@ -18,4 +18,15 @@ class AuthService {
       password: password,
     );
   }
+
+  Future<void> signOut() async {
+    return await _auth.signOut();
+  }
+
+  Future<void> sendPasswordResetEmail(
+      {required String email,}) async {
+    return await _auth.sendPasswordResetEmail(
+     email: email.trim(),
+    );
+  }
 }

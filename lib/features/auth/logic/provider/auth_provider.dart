@@ -8,7 +8,7 @@ import '../helper/auth_service.dart';
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FlutterSecureStorage storage = const FlutterSecureStorage();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   AuthState _state = const AuthState();
   AuthState get state => _state;
@@ -17,29 +17,10 @@ class AuthProvider extends ChangeNotifier {
     _state = newState;
     notifyListeners();
   }
-
-  Future<void> signUpUser({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
+  Future<void> _handleAuthOperation(Future<void> Function() operation) async {
     _setState(const AuthState(status: AuthStatus.loading));
     try {
-      final userCredential = await _authService.signUpUser(
-        email: email,
-        password: password,
-      );
-
-      if (userCredential.user != null) {
-        await _firestore.collection('users').doc(userCredential.user!.uid).set({
-          'name': name,
-          'email': email,
-        });
-      }
-
-      await storage.write(key: 'name', value: name);
-      await storage.write(key: 'login', value: 'true');
-
+      await operation();
       _setState(const AuthState(status: AuthStatus.success));
     } on FirebaseAuthException catch (e) {
       _setState(AuthState(
@@ -55,39 +36,70 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> _storeUserDataLocal(String uid) async {
+    await _storage.write(key: 'uid', value: uid);
+    await _storage.write(key: 'login', value: 'true');
+  }
+
+  Future<void> _clearUserDataLocal() async {
+    await _storage.delete(key: 'uid');
+    await _storage.delete(key: 'login');
+  }
+
+  Future<void> signUpUser({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    await _handleAuthOperation(() async {
+      final userCredential = await _authService.signUpUser(
+        email: email,
+        password: password,
+      );
+      final user = userCredential.user;
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).set({
+          'name': name,
+          'email': email,
+          'uuid': user.uid,
+        });
+        await _storeUserDataLocal(user.uid);
+      }
+    });
+  }
+
 
   Future<void> loginUser({
     required String email,
     required String password,
   }) async {
-    _setState(const AuthState(status: AuthStatus.loading));
-
-    try {
+    await _handleAuthOperation(() async {
       final userCredential = await _authService.loginUser(email: email, password: password);
-      String? name = email.split('@').first; // Fallback name
-
-      if (userCredential.user != null) {
-        final doc = await _firestore.collection('users').doc(userCredential.user!.uid).get();
-        if (doc.exists && doc.data()!.containsKey('name')) {
-          name = doc.data()!['name'];
-        }
+      final user = userCredential.user;
+      if (user != null) {
+        await _storeUserDataLocal(user.uid);
       }
-      await storage.write(key: 'name', value: name);
-      await storage.write(key: 'login', value: 'true');
+    });
+  }
 
-      _setState(const AuthState(status: AuthStatus.success));
-    } on FirebaseAuthException catch (e) {
-      _setState(AuthState(
-        status: AuthStatus.failure,
-        errorKey: e.code,
-        fallbackMessage: e.message,
-      ));
-    } catch (e) {
-      _setState(AuthState(
-        status: AuthStatus.failure,
-        fallbackMessage: e.toString(),
-      ));
-    }
+  Future<void> logout() async {
+    await _handleAuthOperation(() async {
+      await _authService.signOut();
+      await _clearUserDataLocal();
+    });
+  }
+
+
+  Future<void> resetPassword({required String email}) async {
+    await _handleAuthOperation(() async {
+      await _authService.sendPasswordResetEmail(email: email);
+    });
+  }
+
+  Future<DocumentSnapshot?> getUserData() async {
+    final uid = await _storage.read(key: 'uid');
+    if (uid == null) return null;
+    return await _firestore.collection('users').doc(uid).get();
   }
 
   void resetState() {

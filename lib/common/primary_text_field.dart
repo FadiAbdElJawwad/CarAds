@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 import '../core/constant/color_manager.dart';
 
@@ -73,12 +74,11 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
         focusedErrorBorder:  OutlineInputBorder(
           borderSide: BorderSide(color: ColorManager.warningColor),
         ),
-
         border: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.white),
         ),
         hintText: widget.hint,
-        hintStyle: const TextStyle(color: Colors.grey),
+        hintStyle: context.inputRegular14.copyWith(color: Colors.grey),
         filled: true,
         fillColor: Colors.white,
       ),

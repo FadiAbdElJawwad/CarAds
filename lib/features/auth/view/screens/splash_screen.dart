@@ -2,9 +2,10 @@ import 'package:car_ads/core/constant/color_manager.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../../../../routes/app_router.dart';
-import '../../../../../routes/screen_name.dart';
-import '../../../../generated/l10n.dart';
+import '../../../../core/extension/responsive_layout_extension.dart';
+import '../../../../core/extension/text_style_extension.dart';
+import '../../../../core/routes/app_router.dart';
+import '../../../../core/routes/screen_name.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -39,9 +40,9 @@ class _SplashScreenState extends State<SplashScreen> {
       body:Column(
         children: [
           Image.asset(ImagesManager.splash,),
-          Text(S.of(context).splashTitle,style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),),
+          Text(context.loc.splashTitle,style: context.h2Bold22.copyWith(color: Colors.white),),
           SizedBox(height: 10,),
-          Text(S.of(context).splashBody,style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),)
+          Text(context.loc.splashBody,style: context.bodyRegular.copyWith(color: Colors.white),)
         ],
       )
     );

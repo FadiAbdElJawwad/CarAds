@@ -1,15 +1,16 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
+import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/primary_button.dart';
 import '../../../../common/primary_text_field.dart';
 import '../../../../core/constant/images_manager.dart';
+import '../../../../core/extension/responsive_layout_extension.dart';
 import '../../../../core/extension/string_validation.dart';
-import '../../../../generated/l10n.dart';
-import '../../../../routes/app_router.dart';
-import '../../../../routes/screen_name.dart';
-import '../../logic/helper/auth_ui_helper.dart';
-import '../../logic/helper/show_snack_bar.dart';
+import '../../../../core/routes/app_router.dart';
+import '../../../../core/routes/screen_name.dart';
+import '../../../../common/show_snack_bar.dart';
 import '../../logic/provider/auth_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -23,12 +24,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  late final AuthProvider authProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.addListener(singUpListener);
+  }
+
+  void singUpListener() {
+    if (authProvider.state.isSuccess) {
+      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+    } else if (authProvider.state.isFailure) {
+      showSnackBar(context,
+          authProvider.state.fallbackMessage ?? 'something went wrong');
+    }
+  }
 
   @override
   void dispose() {
     nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    authProvider.removeListener(singUpListener);
     super.dispose();
   }
 
@@ -41,15 +60,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       email: emailController.text,
       password: passwordController.text,
     );
-
-    if (!mounted) return;
-
-    if (authProvider.state.isSuccess) {
-      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
-    } else if (authProvider.state.isFailure) {
-      final message = AuthUIHelper.getErrorMessage(context, authProvider.state);
-      showSnackBar(context, message);
-    }
   }
 
   @override
@@ -59,112 +69,80 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return ModalProgressHUD(
           inAsyncCall: authProvider.state.isLoading,
           child: Scaffold(
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Form(
-                  key: formState,
-                  child: SingleChildScrollView(
-                    child: SafeArea(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            height: 60,
-                          ),
-                          Image.asset(ImagesManager.registration),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Text(
-                            S.of(context).signUpTitle,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Text(S.of(context).signUpBody,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyMedium),
-                          const SizedBox(
-                            height: 32,
-                          ),
-                          PrimaryTextField(
-                            controller: nameController,
-                            validator: (value) {
-                              return value!.validateName(context);
-                            },
-                            hint: S.of(context).name,
-                            keyboardType: TextInputType.name,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          PrimaryTextField(
-                            controller: emailController,
-                            validator: (value) {
-                              return value!.validateEmail(context);
-                            },
-                            hint: S.of(context).email,
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          PrimaryTextField(
-                            controller: passwordController,
-                            validator: (value) {
-                              return value!.validatePassword(context);
-                            },
-                            hint: S.of(context).password,
-                            obscureText: true,
-                            keyboardType: TextInputType.visiblePassword,
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+              body: Form(
+                key: formState,
+                child: SingleChildScrollView(
+                  child: SafeArea(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        context.addVerticalSpace(60),
+                        Image.asset(ImagesManager.registration),
+                        context.addVerticalSpace(16),
+                        Text(
+                          context.loc.signUpTitle,
+                          style: context.titleBold18,
+                        ),
+                        context.addVerticalSpace(4),
+                        Text(context.loc.signUpBody,
+                            textAlign: TextAlign.center,
+                            style: context.bodyRegular),
+                        context.addVerticalSpace(32),
+                        PrimaryTextField(
+                          controller: nameController,
+                          validator: (value) {
+                            return value!.validateName(context);
+                          },
+                          hint: context.loc.name,
+                          keyboardType: TextInputType.name,
+                        ),
+                        context.addVerticalSpace(16),
+                        PrimaryTextField(
+                          controller: emailController,
+                          validator: (value) {
+                            return value!.validateEmail(context);
+                          },
+                          hint: context.loc.email,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        context.addVerticalSpace(16),
+                        PrimaryTextField(
+                          controller: passwordController,
+                          validator: (value) {
+                            return value!.validatePassword(context);
+                          },
+                          hint: context.loc.password,
+                          obscureText: true,
+                          keyboardType: TextInputType.visiblePassword,
+                        ),
+                        context.addVerticalSpace(24),
+                        PrimaryButton(
+                            text: context.loc.signUp,
+                            onPressed: _handleSignUp),
+                        context.addVerticalSpace(32),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              Text(
+                                context.loc.alreadyHaveAccount,
+                                style: context.bodyRegular.copyWith(
+                                    color: Colors.grey),
+                              ),
                               TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    AppRouter.back();
+                                  },
                                   child: Text(
-                                    S.of(context).forgotPassword,
-                                    style: const TextStyle(
-                                        fontSize: 12, color: Colors.grey),
-                                  ))
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          PrimaryButton(
-                              text: S.of(context).signUp, onPressed: _handleSignUp),
-                          const SizedBox(
-                            height: 32,
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  S.of(context).alreadyHaveAccount,
-                                  style: const TextStyle(
-                                      fontSize: 12, color: Colors.grey),
-                                ),
-                                TextButton(
-                                    onPressed: () {
-                                      AppRouter.back();
-                                    },
-                                    child: Text(
-                                      S.of(context).login,
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                    )),
-                              ]),
-                        ],
-                      ),
+                                    context.loc.login,
+                                    style: context.bodyRegular,
+                                  )),
+                            ]),
+                      ],
                     ),
                   ),
                 ),
-              )),
+              ).padSymmetric(20)
+          ),
         );
       },
     );

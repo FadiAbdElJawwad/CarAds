@@ -43,6 +43,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "explore": MessageLookupByLibrary.simpleMessage("استكشف"),
     "forgotPassword": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور؟"),
+    "forgotPasswordBody": MessageLookupByLibrary.simpleMessage(
+      "لا تقلق! سنساعدك في إعادة تعيين كلمة المرور. فقط أدخل رقم هاتفك المسجل، وسنرسل لك رمزا لإعادة تعيين كلمة المرور.",
+    ),
     "history": MessageLookupByLibrary.simpleMessage("السجل"),
     "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "incorrectEmail": MessageLookupByLibrary.simpleMessage(
@@ -53,6 +56,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "invalidCredential": MessageLookupByLibrary.simpleMessage(
       "البريد إلكتروني أو كلمة مرور غير صالحة.",
+    ),
+    "invalidEmail": MessageLookupByLibrary.simpleMessage(
+      "البريد الإلكتروني غير صالح.",
     ),
     "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "loginBody": MessageLookupByLibrary.simpleMessage(
