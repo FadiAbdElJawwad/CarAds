@@ -1,7 +1,6 @@
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
 import '../../../../common/primary_app_bar.dart';
-import '../../model/car_card_model.dart';
 import '../widgets/car_ads_list.dart';
 import '../../model/car_type_model.dart';
 import '../widgets/car_type_list_view.dart';
@@ -15,27 +14,27 @@ class CarAdsScreen extends StatefulWidget {
 
 class _CarAdsScreenState extends State<CarAdsScreen> {
   late List<CarTypeModel> carTypeData;
-  late List<CarCardModel> carCardData;
-  late List<CarCardModel> filteredCarCardData;
-  late int _selectedIndex = 0;
+  int _selectedIndex = 0;
+
+  // void uploadDataToFirestore(BuildContext context) async {
+  //   // final List<CarCardModel> myLocalList = carCardList(context);
+  //
+  //   for (var car in myLocalList) {
+  //     try {
+  //       await FirebaseFirestore.instance.collection('cars').add(car.toMap());
+  //       print("تمت إضافة السيارة: ${car.carName}");
+  //     } catch (e) {
+  //       print("خطأ أثناء الإضافة: $e");
+  //     }
+  //   }
+  //   print("تم الانتهاء من رفع جميع البيانات!");
+  // }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     carTypeData = carTypeList;
-    carCardData = carCardList(context);
-    filteredCarCardData = carCardData;
   }
-
-  void _filterCarAds(String carType) {
-    if (carType == 'All Cars') {
-      filteredCarCardData = carCardData;
-    } else {
-      filteredCarCardData =
-          carCardData.where((car) => car.carName == carType).toList();
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,20 +51,25 @@ class _CarAdsScreenState extends State<CarAdsScreen> {
       ),
       body: Column(
         children: [
+          // FloatingActionButton(
+          //   onPressed: () {
+          //     uploadDataToFirestore(context);
+          //   },
+          //   child: const Icon(Icons.cloud_upload),
+          // ),
           CarTypeListView(
             carTypeData: carTypeData,
             selectedIndex: _selectedIndex,
             onCarTypeSelected: (index) {
               setState(() {
                 _selectedIndex = index;
-                _filterCarAds(carTypeData[index].carType);
               });
             },
           ),
           context.addVerticalSpace(16),
           Expanded(
             child: CarAdList(
-              carCardData: filteredCarCardData,
+              selectedCarType: carTypeData[_selectedIndex].carType,
               physics: const BouncingScrollPhysics(),
             ).padSymmetric(20),
           )

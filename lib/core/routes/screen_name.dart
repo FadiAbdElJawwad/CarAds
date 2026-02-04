@@ -9,6 +9,7 @@ class ScreenName{
   static const String carDetailsForm = 'carDetailsForm';
   static const String showroomDetailsForm = 'showroomDetailsForm';
   static const String carAdsScreen = 'carAdsScreen';
+  static const String checkout = 'checkout';
 
 
 }

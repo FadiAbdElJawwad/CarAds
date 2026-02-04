@@ -71,75 +71,70 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Scaffold(
               body: Form(
                 key: formState,
-                child: SingleChildScrollView(
-                  child: SafeArea(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        context.addVerticalSpace(60),
-                        Image.asset(ImagesManager.registration),
-                        context.addVerticalSpace(16),
-                        Text(
-                          context.loc.signUpTitle,
-                          style: context.titleBold18,
-                        ),
-                        context.addVerticalSpace(4),
-                        Text(context.loc.signUpBody,
-                            textAlign: TextAlign.center,
-                            style: context.bodyRegular),
-                        context.addVerticalSpace(32),
-                        PrimaryTextField(
-                          controller: nameController,
-                          validator: (value) {
-                            return value!.validateName(context);
-                          },
-                          hint: context.loc.name,
-                          keyboardType: TextInputType.name,
-                        ),
-                        context.addVerticalSpace(16),
-                        PrimaryTextField(
-                          controller: emailController,
-                          validator: (value) {
-                            return value!.validateEmail(context);
-                          },
-                          hint: context.loc.email,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        context.addVerticalSpace(16),
-                        PrimaryTextField(
-                          controller: passwordController,
-                          validator: (value) {
-                            return value!.validatePassword(context);
-                          },
-                          hint: context.loc.password,
-                          obscureText: true,
-                          keyboardType: TextInputType.visiblePassword,
-                        ),
-                        context.addVerticalSpace(24),
-                        PrimaryButton(
-                            text: context.loc.signUp,
-                            onPressed: _handleSignUp),
-                        context.addVerticalSpace(32),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                context.loc.alreadyHaveAccount,
-                                style: context.bodyRegular.copyWith(
-                                    color: Colors.grey),
-                              ),
-                              TextButton(
-                                  onPressed: () {
-                                    AppRouter.back();
-                                  },
-                                  child: Text(
-                                    context.loc.login,
-                                    style: context.bodyRegular,
-                                  )),
-                            ]),
-                      ],
+                child: ListView(
+                  children: [
+                    context.addVerticalSpace(60),
+                    Image.asset(ImagesManager.registration,alignment:Alignment.center ,),             context.addVerticalSpace(16),
+                    Text(
+                      context.loc.signUpTitle,
+                      style: context.titleBold18,
+                      textAlign: TextAlign.center,
                     ),
-                  ),
+                    context.addVerticalSpace(4),
+                    Text(context.loc.signUpBody,
+                        textAlign: TextAlign.center,
+                        style: context.bodyRegular),
+                    context.addVerticalSpace(32),
+                    PrimaryTextField(
+                      controller: nameController,
+                      validator: (value) {
+                        return value!.validateName(context);
+                      },
+                      hint: context.loc.name,
+                      keyboardType: TextInputType.name,
+                    ),
+                    context.addVerticalSpace(16),
+                    PrimaryTextField(
+                      controller: emailController,
+                      validator: (value) {
+                        return value!.validateEmail(context);
+                      },
+                      hint: context.loc.email,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    context.addVerticalSpace(16),
+                    PrimaryTextField(
+                      controller: passwordController,
+                      validator: (value) {
+                        return value!.validatePassword(context);
+                      },
+                      hint: context.loc.password,
+                      obscureText: true,
+                      keyboardType: TextInputType.visiblePassword,
+                    ),
+                    context.addVerticalSpace(24),
+                    PrimaryButton(
+                        text: context.loc.signUp,
+                        onPressed: _handleSignUp),
+                    context.addVerticalSpace(32),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            context.loc.alreadyHaveAccount,
+                            style: context.bodyRegular.copyWith(
+                                color: Colors.grey),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                AppRouter.back();
+                              },
+                              child: Text(
+                                context.loc.login,
+                                style: context.bodyRegular,
+                              )),
+                        ]),
+                  ],
                 ),
               ).padSymmetric(20)
           ),

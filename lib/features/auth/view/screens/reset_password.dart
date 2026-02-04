@@ -4,6 +4,7 @@ import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/core/routes/app_router.dart';
+import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -11,7 +12,7 @@ import 'package:provider/provider.dart';
 import '../../../../common/show_snack_bar.dart' ;
 import '../../../../core/extension/responsive_layout_extension.dart';
 import '../../../../core/extension/string_validation.dart';
-import '../../logic/helper/auth_ui_helper.dart';
+import '../../logic/helper/auth_error_messages.dart';
 import '../../logic/provider/auth_provider.dart';
 
 class ResetPassword extends StatefulWidget {
@@ -34,13 +35,18 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   void _resetPasswordListener() {
+    if (!mounted) return;
     final state = authProvider.state;
-    if (state.isSuccess) {
-      showSnackBar(context, 'Password reset email sent successfully!');
-      AppRouter.back();
-    } else if (state.isFailure) {
-      final errorMessage = AuthUIHelper.getErrorMessage(context, state.errorKey ?? '');
-      showSnackBar(context, errorMessage);
+    if (state.isSuccess || state.isFailure) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (state.isSuccess) {
+          showSnackBar(context, 'Password reset email sent successfully!');
+          AppRouter.goTo(screenName: ScreenName.login);
+        } else if (state.isFailure) {
+          final errorMessage = AuthErrorMessages.getErrorMessage(context, state.errorKey ?? '');
+          showSnackBar(context, errorMessage);
+        }
+      });
     }
   }
 

@@ -65,7 +65,7 @@ class PrimaryAppBar extends StatelessWidget {
             ),
           )
         ],
-      ).padSymmetric(20),
+      ).padSymmetric(20).padBottom(16),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 import '../../model/car_type_model.dart';
 
-class CarTypeListView extends StatelessWidget {
+class CarTypeListView extends StatefulWidget {
   final List<CarTypeModel> carTypeData;
   final int selectedIndex;
   final ValueChanged<int> onCarTypeSelected;
@@ -16,6 +16,11 @@ class CarTypeListView extends StatelessWidget {
   });
 
   @override
+  State<CarTypeListView> createState() => _CarTypeListViewState();
+}
+
+class _CarTypeListViewState extends State<CarTypeListView> {
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
         height: 40,
@@ -23,38 +28,36 @@ class CarTypeListView extends StatelessWidget {
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: carTypeData.length,
+          itemCount: widget.carTypeData.length,
           separatorBuilder: (context, index) => const SizedBox(width: 4),
           itemBuilder: (context, index) {
-            final selected = selectedIndex == index;
-            return InkWell(
-              onTap: () => onCarTypeSelected(index),
-              child: Card(
-                color: selected ? Colors.black : null,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (carTypeData[index].carLogo != null)
-                      Image.asset(
-                        carTypeData[index].carLogo!,
-                        width: 22,
-                        height: 22,
-                        fit: BoxFit.contain,
-                        color: selected ? Colors.white : null,
-                      )
-                    else
-                      const SizedBox(),
+            final selected = widget.selectedIndex == index;
+            return ChoiceChip(
+              elevation: 0,
+              backgroundColor: Color(0xffF0F0F0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: const BorderSide(color:  Color(0xffF0F0F0),),
 
-                    context.addHorizontalSpace(4),
-                    Text(
-                      carTypeData[index].carType,
-                      style: context.inputRegular14.copyWith(
-                        color: selected ? Colors.white : null,
-                      ),
-                    ),
-                  ],
-                ).padSymmetric(16).padVerticalSymmetric(8),
+              ),
+              showCheckmark: false,
+              avatar: widget.carTypeData[index].carLogo != null
+                  ? Image.asset(
+                widget.carTypeData[index].carLogo!,
+                fit: BoxFit.cover,
+                color: selected ? Colors.white : Colors.black,
+              )
+                  : null,
+              label: Text(widget.carTypeData[index].carType),
+              selected: selected,
+              onSelected: (bool isSelected) {
+                if (isSelected) {
+                  widget.onCarTypeSelected(index);
+                }
+              },
+              selectedColor: Colors.black,
+              labelStyle: context.inputRegular14.copyWith(
+                color: selected ? Colors.white : Colors.black,
               ),
             );
           },

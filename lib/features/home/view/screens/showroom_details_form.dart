@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../core/constant/images_manager.dart';
 import '../../../../core/extension/app_sizes.dart';
 import '../../../../common/primary_app_bar.dart';
-import '../../model/car_card_model.dart';
 import '../widgets/car_ads_list.dart';
 
 class ShowroomDetailsForm extends StatefulWidget {
@@ -55,7 +54,8 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
               children: [
                 Image.asset(ImagesManager.locationIcon),
                 context.addHorizontalSpace(4),
-                Text('Street name, city name, district', style: context.bodyRegular,)
+                Text('Street name, city name, district',
+                  style: context.bodyRegular,)
               ],
             ),
             context.addVerticalSpace(8),
@@ -67,21 +67,20 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
               ],
             ),
             context.addVerticalSpace(24),
-            Text('About showroom',style: context.bodyBold,),
+            Text('About showroom', style: context.bodyBold,),
             context.addVerticalSpace(4),
             Text(
               'Lorem ipsum dolor sit amet consectetur. Consectetur pharetra proin sed nisi vitae purus vivamus in. Ornare pellentesque vivamus elementum lorem velit eget mauris senectus fusce.',
               style: context.bodyRegular,
             ),
             context.addVerticalSpace(24),
-            Text('Showroom Name Ads',style: context.bodyBold,),
+            Text('Showroom Name Ads', style: context.bodyBold,),
             context.addVerticalSpace(8),
             CarAdList(
-              carCardData: carCardList(context),
               listLength: 4,
             )
           ],
-        ).padSymmetric(20).padTop(16),
+        ).padSymmetric(20),
       ),
     );
   }

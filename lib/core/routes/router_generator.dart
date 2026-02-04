@@ -9,10 +9,9 @@ import '../../features/auth/view/screens/splash_screen.dart';
 import '../../features/home/model/car_card_model.dart';
 import '../../features/home/view/screens/car_details_form.dart';
 import '../../features/home/view/screens/car_ads_screen.dart';
+import '../../features/home/view/screens/checkout.dart';
 import '../../features/home/view/screens/home_screen.dart';
 import '../../features/home/view/screens/showroom_details_form.dart';
-
-
 
 class RoutGenerator {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -21,32 +20,35 @@ class RoutGenerator {
       case ScreenName.splash:
         result = const SplashScreen();
         break;
-        case ScreenName.onbording:
+      case ScreenName.onbording:
         result = const OnbordingScreen();
         break;
-        case ScreenName.login:
+      case ScreenName.login:
         result = const LoginScreen();
         break;
-        case ScreenName.signUpScreen:
+      case ScreenName.signUpScreen:
         result = const SignUpScreen();
         break;
-        case ScreenName.resetPassword:
+      case ScreenName.resetPassword:
         result = const ResetPassword();
         break;
-        case ScreenName.home:
+      case ScreenName.home:
         result = const HomeScreen();
         break;
-        case ScreenName.navButtonBar:
+      case ScreenName.navButtonBar:
         result = const NavButtonBar();
         break;
-        case ScreenName.carDetailsForm:
-        result =  CarDetailsForm(car: settings.arguments as CarCardModel,);
+      case ScreenName.carDetailsForm:
+        result = CarDetailsForm(car: settings.arguments as CarCardModel,);
         break;
-        case ScreenName.showroomDetailsForm:
-        result =  ShowroomDetailsForm();
+      case ScreenName.showroomDetailsForm:
+        result = ShowroomDetailsForm();
         break;
-        case ScreenName.carAdsScreen:
-        result =  CarAdsScreen();
+      case ScreenName.carAdsScreen:
+        result = CarAdsScreen();
+        break;
+        case ScreenName.checkout:
+        result = Checkout();
         break;
 
       default:
@@ -56,6 +58,7 @@ class RoutGenerator {
           ),
         );
     }
-    return MaterialPageRoute(builder: (context) => result,settings: RouteSettings(name: settings.name));
+    return MaterialPageRoute(builder: (context) => result,
+        settings: RouteSettings(name: settings.name));
   }
 }

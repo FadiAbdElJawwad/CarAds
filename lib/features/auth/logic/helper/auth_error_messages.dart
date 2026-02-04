@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../generated/l10n.dart';
 
 
-class AuthUIHelper {
+class AuthErrorMessages {
   static String getErrorMessage(BuildContext context, String code) {
     final s = S.of(context);
     if (code == 'invalid-credential') {
