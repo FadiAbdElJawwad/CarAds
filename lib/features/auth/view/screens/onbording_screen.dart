@@ -6,7 +6,7 @@ import '../../../../../common/primary_button.dart';
 import '../../../../core/extension/responsive_layout_extension.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
-import '../../model/onbording_model.dart';
+import '../../model/onboarding_model.dart';
 import '../widgets/slider_indicator.dart';
 
 class OnbordingScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class OnbordingScreen extends StatefulWidget {
 class _OnbordingScreenState extends State<OnbordingScreen> {
   late PageController _pageController;
   int _currentPage = 0;
-  late List<OnbordingModel> onbordingData;
+  late List<OnboardingModel> onboardingData;
   final storage = const FlutterSecureStorage();
 
   @override
@@ -30,7 +30,7 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    onbordingData = onbordingList(context);
+    onboardingData = onboardingList(context);
   }
 
   @override
@@ -67,10 +67,10 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
                           });
                         },
                         controller: _pageController,
-                        itemCount: onbordingData.length,
+                        itemCount: onboardingData.length,
                         itemBuilder: (context, i) {
                           return Image.asset(
-                            onbordingData[i].image!,
+                            onboardingData[i].image!,
                           );
                         }),
                   ),
@@ -78,19 +78,19 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
             ),
             context.addVerticalSpace(20),
             Text(
-                onbordingData[_currentPage].title!,
+                onboardingData[_currentPage].title!,
                 textAlign: TextAlign.center,
                 style: context.h2Bold22),
             context.addVerticalSpace(24),
             Text(
-                onbordingData[_currentPage].body!,
+                onboardingData[_currentPage].body!,
                 textAlign: TextAlign.center,
                 style: context.bodyRegular
             ),
             const Spacer(flex: 1,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(onbordingData.length, (index) {
+              children: List.generate(onboardingData.length, (index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: SliderIndicator(

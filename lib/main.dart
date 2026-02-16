@@ -26,38 +26,8 @@ class CarAds extends StatefulWidget {
 }
 
 class _CarAdsState extends State<CarAds> {
-  String? _initialRoute;
-
-  @override
-  void initState() {
-    super.initState();
-    _handleRoute();
-  }
-
-  void _handleRoute() async {
-    final redirectService = RedirectService.instance;
-    final determinedRoute = await redirectService.getInitialScreen();
-
-    if (mounted) {
-      setState(() {
-        _initialRoute = determinedRoute;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_initialRoute == null) {
-      return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      );
-    }
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
@@ -73,9 +43,42 @@ class _CarAdsState extends State<CarAds> {
         locale: const Locale('en'),
         supportedLocales: S.delegate.supportedLocales,
         theme: AppTheme.lightTheme,
-        onGenerateRoute: RoutGenerator.onGenerateRoute,
+        onGenerateRoute: RouteGenerator.onGenerateRoute,
         navigatorKey: AppRouter.navigatorKey,
-        initialRoute: _initialRoute,
+        home: const InitializerWidget(),
+      ),
+    );
+  }
+}
+
+class InitializerWidget extends StatefulWidget {
+  const InitializerWidget({super.key});
+
+  @override
+  State<InitializerWidget> createState() => _InitializerWidgetState();
+}
+
+class _InitializerWidgetState extends State<InitializerWidget> {
+  @override
+  void initState() {
+    super.initState();
+    _determineInitialRoute();
+  }
+
+  void _determineInitialRoute() async {
+    final redirectService = RedirectService.instance;
+    final determinedRoute = await redirectService.getInitialScreen();
+    
+    if (mounted) {
+      Navigator.of(context).pushReplacementNamed(determinedRoute);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

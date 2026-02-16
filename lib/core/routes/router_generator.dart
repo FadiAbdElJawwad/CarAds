@@ -1,6 +1,6 @@
 import 'package:car_ads/core/routes/screen_name.dart';
+import 'package:car_ads/features/home/model/showroom_model.dart';
 import 'package:flutter/material.dart';
-import '../../features/ nav_button_bar/view/screens/nav_button_bar.dart';
 import '../../features/auth/view/screens/login_screen.dart';
 import '../../features/auth/view/screens/onbording_screen.dart';
 import '../../features/auth/view/screens/reset_password.dart';
@@ -10,12 +10,16 @@ import '../../features/home/model/car_card_model.dart';
 import '../../features/home/view/screens/car_details_form.dart';
 import '../../features/home/view/screens/car_ads_screen.dart';
 import '../../features/home/view/screens/checkout.dart';
+import '../../features/home/view/screens/confirm_rent_screen.dart';
 import '../../features/home/view/screens/home_screen.dart';
+import '../../features/home/view/screens/map_screen.dart';
+import '../../features/home/view/screens/rental_completed_screen.dart';
 import '../../features/home/view/screens/showroom_details_form.dart';
+import '../../features/nav_button_bar/view/screens/nav_button_bar.dart';
 
-class RoutGenerator {
+class RouteGenerator {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    StatefulWidget result;
+    Widget result;
     switch (settings.name) {
       case ScreenName.splash:
         result = const SplashScreen();
@@ -42,13 +46,22 @@ class RoutGenerator {
         result = CarDetailsForm(car: settings.arguments as CarCardModel,);
         break;
       case ScreenName.showroomDetailsForm:
-        result = ShowroomDetailsForm();
+        result = ShowroomDetailsForm(showroom: settings.arguments as ShowroomModel);
         break;
       case ScreenName.carAdsScreen:
-        result = CarAdsScreen();
+        result = const CarAdsScreen();
         break;
         case ScreenName.checkout:
-        result = Checkout();
+        result = Checkout(car: settings.arguments as CarCardModel);
+        break;
+        case ScreenName.mapScreen:
+        result = MapScreen(orderId: settings.arguments as String);
+        break;
+        case ScreenName.confirmRentScreen:
+        result = ConfirmRentScreen( orderId: settings.arguments as String);
+        break;
+        case ScreenName.rentalCompletedScreen:
+        result = RentalCompletedScreen();
         break;
 
       default:

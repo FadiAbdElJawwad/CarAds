@@ -24,9 +24,11 @@ class ImagesManager {
     static const String whatsappIcon = '$pngPath/whatsapp_icon.png';
     static const String callIcon = '$pngPath/call_icon.png';
     static const String locationIcon = '$pngPath/location_icon.png';
+    static const String location = '$pngPath/location.png';
     static const String contactIcon = '$pngPath/contact_icon.png';
     static const String showroomIcon = '$pngPath/showroom_icon.png';
     static const String map = '$pngPath/map.png';
+    static const String rentalCompletedImage = '$pngPath/rental_completed_image.png';
 
     static const String home = '$svgPath/home.svg';
     static const String selectedHome = '$svgPath/selectedHome.svg';

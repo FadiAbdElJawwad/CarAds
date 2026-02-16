@@ -45,6 +45,13 @@ dependencies:
   flutter_svg: ^2.2.3
   provider: ^6.1.5+1
   cloud_firestore: ^6.1.1
+  intl: ^0.20.2
+  flutter_launcher_icons: ^0.14.4
+  cached_network_image: ^3.4.1
+  skeleton_loader: ^2.0.0+4
+  google_maps_flutter: ^2.14.0
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -55,7 +62,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -112,3 +118,9 @@ flutter_native_splash:
   android_12:
     image: assets/images/png/splash_image_12.png
     icon_background_color: "#FFFFFF"
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/png/logo.png"
+  min_sdk_android: 21

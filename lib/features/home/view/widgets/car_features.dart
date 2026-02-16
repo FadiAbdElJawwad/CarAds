@@ -3,7 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../core/extension/text_style_extension.dart';
 
 class CarFeatures extends StatelessWidget {
-  const CarFeatures({super.key,
+  const CarFeatures({
+    super.key,
     required this.assetName,
     required this.label,
   });
@@ -22,7 +23,6 @@ class CarFeatures extends StatelessWidget {
           label,
           style: context.inputBold14.copyWith(fontSize: 12),
         ),
-
       ],
     );
   }

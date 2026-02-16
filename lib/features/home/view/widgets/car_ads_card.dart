@@ -1,3 +1,4 @@
+import 'package:car_ads/features/home/logic/service/url_formatter.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constant/color_manager.dart';
 import '../../../../core/constant/images_manager.dart';
@@ -5,7 +6,7 @@ import '../../../../core/extension/app_sizes.dart';
 import '../../../../core/extension/text_style_extension.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
-import '../../logic/helper/car_image_extractor.dart';
+import '../../../../common/car_image_extractor.dart';
 import '../../model/car_card_model.dart';
 
 class CarAdsCard extends StatelessWidget {
@@ -17,16 +18,21 @@ class CarAdsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        AppRouter.goTo(
-          screenName: ScreenName.carDetailsForm,
-          arguments: car,
-        );
+        if (car.carID != null) {
+          AppRouter.goTo(
+            screenName: ScreenName.carDetailsForm,
+            arguments: car,
+          );
+        }
       },
+
       child: Card(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CarImageExtractor.buildImage(car.carImage),
+            Expanded(
+              child: CarImageExtractor.buildImage(UrlFormatter.getDirectGoogleDriveUrl(car.carImage)),
+            ),
             context.addVerticalSpace(16),
             Text(
               car.carName ?? 'No Name',
@@ -68,7 +74,7 @@ class CarAdsCard extends StatelessWidget {
                         fontSize: 12, color: ColorManager.gearTypeColor),
                   ).padVerticalSymmetric(4).padSymmetric(11),
                 ),
-                CarImageExtractor.buildLogo(car.carLogo),
+                CarImageExtractor.buildLogo(UrlFormatter.getDirectGoogleDriveUrl(car.carLogo)),
               ],
             )
           ],

@@ -38,11 +38,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
   void loginListener() {
+    if (!mounted) return;
     final state = authProvider.state;
     if (state.isSuccess) {
       AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
     } else if (state.isFailure) {
-      final errorMessage = AuthErrorMessages.getErrorMessage(context, state.errorKey ?? '');
+      final errorMessage = AuthErrorMessages.getErrorMessage(
+          context, state.errorKey ?? '');
       showSnackBar(context, errorMessage);
     }
   }
@@ -61,9 +63,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    authProvider.removeListener(loginListener);
     emailController.dispose();
     passwordController.dispose();
-    authProvider.removeListener(loginListener);
     super.dispose();
   }
 

@@ -17,12 +17,12 @@ class _CarAdsScreenState extends State<CarAdsScreen> {
   int _selectedIndex = 0;
 
   // void uploadDataToFirestore(BuildContext context) async {
-  //   // final List<CarCardModel> myLocalList = carCardList(context);
+  //   final List<CarCardModel> myLocalList = carCardList(context);
   //
   //   for (var car in myLocalList) {
   //     try {
   //       await FirebaseFirestore.instance.collection('cars').add(car.toMap());
-  //       print("تمت إضافة السيارة: ${car.carName}");
+  //       print("تمت إضافة السيارة: ${car.carID}");
   //     } catch (e) {
   //       print("خطأ أثناء الإضافة: $e");
   //     }

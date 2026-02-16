@@ -1,34 +1,26 @@
 import 'package:flutter/material.dart';
-import '../service/url_formatter.dart';
+import 'network_custom_image_widget.dart';
+import '../features/home/logic/service/url_formatter.dart';
 
 class CarImageExtractor {
 
-  static Widget buildImage(String? imagePath) {
+  static Widget buildImage(String? imagePath, {double height = 100, BoxFit fit = BoxFit.cover}) {
     final directUrl = UrlFormatter.getDirectGoogleDriveUrl(imagePath);
     if (directUrl == null || directUrl.isEmpty) {
-      return const SizedBox(height: 100);
+      return SizedBox(height: height);
     }
 
     if (directUrl.startsWith('http')) {
-      return Image.network(
-        directUrl,
-        height: 100,
+      return NetworkCustomImageWidget(
+        imageUrl: directUrl,
+        height: height,
         width: double.infinity,
-        fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) =>
-        const SizedBox(height: 100, child: Icon(Icons.error)),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return const SizedBox(
-            height: 100,
-            child: Center(child: CircularProgressIndicator()),
-          );
-        },
+        fit: fit,
       );
     } else {
       return Image.asset(
         directUrl,
-        height: 100,
+        height: height,
         width: double.infinity,
         fit: BoxFit.contain,
       );
@@ -42,12 +34,11 @@ class CarImageExtractor {
     }
 
     if (directUrl.startsWith('http')) {
-      return Image.network(
-        directUrl,
-        fit: BoxFit.cover,
+      return NetworkCustomImageWidget(
+        imageUrl: directUrl,
         height: 24,
-        errorBuilder: (context, error, stackTrace) =>
-        const Icon(Icons.business),
+        width: 24,
+        fit: BoxFit.cover,
       );
     } else {
       return Image.asset(
