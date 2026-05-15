@@ -1,3 +1,4 @@
+import 'package:car_ads/core/app_logger.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
@@ -6,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../common/skeleton.dart';
 import '../../../../core/constant/images_manager.dart';
-import '../../../../core/extension/app_sizes.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import '../../../auth/view/widgets/slider_indicator.dart';
 import '../../../../common/car_image_extractor.dart';
-import '../../logic/service/car_firestore_service.dart';
-import '../../model/car_card_model.dart';
+import '../../../../core/services/car_firestore_service.dart';
+import '../../../../core/models/car_card_model.dart';
 
 class CarsBanner extends StatefulWidget {
   const CarsBanner({super.key});
@@ -52,7 +53,7 @@ class _CarsBannerState extends State<CarsBanner> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: context.height(300),
+        height: context.screenHeight(300),
         child: StreamBuilder<QuerySnapshot>(
             stream: _carsStream,
             builder: (context, snapshot) {
@@ -60,8 +61,11 @@ class _CarsBannerState extends State<CarsBanner> {
                 return const _CarsBannerSkeleton();
               }
 
-              if (snapshot.hasError || !snapshot.hasData ||
-                  snapshot.data!.docs.isEmpty) {
+              if (snapshot.hasError) {
+                AppLogger.error('Error in CarsBanner stream', snapshot.error);
+                return const SizedBox();
+              }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                 return const SizedBox();
               }
 
@@ -100,7 +104,7 @@ class _CarsBannerState extends State<CarsBanner> {
                             itemCount: cars.length,
                             itemBuilder: (context, i) {
                               return CarImageExtractor.buildImage(
-                                  cars[i].carImage, height: context.height(200),fit: BoxFit.contain);
+                                  cars[i].carImage, height: context.screenHeight(200),fit: BoxFit.contain);
                             }
                         ),
                       ),

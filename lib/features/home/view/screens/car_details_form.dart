@@ -7,8 +7,8 @@ import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/common/car_image_extractor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../logic/helper/suggested_ads.dart';
-import '../../model/car_card_model.dart';
+import '../../../explore/logic/helper/suggested_ads.dart';
+import '../../../../core/models/car_card_model.dart';
 import '../widgets/car_features_card.dart';
 import '../widgets/showroom_contact_card.dart';
 
@@ -26,11 +26,11 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
     return Scaffold(
       bottomNavigationBar: Card(
         child: PrimaryButton(
-                text: 'Rental',
-                onPressed: () {
-                  AppRouter.goTo(
-                      screenName: ScreenName.checkout, arguments: widget.car);
-                })
+            text: 'Rental',
+            onPressed: () {
+              AppRouter.goTo(
+                  screenName: ScreenName.checkout, arguments: widget.car);
+            })
             .padSymmetric(20)
             .padVerticalSymmetric(17),
       ),
@@ -47,7 +47,8 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                     icon: SvgPicture.asset(ImagesManager.arrowLeft)),
               ),
               context.addVerticalSpace(16),
-              CarImageExtractor.buildImage(widget.car.carImage, height: 160,fit: BoxFit.contain),
+              CarImageExtractor.buildImage(widget.car.carImage,
+                  height: 160, fit: BoxFit.contain),
               context.addVerticalSpace(8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,11 +89,14 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
               ),
               context.addVerticalSpace(4),
               Text(
-                'Lorem ipsum dolor sit amet consectetur. Consectetur pharetra proin sed nisi vitae purus vivamus in. Ornare pellentesque vivamus elementum lorem velit eget mauris senectus fusce.',
+                widget.car.description ?? 'No description available.',
                 style: context.bodyRegular,
               ),
               context.addVerticalSpace(24),
-                ShowroomContactCard(showroomID: widget.car.showroomID!),
+              ShowroomContactCard(
+                showroomID: widget.car.showroomID,
+                car: widget.car,
+              ),
               context.addVerticalSpace(24),
               Text(
                 'Suggested Ads',

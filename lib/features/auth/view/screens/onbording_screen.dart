@@ -1,9 +1,9 @@
+import 'package:car_ads/core/constant/app_constants.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../../common/primary_button.dart';
-import '../../../../core/extension/responsive_layout_extension.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
 import '../../model/onboarding_model.dart';
@@ -40,7 +40,7 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
   }
 
   Future<void> _completeOnboarding() async {
-    await storage.write(key: 'onboarding', value: 'true');
+    await storage.write(key: AppConstants.storageKeyOnboarding, value: 'true');
     if (mounted) {
       AppRouter.goToAndRemove(screenName: ScreenName.login);
     }

@@ -1,3 +1,4 @@
+import 'package:car_ads/core/constant/app_constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../routes/screen_name.dart';
 
@@ -8,12 +9,12 @@ class RedirectService {
   final _storage = const FlutterSecureStorage();
 
   Future<bool> _isOnboardingCompleted() async {
-    final onboarding = await _storage.read(key: 'onboarding');
+    final onboarding = await _storage.read(key: AppConstants.storageKeyOnboarding);
     return onboarding != null;
   }
 
   Future<bool> _isLoggedIn() async {
-    final login = await _storage.read(key: 'login');
+    final login = await _storage.read(key: AppConstants.storageKeyLogin);
     return login != null;
   }
 

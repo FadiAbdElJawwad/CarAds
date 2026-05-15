@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../core/extension/text_style_extension.dart';
@@ -18,7 +19,7 @@ class CarFeatures extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         SvgPicture.asset(assetName),
-        const SizedBox(height: 8),
+        context.addVerticalSpace(8),
         Text(
           label,
           style: context.inputBold14.copyWith(fontSize: 12),

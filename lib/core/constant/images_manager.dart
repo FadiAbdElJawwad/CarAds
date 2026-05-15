@@ -29,6 +29,8 @@ class ImagesManager {
     static const String showroomIcon = '$pngPath/showroom_icon.png';
     static const String map = '$pngPath/map.png';
     static const String rentalCompletedImage = '$pngPath/rental_completed_image.png';
+    static const String profileImage = '$pngPath/profile_image.png';
+    static const String wellDoneImage = '$pngPath/well_done_image.png';
 
     static const String home = '$svgPath/home.svg';
     static const String selectedHome = '$svgPath/selectedHome.svg';

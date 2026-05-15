@@ -1,16 +1,16 @@
-import 'package:car_ads/features/home/logic/service/url_formatter.dart';
+import '../../../../common/car_image_extractor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../common/skeleton.dart';
 import '../../../../core/constant/color_manager.dart';
 import '../../../../core/constant/images_manager.dart';
-import '../../../../core/extension/app_sizes.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import '../../../../core/extension/text_style_extension.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
 import '../../logic/service/showroom_firestore_service.dart';
-import '../../model/showroom_model.dart';
+import '../../../../core/models/showroom_model.dart';
 
 class TopRatedShowroom extends StatefulWidget {
   const TopRatedShowroom({super.key});
@@ -75,16 +75,9 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: Center(
-                            child: Image.network(
-                              UrlFormatter.getDirectGoogleDriveUrl(showroom.showroomImage)!,
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return const Skeleton(width: double.infinity);
-                              },
-                            ),
+                          child: CarImageExtractor.buildImage(
+                            showroom.showroomImage,
+                            fit: BoxFit.contain,
                           ),
                         ),
                         context.addVerticalSpace(4),

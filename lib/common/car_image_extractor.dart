@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'network_custom_image_widget.dart';
-import '../features/home/logic/service/url_formatter.dart';
+import '../core/utils/url_formatter.dart';
 
 class CarImageExtractor {
 

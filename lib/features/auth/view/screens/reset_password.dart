@@ -10,7 +10,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/show_snack_bar.dart' ;
-import '../../../../core/extension/responsive_layout_extension.dart';
 import '../../../../core/extension/string_validation.dart';
 import '../../logic/helper/auth_error_messages.dart';
 import '../../logic/provider/auth_provider.dart';

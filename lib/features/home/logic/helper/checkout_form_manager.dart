@@ -1,6 +1,6 @@
-import 'package:car_ads/features/home/model/car_card_model.dart';
-import 'package:car_ads/features/home/model/checkout_order.dart';
-import 'package:car_ads/features/home/logic/service/checkout_service.dart';
+import 'package:car_ads/core/models/car_card_model.dart';
+import 'package:car_ads/features/rental/model/checkout_order.dart';
+import 'package:car_ads/features/rental/logic/service/checkout_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

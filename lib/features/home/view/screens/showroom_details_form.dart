@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../common/car_image_extractor.dart';
 import '../../../../core/constant/images_manager.dart';
-import '../../../../core/extension/app_sizes.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import '../../../../common/primary_app_bar.dart';
-import '../../model/showroom_model.dart';
-import '../widgets/car_ads_list.dart';
+import '../../../../core/models/showroom_model.dart';
+import '../../../explore/view/widgets/car_ads_list.dart';
 
 class ShowroomDetailsForm extends StatefulWidget {
   final ShowroomModel showroom;
@@ -32,7 +32,7 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CarImageExtractor.buildImage(widget.showroom.showroomImage,height: context.height(200)),
+            CarImageExtractor.buildImage(widget.showroom.showroomImage,height: context.screenHeight(200)),
 
             context.addVerticalSpace(10),
             Row(

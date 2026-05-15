@@ -1,6 +1,6 @@
 import '../../../core/constant/images_manager.dart';
 import 'package:flutter/material.dart';
-import '../../../core/extension/responsive_layout_extension.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 
 class OnboardingModel {
   OnboardingModel({this.image , this.body , this.title});

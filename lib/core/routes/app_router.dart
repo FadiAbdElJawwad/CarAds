@@ -7,7 +7,7 @@ class AppRouter {
         screenName, (Route<dynamic> route) => false);
   }
 
-  static void goTo({required String screenName,Object? arguments}) {
+  static void goTo({required String screenName, Object? arguments}) {
     navigatorKey.currentState!.pushNamed(screenName, arguments: arguments);
   }
 
@@ -15,8 +15,9 @@ class AppRouter {
     navigatorKey.currentState!.pop();
   }
 
-  static void backTo({required String screenName}) {
-    navigatorKey.currentState!.popUntil((route) => route.settings.name == screenName);
+  static void backTo({required String screenName, Object? arguments}) {
+    navigatorKey.currentState!.popUntil((route) =>
+    route.settings.name == screenName,);
   }
 
   static void mayBack() {

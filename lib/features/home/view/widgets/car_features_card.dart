@@ -1,7 +1,7 @@
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
-import '../../model/car_card_model.dart';
+import '../../../../core/models/car_card_model.dart';
 import 'car_features.dart';
 
 class CarFeaturesCard extends StatelessWidget {

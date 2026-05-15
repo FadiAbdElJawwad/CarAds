@@ -2,7 +2,7 @@ import 'package:car_ads/core/constant/color_manager.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../../../core/extension/responsive_layout_extension.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import '../../../../core/extension/text_style_extension.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Image.asset(ImagesManager.splash,),
           Text(context.loc.splashTitle,style: context.h2Bold22.copyWith(color: Colors.white),),
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
           Text(context.loc.splashBody,style: context.bodyRegular.copyWith(color: Colors.white),)
         ],
       )

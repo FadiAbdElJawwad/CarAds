@@ -1,105 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/constant/images_manager.dart';
 import '../../../../generated/l10n.dart';
-import '../../../home/view/screens/car_ads_screen.dart';
+import '../../../add_ads/view/screens/add_ads_screen.dart';
+import '../../../history/view/screens/history_screen.dart';
+import '../../../explore/view/screens/car_ads_screen.dart';
 import '../../../home/view/screens/home_screen.dart';
+import '../../../profile/view/screens/profile_screen.dart';
+import '../../provider/nav_button_provider.dart';
 import '../widgets/nav_button_item.dart';
 
-class NavButtonBar extends StatefulWidget {
+class NavButtonBar extends StatelessWidget {
   const NavButtonBar({super.key});
 
   @override
-  State<NavButtonBar> createState() => _NavButtonBarState();
-}
-
-class _NavButtonBarState extends State<NavButtonBar> {
-
-  int _currentIndex = 0;
-  Widget currentScreen = HomeScreen();
-
-  final PageStorageBucket bucket = PageStorageBucket();
-
-  void _onItemTapped(int index, Widget screen) {
-    setState(() {
-      _currentIndex = index;
-      currentScreen = screen;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageStorage(
-        bucket: bucket,
-        child: currentScreen,
-      ),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-        height: 80,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            NavButtonItem(
-              itemIndex: 0,
-              currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(0,  HomeScreen()),
-              selectedIcon: ImagesManager.selectedHome,
-              unselectedIcon: ImagesManager.home,
-              label: S
-                  .of(context)
-                  .home,
-              screen:  CarAdsScreen(),
+    final List<Widget> screens = [
+      const HomeScreen(key: PageStorageKey('HomeScreen')),
+      const CarAdsScreen(key: PageStorageKey('CarAdsScreen')),
+      const AddAdsScreen(key: PageStorageKey('AddAdsScreen')),
+      const HistoryScreen(key: PageStorageKey('HistoryScreen')),
+      const ProfileScreen(key: PageStorageKey('ProfileScreen')),
+    ];
+
+    return Consumer<NavButtonProvider>(
+      builder: (context, model, child) {
+        return Scaffold(
+            body: IndexedStack(
+              index: model.currentIndex,
+              children: screens,
             ),
-            NavButtonItem(
-              itemIndex: 1,
-              currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(1, CarAdsScreen()),
-              selectedIcon: ImagesManager.selectedExplore,
-              unselectedIcon: ImagesManager.explore,
-              label: S
-                  .of(context)
-                  .explore,
-              screen: HomeScreen(),
+            bottomNavigationBar: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
+              ),
+              height: 80,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  NavButtonItem(
+                    itemIndex: 0,
+                    currentIndex: model.currentIndex,
+                    onPressed: () => model.onItemTapped(0),
+                    selectedIcon: ImagesManager.selectedHome,
+                    unselectedIcon: ImagesManager.home,
+                    label: S.of(context).home,
+                  ),
+                  NavButtonItem(
+                    itemIndex: 1,
+                    currentIndex: model.currentIndex,
+                    onPressed: () => model.onItemTapped(1),
+                    selectedIcon: ImagesManager.selectedExplore,
+                    unselectedIcon: ImagesManager.explore,
+                    label: S.of(context).explore,
+                  ),
+                  NavButtonItem(
+                    itemIndex: 2,
+                    currentIndex: model.currentIndex,
+                    onPressed: () => model.onItemTapped(2),
+                    selectedIcon: ImagesManager.selectedAdd,
+                    unselectedIcon: ImagesManager.add,
+                    label: S.of(context).add,
+                  ),
+                  NavButtonItem(
+                    itemIndex: 3,
+                    currentIndex: model.currentIndex,
+                    onPressed: () => model.onItemTapped(3),
+                    selectedIcon: ImagesManager.selectedHistory,
+                    unselectedIcon: ImagesManager.history,
+                    label: S.of(context).history,
+                  ),
+                  NavButtonItem(
+                    itemIndex: 4,
+                    currentIndex: model.currentIndex,
+                    onPressed: () => model.onItemTapped(4),
+                    selectedIcon: ImagesManager.selectedProfile,
+                    unselectedIcon: ImagesManager.profile,
+                    label: S.of(context).profile,
+                  ),
+                ],
+              ),
             ),
-            NavButtonItem(
-              itemIndex: 2,
-              currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(2,  HomeScreen()),
-              selectedIcon: ImagesManager.selectedAdd,
-              unselectedIcon: ImagesManager.add,
-              label: S
-                  .of(context)
-                  .add,
-              screen:  HomeScreen(),
-            ),
-            NavButtonItem(
-              itemIndex: 3,
-              currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(3,  HomeScreen()),
-              selectedIcon: ImagesManager.selectedHistory,
-              unselectedIcon: ImagesManager.history,
-              label: S
-                  .of(context)
-                  .history,
-              screen:  HomeScreen(),
-            ),
-            NavButtonItem(
-              itemIndex: 4,
-              currentIndex: _currentIndex,
-              onPressed: () => _onItemTapped(4,  HomeScreen()),
-              selectedIcon: ImagesManager.selectedProfile,
-              unselectedIcon: ImagesManager.profile,
-              label: S
-                  .of(context)
-                  .profile,
-              screen:  HomeScreen(),
-            ),
-          ],
-        ),
-      ),
+          );
+        },
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../core/constant/color_manager.dart';
@@ -9,7 +10,6 @@ class NavButtonItem extends StatelessWidget {
   final String selectedIcon;
   final String unselectedIcon;
   final String label;
-  final Widget screen;
 
   const NavButtonItem({
     super.key,
@@ -19,7 +19,6 @@ class NavButtonItem extends StatelessWidget {
     required this.selectedIcon,
     required this.unselectedIcon,
     required this.label,
-    required this.screen,
   });
 
   @override
@@ -43,17 +42,13 @@ class NavButtonItem extends StatelessWidget {
             ),
             Column(
               children: [
-                const SizedBox(
-                  height: 15,
-                ),
+                context.addVerticalSpace(15),
                 SvgPicture.asset(
                   isSelected ? selectedIcon : unselectedIcon,
                   height: 20,
                   width: 20,
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                context.addVerticalSpace(8),
                 Text(
                   label,
                   style: TextStyle(

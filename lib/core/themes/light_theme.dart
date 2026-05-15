@@ -4,6 +4,12 @@ import 'package:car_ads/core/constant/color_manager.dart';
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
+      useMaterial3: true,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: ColorManager.backgroundColor,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
         primaryColor: ColorManager.backgroundColor,
         scaffoldBackgroundColor: ColorManager.backgroundColor,
         elevatedButtonTheme: ElevatedButtonThemeData(

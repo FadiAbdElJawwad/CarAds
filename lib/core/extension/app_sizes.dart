@@ -1,8 +1,17 @@
+import 'package:car_ads/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
 extension AppSizes on BuildContext {
   double get getWidth => MediaQuery.sizeOf(this).width;
   double get getHeight => MediaQuery.sizeOf(this).height;
+
+  double get width => MediaQuery.sizeOf(this).width;
+  double get height => MediaQuery.sizeOf(this).height;
+
+  double wp(double percentage) => width * (percentage / 100);
+  double hp(double percentage) => height * (percentage / 100);
+
+  S get loc => S.of(this);
 
   bool get isSmallScreen => MediaQuery.sizeOf(this).height < 690;
 
@@ -14,11 +23,11 @@ extension AppSizes on BuildContext {
     return SizedBox(height: MediaQuery.sizeOf(this).height * (value / 800));
   }
 
-  double width(double value) {
+  double screenWidth(double value) {
     return MediaQuery.sizeOf(this).width * (value / 360);
   }
 
-  double height(double value) {
+  double screenHeight(double value) {
     return MediaQuery.sizeOf(this).height * (value / 800);
   }
 
@@ -102,7 +111,7 @@ extension LayoutExtensions on Widget {
     child: this,
   );
   Widget center() => Center(child: this);
-  Widget contains() => Container(color: Colors.red, child: this);
+
   Widget padSymmetric(double value) => Padding(
     padding: EdgeInsetsDirectional.symmetric(horizontal: value),
     child: this,

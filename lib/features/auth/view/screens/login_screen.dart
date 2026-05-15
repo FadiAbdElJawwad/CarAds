@@ -6,7 +6,6 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/primary_button.dart';
 import '../../../../common/primary_text_field.dart';
-import '../../../../core/extension/responsive_layout_extension.dart';
 import '../../../../core/extension/string_validation.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';

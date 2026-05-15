@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'skeleton.dart';
-import '../core/extension/app_sizes.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 
 class NetworkCustomImageWidget extends StatelessWidget {
   const NetworkCustomImageWidget({
@@ -23,16 +23,16 @@ class NetworkCustomImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: context.height(height),
+      height: context.screenHeight(height),
       width: width,
       child: isSvg
           ? SvgPicture.network(
         imageUrl,
         placeholderBuilder: (BuildContext context) => Skeleton(
-          height: context.height(height),
+          height: context.screenHeight(height),
           width: width ?? double.infinity,
         ),
-        height: context.height(height),
+        height: context.screenHeight(height),
         fit: fit,
       ).center()
           : CachedNetworkImage(
@@ -41,7 +41,7 @@ class NetworkCustomImageWidget extends StatelessWidget {
         fit: fit,
         width: double.infinity,
         placeholder: (context, url) => Skeleton(
-          height: context.height(height),
+          height: context.screenHeight(height),
           width: width ?? double.infinity,
         ),
         errorWidget: (context, url, error) =>

@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../../../../common/primary_button.dart';
 import '../../../../common/primary_text_field.dart';
 import '../../../../core/constant/images_manager.dart';
-import '../../../../core/extension/responsive_layout_extension.dart';
 import '../../../../core/extension/string_validation.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
@@ -20,46 +19,40 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  GlobalKey<FormState> formState = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  late final AuthProvider authProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.addListener(singUpListener);
-  }
-
-  void singUpListener() {
-    if (authProvider.state.isSuccess) {
-      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
-    } else if (authProvider.state.isFailure) {
-      showSnackBar(context,
-          authProvider.state.fallbackMessage ?? 'something went wrong');
-    }
-  }
+  final GlobalKey<FormState> _formState = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    authProvider.removeListener(singUpListener);
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   Future<void> _handleSignUp() async {
-    if (!formState.currentState!.validate()) return;
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    if (!_formState.currentState!.validate()) return;
+    final authProvider = context.read<AuthProvider>();
 
     await authProvider.signUpUser(
-      name: nameController.text,
-      email: emailController.text,
-      password: passwordController.text,
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+      phone: _phoneController.text.trim(),
     );
+
+    if (!mounted) return;
+
+    if (authProvider.state.isSuccess) {
+      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+    } else if (authProvider.state.isFailure) {
+      showSnackBar(context,
+          authProvider.state.fallbackMessage ?? 'Something went wrong');
+    }
   }
 
   @override
@@ -70,11 +63,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
           inAsyncCall: authProvider.state.isLoading,
           child: Scaffold(
               body: Form(
-                key: formState,
+                key: _formState,
                 child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   children: [
                     context.addVerticalSpace(60),
-                    Image.asset(ImagesManager.registration,alignment:Alignment.center ,),             context.addVerticalSpace(16),
+                    Image.asset(ImagesManager.registration, alignment: Alignment.center),
+                    context.addVerticalSpace(16),
                     Text(
                       context.loc.signUpTitle,
                       style: context.titleBold18,
@@ -86,28 +81,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         style: context.bodyRegular),
                     context.addVerticalSpace(32),
                     PrimaryTextField(
-                      controller: nameController,
-                      validator: (value) {
-                        return value!.validateName(context);
-                      },
+                      controller: _nameController,
+                      validator: (value) => value!.validateName(context),
                       hint: context.loc.name,
                       keyboardType: TextInputType.name,
                     ),
                     context.addVerticalSpace(16),
                     PrimaryTextField(
-                      controller: emailController,
-                      validator: (value) {
-                        return value!.validateEmail(context);
-                      },
+                      controller: _emailController,
+                      validator: (value) => value!.validateEmail(context),
                       hint: context.loc.email,
                       keyboardType: TextInputType.emailAddress,
                     ),
                     context.addVerticalSpace(16),
                     PrimaryTextField(
-                      controller: passwordController,
-                      validator: (value) {
-                        return value!.validatePassword(context);
-                      },
+                      hint: 'Phone Number',
+                      controller: _phoneController,
+                      validator: (value) => value!.validateMobile(context),
+                      keyboardType: TextInputType.phone,
+                    ),
+                    context.addVerticalSpace(16),
+                    PrimaryTextField(
+                      controller: _passwordController,
+                      validator: (value) => value!.validatePassword(context),
                       hint: context.loc.password,
                       obscureText: true,
                       keyboardType: TextInputType.visiblePassword,
@@ -136,7 +132,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ]),
                   ],
                 ),
-              ).padSymmetric(20)
+              )
           ),
         );
       },

@@ -13,6 +13,18 @@ class ScreenName{
   static const String mapScreen = 'mapScreen';
   static const String confirmRentScreen = 'confirmRentScreen';
   static const String rentalCompletedScreen = 'rentalCompletedScreen';
-
-
+  static const String addAdsScreen = 'addAdsScreen';
+  static const String historyScreen = 'historyScreen';
+  static const String updateProfile = 'updateProfile';
+  static const String changeEmailScreen = 'changeEmailScreen';
+  static const String newEmailScreen = 'newEmailScreen';
+  static const String changePasswordScreen = 'changePasswordScreen';
+  static const String confirmChangeScreen = 'confirmChangeScreen';
+  static const String changeLanguageScreen = 'changeLanguageScreen';
+  static const String privacyPolicyScreen = 'privacyPolicyScreen';
+  static const String termsConditionsScreen = 'termsConditionsScreen';
+  static const String faqScreenScreen = 'faqScreenScreen';
+  static const String notificationScreen = 'notificationScreen';
+  static const String changePhoneScreen = 'changePhoneScreen';
+  static const String verifyPhoneOtpScreen = 'verifyPhoneOtpScreen';
 }
