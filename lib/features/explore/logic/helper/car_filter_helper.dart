@@ -1,5 +1,5 @@
 import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
-import 'package:car_ads/core/models/car_card_model.dart';
+import '../../model/car_card_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CarFilterHelper {
@@ -19,13 +19,16 @@ class CarFilterHelper {
 
       // Price Filter
       final carPrice = (int.tryParse(car.price ?? '0') ?? 0) * 1000;
-      match &= (carPrice >= filter.priceRange.start &&
+      match &=
+          (carPrice >= filter.priceRange.start &&
           carPrice <= filter.priceRange.end);
 
       // Mileage Filter
       if (filter.startMileage != null || filter.endMileage != null) {
-        final carMileage = int.tryParse(
-            car.mileage?.replaceAll(RegExp(r'[^0-9]'), '') ?? '0') ??
+        final carMileage =
+            int.tryParse(
+              car.mileage?.replaceAll(RegExp(r'[^0-9]'), '') ?? '0',
+            ) ??
             0;
         if (filter.startMileage != null) {
           match &= (carMileage >= filter.startMileage!);

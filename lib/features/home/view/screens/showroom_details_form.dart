@@ -5,7 +5,7 @@ import '../../../../common/car_image_extractor.dart';
 import '../../../../core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import '../../../../common/primary_app_bar.dart';
-import '../../../../core/models/showroom_model.dart';
+import 'package:car_ads/features/home/model/showroom_model.dart';
 import '../../../explore/view/widgets/car_ads_list.dart';
 
 class ShowroomDetailsForm extends StatefulWidget {
@@ -22,7 +22,8 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
-            kToolbarHeight + MediaQuery.of(context).padding.top),
+          kToolbarHeight + MediaQuery.of(context).padding.top,
+        ),
         child: PrimaryAppBar(
           backIconVisible: true,
           text: widget.showroom.showroomName ?? 'Showroom Details',
@@ -32,25 +33,34 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CarImageExtractor.buildImage(widget.showroom.showroomImage,height: context.screenHeight(200)),
+            CarImageExtractor.buildImage(
+              widget.showroom.showroomImage,
+              height: context.screenHeight(200),
+            ),
 
             context.addVerticalSpace(10),
             Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.showroom.showroomName ?? '',
-                      style: context.bodyBold),
-                  IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset(ImagesManager.share)),
-                ]),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.showroom.showroomName ?? '',
+                  style: context.bodyBold,
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: SvgPicture.asset(ImagesManager.share),
+                ),
+              ],
+            ),
             context.addVerticalSpace(8),
             Row(
               children: [
                 Image.asset(ImagesManager.locationIcon),
                 context.addHorizontalSpace(4),
-                Text(widget.showroom.showroomLocation ?? '',
-                    style: context.bodyRegular)
+                Text(
+                  widget.showroom.showroomLocation ?? '',
+                  style: context.bodyRegular,
+                ),
               ],
             ),
             context.addVerticalSpace(8),
@@ -58,8 +68,10 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
               children: [
                 Image.asset(ImagesManager.contactIcon),
                 context.addHorizontalSpace(4),
-                Text(widget.showroom.showroomPhone ?? '',
-                    style: context.bodyRegular)
+                Text(
+                  widget.showroom.showroomPhone ?? '',
+                  style: context.bodyRegular,
+                ),
               ],
             ),
             context.addVerticalSpace(24),
@@ -70,18 +82,19 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
               style: context.bodyRegular,
             ),
             context.addVerticalSpace(24),
-            Text('${widget.showroom.showroomName ?? ''} Ads',
-                style: context.bodyBold),
+            Text(
+              '${widget.showroom.showroomName ?? ''} Ads',
+              style: context.bodyBold,
+            ),
             context.addVerticalSpace(8),
             CarAdList(
               showroomID: widget.showroom.showroomID,
               carIDs: widget.showroom.carID,
               physics: const NeverScrollableScrollPhysics(),
-            )
+            ),
           ],
         ).padSymmetric(20),
       ),
     );
   }
 }
-

@@ -1,10 +1,11 @@
-import 'package:car_ads/core/services/fcm_sender_service.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:car_ads/core/app_logger.dart';
+import 'package:car_ads/core/routes/app_router.dart';
+import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
 import 'package:car_ads/features/notifications/logic/provider/notification_provider.dart';
-import 'package:car_ads/core/models/notification_model.dart';
+import 'package:car_ads/features/notifications/model/notification_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -27,11 +28,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: PrimaryAppBar(
-              backIconVisible: true,
-              text: 'Notification',
-
-            ),
+            child: PrimaryAppBar(backIconVisible: true, text: 'Notification'),
           ),
           body: userId == null
               ? const Center(child: Text('User not logged in.'))
@@ -57,51 +54,60 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       separatorBuilder: (context, index) => const Divider(),
                       itemBuilder: (context, index) {
                         final notification = notifications[index];
-                        return Dismissible(
-                          key: Key(notification.id),
-                          direction: DismissDirection.endToStart,
-                          onDismissed: (direction) {
-                            notificationProvider.deleteNotification(notification.id);
+                        return ListTile(
+                          onTap: () {
+                            if (!notification.isRead) {
+                              notificationProvider.markAsRead(notification.id);
+                            }
+
+                            final bookingId =
+                                notification.extraData?['bookingId'];
+                            AppLogger.info(
+                              'Notification tapped: bookingId = $bookingId',
+                            );
+
+                            if (bookingId != null) {
+                              AppRouter.goTo(
+                                screenName: ScreenName.confirmRentScreen,
+                                arguments: {
+                                  'orderId': bookingId,
+                                  'isViewMode': true,
+                                },
+                              );
+                            } else {
+                              AppLogger.warning(
+                                'No bookingId found in notification extraData',
+                              );
+                            }
                           },
-                          background: Container(
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.only(right: 20),
-                            color: Colors.red,
-                            child: const Icon(Icons.delete, color: Colors.white),
+                          title: Text(
+                            notification.title,
+                            style: context.titleBold18,
                           ),
-                          child: ListTile(
-                            onTap: () {
-                              if (!notification.isRead) {
-                                notificationProvider.markAsRead(notification.id);
-                              }
-                            },
-                            title: Text(
-                              notification.title,
-                              style: context.titleBold18,
-                            ),
-                            subtitle: Text(
-                              notification.body,
-                              style: context.bodyRegular,
-                            ),
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  DateFormat('h:mm a').format(notification.time),
-                                  style: context.bodyRegular.copyWith(color: Colors.grey),
+                          subtitle: Text(
+                            notification.body,
+                            style: context.bodyRegular,
+                          ),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                DateFormat('h:mm a').format(notification.time),
+                                style: context.bodyRegular.copyWith(
+                                  color: Colors.grey,
                                 ),
-                                if (!notification.isRead)
-                                  Container(
-                                    height: 10,
-                                    width: 10,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.purple,
-                                      shape: BoxShape.circle,
-                                    ),
+                              ),
+                              if (!notification.isRead)
+                                Container(
+                                  height: 10,
+                                  width: 10,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.purple,
+                                    shape: BoxShape.circle,
                                   ),
-                              ],
-                            ),
+                                ),
+                            ],
                           ),
                         );
                       },

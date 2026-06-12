@@ -51,9 +51,7 @@ class NewEmailScreen extends StatelessWidget {
                 ),
                 Container(
                   padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
+                  decoration: const BoxDecoration(color: Colors.white),
                   child: PrimaryButton(
                     text: 'Reset Your Email',
                     onPressed: provider.isLoading
@@ -65,9 +63,7 @@ class NewEmailScreen extends StatelessWidget {
             ),
           ),
           if (provider.isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
+            const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

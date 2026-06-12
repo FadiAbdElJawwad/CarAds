@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 class CheckoutService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<DocumentReference<Map<String, dynamic>>> submitCheckoutData(Map<String, dynamic> data) async {
+  Future<DocumentReference<Map<String, dynamic>>> submitCheckoutData(
+    Map<String, dynamic> data,
+  ) async {
     return await _firestore.collection('checkout').add(data);
   }
 
@@ -14,7 +16,9 @@ class CheckoutService {
     });
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getCheckoutOrder(String orderId) async {
+  Future<DocumentSnapshot<Map<String, dynamic>>> getCheckoutOrder(
+    String orderId,
+  ) async {
     return await _firestore.collection('checkout').doc(orderId).get();
   }
 

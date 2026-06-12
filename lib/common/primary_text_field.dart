@@ -68,9 +68,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
         if (widget.label != null) ...[
           Text(
             widget.label!,
-            style: context.inputRegular14.copyWith(
-              fontSize: 12,
-            ),
+            style: context.inputRegular14.copyWith(fontSize: 12),
           ),
           context.addVerticalSpace(4),
         ],
@@ -94,36 +92,42 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
             prefixIcon: widget.icon,
             suffixIcon: showVisibilityToggle
                 ? IconButton(
-              onPressed: () => setState(() => _obscureText = !_obscureText),
-              icon: widget.visibilityIcon ??
-                  Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
-            )
+                    onPressed: () =>
+                        setState(() => _obscureText = !_obscureText),
+                    icon:
+                        widget.visibilityIcon ??
+                        Icon(
+                          _obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                  )
                 : widget.suffixIcon,
             enabledBorder: !widget.isBorderVisible
                 ? InputBorder.none
                 : const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
-            ),
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
             focusedBorder: !widget.isBorderVisible
                 ? InputBorder.none
                 : OutlineInputBorder(
-              borderSide: BorderSide(color: ColorManager.primaryColor),
-            ),
+                    borderSide: BorderSide(color: ColorManager.primaryColor),
+                  ),
             errorBorder: !widget.isBorderVisible
                 ? InputBorder.none
                 : OutlineInputBorder(
-              borderSide: BorderSide(color: ColorManager.warningColor),
-            ),
+                    borderSide: BorderSide(color: ColorManager.warningColor),
+                  ),
             focusedErrorBorder: !widget.isBorderVisible
                 ? InputBorder.none
                 : OutlineInputBorder(
-              borderSide: BorderSide(color: ColorManager.warningColor),
-            ),
+                    borderSide: BorderSide(color: ColorManager.warningColor),
+                  ),
             border: !widget.isBorderVisible
                 ? InputBorder.none
                 : const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
-            ),
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
             hintText: widget.hint,
             hintStyle: context.inputRegular14.copyWith(color: Colors.grey),
             filled: widget.isBorderVisible,

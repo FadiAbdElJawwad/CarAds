@@ -25,70 +25,62 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFFF8F8F8),
-        appBar: const PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight + 20),
-          child: PrimaryAppBar(backIconVisible: true, text: 'Change Language'),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  context.addVerticalSpace(20),
-                  Text(
-                    'Select your comfortable language!',
-                    style: context.bodyRegular.copyWith(color: Colors.grey[600]),
-                  ),
-                  RadioGroup<String>(
-                    groupValue: _selectedLanguage,
-                    onChanged: (val) {
-                      if (val != null) setState(() => _selectedLanguage = val);
-                    },
-                    child: Column(
-                      children: [
-                        _buildLanguageOption(
-                          title: 'English',
-                          value: 'en',
-                        ),
-                        const Divider(
-                          color: Colors.grey,
-                        ),
-                        _buildLanguageOption(
-                          title: 'Arabic',
-                          value: 'ar',
-                        ),
-                        const Divider(
-                          color: Colors.grey,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ).padSymmetric(20),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  top: BorderSide(color: Color(0xFFE0E0E0), width: 0.5),
+      backgroundColor: const Color(0xFFF8F8F8),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight + 20),
+        child: PrimaryAppBar(backIconVisible: true, text: 'Change Language'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                context.addVerticalSpace(20),
+                Text(
+                  'Select your comfortable language!',
+                  style: context.bodyRegular.copyWith(color: Colors.grey[600]),
                 ),
+                RadioGroup<String>(
+                  groupValue: _selectedLanguage,
+                  onChanged: (val) {
+                    if (val != null) setState(() => _selectedLanguage = val);
+                  },
+                  child: Column(
+                    children: [
+                      _buildLanguageOption(title: 'English', value: 'en'),
+                      const Divider(color: Colors.grey),
+                      _buildLanguageOption(title: 'Arabic', value: 'ar'),
+                      const Divider(color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ],
+            ).padSymmetric(20),
+          ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(color: Color(0xFFE0E0E0), width: 0.5),
               ),
-              child: PrimaryButton(
-                  text: 'Save Changes',
-                  onPressed: () {
-                    if (_selectedLanguage != null) {
-                      context
-                          .read<LanguageProvider>()
-                          .changeLanguage(_selectedLanguage!);
-                      Navigator.pop(context);
-                    }
-                  }),
             ),
-          ],
-        ));
+            child: PrimaryButton(
+              text: 'Save Changes',
+              onPressed: () {
+                if (_selectedLanguage != null) {
+                  context.read<LanguageProvider>().changeLanguage(
+                    _selectedLanguage!,
+                  );
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildLanguageOption({required String title, required String value}) {
@@ -97,10 +89,7 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
       borderRadius: BorderRadius.circular(12),
       child: Row(
         children: [
-          Radio<String>(
-            value: value,
-            activeColor: Colors.black,
-          ),
+          Radio<String>(value: value, activeColor: Colors.black),
           Text(title, style: context.bodyRegular),
         ],
       ),

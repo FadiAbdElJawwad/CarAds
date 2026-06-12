@@ -24,16 +24,10 @@ class ProfileMenuItem extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       contentPadding: EdgeInsets.zero,
-      leading: Text(
-        title,
-        style: context.bodyRegular.copyWith(color: color),
-      ),
+      leading: Text(title, style: context.bodyRegular.copyWith(color: color)),
       trailing: Card(
         color: ColorManager.backgroundColor,
-        child: Icon(
-          icon,
-          color: color,
-        ).pad(7),
+        child: Icon(icon, color: color).pad(7),
       ),
     );
   }

@@ -41,7 +41,10 @@ class UpdateProfileProvider extends ChangeNotifier {
       imageUrl = await authProvider.uploadProfileImage(_imageFile!);
       if (imageUrl == null) {
         if (context.mounted) {
-          showSnackBar(context, 'Failed to upload profile image. Please try again.');
+          showSnackBar(
+            context,
+            'Failed to upload profile image. Please try again.',
+          );
         }
         return;
       }
@@ -62,7 +65,7 @@ class UpdateProfileProvider extends ChangeNotifier {
           body: 'Your profile information has been updated successfully.',
         );
       }
-      
+
       if (context.mounted) {
         showSnackBar(context, 'Profile updated successfully!');
         Navigator.pop(context);

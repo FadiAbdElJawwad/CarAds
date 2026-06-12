@@ -4,7 +4,7 @@ import 'package:car_ads/core/constant/app_constants.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/features/rental/logic/provider/checkout_provider.dart';
-import 'package:car_ads/core/models/car_card_model.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'package:car_ads/features/home/view/widgets/location_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -32,8 +32,12 @@ class Checkout extends StatelessWidget {
           return Scaffold(
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(
-                  kToolbarHeight + MediaQuery.of(context).padding.top),
-              child: const PrimaryAppBar(backIconVisible: true, text: 'Checkout'),
+                kToolbarHeight + MediaQuery.of(context).padding.top,
+              ),
+              child: const PrimaryAppBar(
+                backIconVisible: true,
+                text: 'Checkout',
+              ),
             ),
             body: Form(
               key: model.formKey,
@@ -42,10 +46,7 @@ class Checkout extends StatelessWidget {
                 children: [
                   Text('Shipping Address', style: context.bodyBold),
                   context.addVerticalSpace(8),
-                  SizedBox(
-                    height: 150,
-                    child: LocationWidget(model: model),
-                  ),
+                  SizedBox(height: 150, child: LocationWidget(model: model)),
                   context.addVerticalSpace(24),
                   CheckoutFormFields(
                     licenseController: model.licenseController,
@@ -86,11 +87,13 @@ class Checkout extends StatelessWidget {
                   ),
                   context.addVerticalSpace(40),
                   PrimaryButton(
-                      text:
-                          model.isLoading ? 'Loading...' : 'Continue to payment',
-                      onPressed: model.isLoading
-                          ? null
-                          : () => model.onContinue(context)),
+                    text: model.isLoading
+                        ? 'Loading...'
+                        : 'Continue to payment',
+                    onPressed: model.isLoading
+                        ? null
+                        : () => model.onContinue(context),
+                  ),
                 ],
               ),
             ),

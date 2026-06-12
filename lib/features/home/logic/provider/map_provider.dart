@@ -19,7 +19,9 @@ class MapProvider with ChangeNotifier {
     try {
       Position position = await _locationService.getCurrentPosition();
       String fetchedAddress = await _locationService.getAddressFromLatLng(
-          position.latitude, position.longitude);
+        position.latitude,
+        position.longitude,
+      );
       _address = fetchedAddress;
       _currentPosition = LatLng(position.latitude, position.longitude);
     } catch (e) {
@@ -34,7 +36,9 @@ class MapProvider with ChangeNotifier {
     notifyListeners();
     try {
       String fetchedAddress = await _locationService.getAddressFromLatLng(
-          position.latitude, position.longitude);
+        position.latitude,
+        position.longitude,
+      );
       _address = fetchedAddress;
       _currentPosition = position;
     } catch (e) {
@@ -55,8 +59,9 @@ class MapProvider with ChangeNotifier {
       );
       Navigator.of(context).pop(result);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Please select a location on the map')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a location on the map')),
+      );
     }
   }
 }

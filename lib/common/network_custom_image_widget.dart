@@ -27,26 +27,26 @@ class NetworkCustomImageWidget extends StatelessWidget {
       width: width,
       child: isSvg
           ? SvgPicture.network(
-        imageUrl,
-        placeholderBuilder: (BuildContext context) => Skeleton(
-          height: context.screenHeight(height),
-          width: width ?? double.infinity,
-        ),
-        height: context.screenHeight(height),
-        fit: fit,
-      ).center()
+              imageUrl,
+              placeholderBuilder: (BuildContext context) => Skeleton(
+                height: context.screenHeight(height),
+                width: width ?? double.infinity,
+              ),
+              height: context.screenHeight(height),
+              fit: fit,
+            ).center()
           : CachedNetworkImage(
-        alignment: Alignment.center,
-        imageUrl: imageUrl,
-        fit: fit,
-        width: double.infinity,
-        placeholder: (context, url) => Skeleton(
-          height: context.screenHeight(height),
-          width: width ?? double.infinity,
-        ),
-        errorWidget: (context, url, error) =>
-        const Icon(Icons.error, size: 50),
-      ).center(),
+              alignment: Alignment.center,
+              imageUrl: imageUrl,
+              fit: fit,
+              width: double.infinity,
+              placeholder: (context, url) => Skeleton(
+                height: context.screenHeight(height),
+                width: width ?? double.infinity,
+              ),
+              errorWidget: (context, url, error) =>
+                  const Icon(Icons.error, size: 50),
+            ).center(),
     );
   }
 }

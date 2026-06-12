@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/car_card_model.dart';
+import '../../model/car_card_model.dart';
 import '../../view/widgets/car_ads_list.dart';
 
 class SuggestedAds extends StatelessWidget {

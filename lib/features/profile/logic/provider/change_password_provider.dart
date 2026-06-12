@@ -64,8 +64,10 @@ class ChangePasswordProvider extends ChangeNotifier {
           _setCurrentPasswordError('Incorrect current password');
           formKey.currentState!.validate();
         } else if (e.code == 'too-many-requests') {
-          showSnackBar(context,
-              'Too many attempts. Please try again later or reset your password.');
+          showSnackBar(
+            context,
+            'Too many attempts. Please try again later or reset your password.',
+          );
         } else {
           showSnackBar(context, e.message ?? 'An error occurred');
         }

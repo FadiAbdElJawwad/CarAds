@@ -3,9 +3,10 @@ import 'package:car_ads/core/constant/app_constants.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
-import 'package:car_ads/core/models/car_card_model.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'package:car_ads/features/rental/model/checkout_order.dart';
 import 'package:car_ads/features/rental/logic/service/checkout_service.dart';
+import 'package:car_ads/core/services/stripe_payment_service.dart';
 import 'package:car_ads/core/services/notification_service.dart';
 import 'package:car_ads/core/services/location_service.dart';
 import 'package:car_ads/features/home/model/map_selection_result.dart';
@@ -52,7 +53,9 @@ class CheckoutProvider with ChangeNotifier {
     try {
       final position = await _locationService.getCurrentPosition();
       final address = await _locationService.getAddressFromLatLng(
-          position.latitude, position.longitude);
+        position.latitude,
+        position.longitude,
+      );
       shippingAddress = address;
       shippingPosition = LatLng(position.latitude, position.longitude);
     } catch (e) {
@@ -117,14 +120,21 @@ class CheckoutProvider with ChangeNotifier {
       final userEmail = authProvider.state.user?.email;
 
       final carPrice = (int.tryParse(car.price ?? '0') ?? 0) * 1000;
-      final totalPayment = carPrice + AppConstants.shippingCost + AppConstants.taxCost;
+      final totalPayment =
+          carPrice + AppConstants.shippingCost + AppConstants.taxCost;
 
       final checkoutData = CheckoutOrder(
         licenseNumber: licenseController.text,
         idNumber: idController.text,
         phoneNumber: phoneController.text,
-        rentalStart: _checkoutService.combineDateAndTime(rentalFromDate!, rentalFromTime),
-        rentalEnd: _checkoutService.combineDateAndTime(rentalUntilDate!, rentalUntilTime),
+        rentalStart: _checkoutService.combineDateAndTime(
+          rentalFromDate!,
+          rentalFromTime,
+        ),
+        rentalEnd: _checkoutService.combineDateAndTime(
+          rentalUntilDate!,
+          rentalUntilTime,
+        ),
         totalPayment: totalPayment,
         currency: AppConstants.currency,
         shippingCost: AppConstants.shippingCost,
@@ -137,21 +147,74 @@ class CheckoutProvider with ChangeNotifier {
         location: shippingAddress,
       );
 
+      // --- START STRIPE PAYMENT FLOW ---
+
+      // Calculate amount in AED (converting to dollars for the demo service if needed,
+      // but usually service takes base currency units).
+      // Assuming makePayment takes dollars as per previous logic.
+      final int amountInDollars = totalPayment ~/ 1000; // Simplified for demo
+
+      AppLogger.info("Initiating Stripe payment for $amountInDollars USD");
+
+      bool isPaymentSuccessful = await StripePaymentService.makePayment(
+        amountInDollars: amountInDollars,
+        currency: AppConstants.currency.toLowerCase(),
+      );
+
+      if (!isPaymentSuccessful) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Payment failed or was cancelled. Please try again.',
+              ),
+            ),
+          );
+        }
+        return;
+      }
+
+      // --- PAYMENT SUCCESSFUL: PERSIST & NOTIFY ---
+
       // 1. Save order to Firestore
-      final orderRef = await _checkoutService.submitCheckoutData(checkoutData.toMap());
+      final orderRef = await _checkoutService.submitCheckoutData(
+        checkoutData.toMap(),
+      );
 
       // 2. Dual Action Notification (Firestore + FCM)
       if (userId != null) {
+        // Notify the User
         await _notificationService.sendNotification(
           userId: userId,
           title: 'Rental Request Received',
-          body: 'Your rental request for ${car.carName} has been successfully submitted.',
+          body:
+              'Your rental request for ${car.carName} has been successfully submitted.',
+          extraData: {'bookingId': orderRef.id, 'type': 'receipt'},
         );
+
+        // Notify the Showroom Owner (Fetch showroom owner ID from car model)
+        if (car.showroomID != null) {
+          await _notificationService.sendNotification(
+            userId: car.showroomID!,
+            title: 'New Rental Request!',
+            body:
+                'A user has requested to rent ${car.carName}. Check your orders.',
+            extraData: {'bookingId': orderRef.id, 'type': 'order_status'},
+          );
+        }
       }
 
-      AppRouter.goTo(screenName: ScreenName.confirmRentScreen, arguments: orderRef.id);
+      AppRouter.goTo(
+        screenName: ScreenName.confirmRentScreen,
+        arguments: orderRef.id,
+      );
     } catch (e) {
-      AppLogger.error("Order submission failed", e);
+      AppLogger.error("Checkout process failed", e);
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('An error occurred: $e')));
+      }
     } finally {
       _isLoading = false;
       notifyListeners();

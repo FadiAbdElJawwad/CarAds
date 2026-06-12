@@ -1,7 +1,7 @@
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/models/car_card_model.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'car_features.dart';
 
 class CarFeaturesCard extends StatelessWidget {
@@ -15,34 +15,13 @@ class CarFeaturesCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CarFeatures(
-              assetName: ImagesManager.fuel,
-              label: car.fuel!,
-            ),
-            const VerticalDivider(
-              color: Colors.grey,
-              thickness: 1,
-            ),
-            CarFeatures(
-              assetName: ImagesManager.seats,
-              label: car.seats!,
-            ),
-            const VerticalDivider(
-              color: Colors.grey,
-              thickness: 1,
-            ),
-             CarFeatures(
-              assetName: ImagesManager.doors,
-              label: car.doors!,
-            ),
-            const VerticalDivider(
-              color: Colors.grey,
-              thickness: 1,
-            ),
-            CarFeatures(
-              assetName: ImagesManager.gear,
-              label: car.gearType!,
-            ),
+            CarFeatures(assetName: ImagesManager.fuel, label: car.fuel!),
+            const VerticalDivider(color: Colors.grey, thickness: 1),
+            CarFeatures(assetName: ImagesManager.seats, label: car.seats!),
+            const VerticalDivider(color: Colors.grey, thickness: 1),
+            CarFeatures(assetName: ImagesManager.doors, label: car.doors!),
+            const VerticalDivider(color: Colors.grey, thickness: 1),
+            CarFeatures(assetName: ImagesManager.gear, label: car.gearType!),
           ],
         ).padVerticalSymmetric(11).padSymmetric(16),
       ),

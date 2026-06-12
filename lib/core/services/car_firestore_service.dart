@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:car_ads/core/app_logger.dart';
-import 'package:car_ads/core/constant/app_constants.dart';
+import 'package:car_ads/core/constant/api_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import '../../features/explore/logic/provider/car_ads_provider.dart';
@@ -29,7 +29,8 @@ class CarFirestoreService {
     }
 
     if (filter != null) {
-      if (filter.brand != 'All' && filter.brand != 'All Cars' &&
+      if (filter.brand != 'All' &&
+          filter.brand != 'All Cars' &&
           carType == null) {
         query = query.where('carName', isEqualTo: filter.brand);
       }
@@ -49,11 +50,12 @@ class CarFirestoreService {
       String fileName = "car_${DateTime.now().millisecondsSinceEpoch}.png";
 
       var response = await http.post(
-        Uri.parse(AppConstants.googleAppsScriptUrl),
+        Uri.parse(ApiConstants.driveUploadUrl),
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "image": base64Image,
           "fileName": fileName,
-          "mimeType": "image/png"
+          "mimeType": "image/png",
         }),
       );
 
@@ -70,9 +72,10 @@ class CarFirestoreService {
           return data['imageUrl'];
         }
       }
+      AppLogger.error('Failed to parse successful response from Drive bridge');
       return null;
     } catch (e) {
-      AppLogger.error('Failed to upload image to Drive', e);
+      AppLogger.error('Drive image upload orchestration error', e);
       return null;
     }
   }

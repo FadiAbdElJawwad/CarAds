@@ -41,7 +41,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         appBar: const PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight + 20),
           child: PrimaryAppBar(
-              backIconVisible: true, text: 'Reset Your Password '),
+            backIconVisible: true,
+            text: 'Reset Your Password ',
+          ),
         ),
         body: Consumer<ChangePasswordProvider>(
           builder: (context, provider, _) {
@@ -53,7 +55,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     children: [
                       Expanded(
                         child: ListView(
-                          
                           children: [
                             context.addVerticalSpace(20),
                             _buildPasswordField(
@@ -72,11 +73,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             _buildPasswordField(
                               controller: provider.newPasswordController,
                               hint: 'New Password',
-                              validator: (value) =>
-                                  value!.validateNewPassword(
-                                    context,
-                                    provider.currentPasswordController.text,
-                                  ),
+                              validator: (value) => value!.validateNewPassword(
+                                context,
+                                provider.currentPasswordController.text,
+                              ),
                             ),
                             context.addVerticalSpace(24),
                             _buildPasswordField(
@@ -93,23 +93,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ),
                       Container(
                         padding: const EdgeInsets.all(24),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-
-                        ),
+                        decoration: const BoxDecoration(color: Colors.white),
                         child: PrimaryButton(
                           text: 'Reset Your Password',
-                          onPressed: provider.isLoading ? null : () =>
-                              provider.handleChangePassword(context),
+                          onPressed: provider.isLoading
+                              ? null
+                              : () => provider.handleChangePassword(context),
                         ),
                       ),
                     ],
                   ),
                 ),
                 if (provider.isLoading)
-                  const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  const Center(child: CircularProgressIndicator()),
               ],
             );
           },

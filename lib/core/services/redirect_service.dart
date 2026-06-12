@@ -9,13 +9,19 @@ class RedirectService {
   final _storage = const FlutterSecureStorage();
 
   Future<bool> _isOnboardingCompleted() async {
-    final onboarding = await _storage.read(key: AppConstants.storageKeyOnboarding);
+    final onboarding = await _storage.read(
+      key: AppConstants.storageKeyOnboarding,
+    );
     return onboarding != null;
   }
 
   Future<bool> _isLoggedIn() async {
     final login = await _storage.read(key: AppConstants.storageKeyLogin);
     return login != null;
+  }
+
+  Future<String?> _getUserRole() async {
+    return await _storage.read(key: AppConstants.storageKeyRole);
   }
 
   Future<String> getInitialScreen() async {
@@ -27,6 +33,11 @@ class RedirectService {
     final isLoggedIn = await _isLoggedIn();
     if (!isLoggedIn) {
       return ScreenName.login;
+    }
+
+    final role = await _getUserRole();
+    if (role == 'showroom') {
+      return ScreenName.showroomMainScreen;
     }
 
     return ScreenName.navButtonBar;

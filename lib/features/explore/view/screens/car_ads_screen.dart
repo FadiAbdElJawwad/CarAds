@@ -38,18 +38,16 @@ class _CarAdsScreenState extends State<CarAdsScreen> {
     final carAdsProvider = context.watch<CarAdsProvider>();
     final isSearching = carAdsProvider.filter.searchQuery.isNotEmpty;
     final currentBrand = carAdsProvider.filter.brand;
-    final selectedIndex = carTypeList.indexWhere((type) =>
-    type.carType == currentBrand);
+    final selectedIndex = carTypeList.indexWhere(
+      (type) => type.carType == currentBrand,
+    );
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         body: Column(
           children: [
-            context.addVerticalSpace(MediaQuery
-                .of(context)
-                .padding
-                .top + 20),
+            context.addVerticalSpace(MediaQuery.of(context).padding.top + 20),
             context.addVerticalSpace(16),
             ExploreSearchHeader(
               controller: _searchController,
@@ -60,12 +58,12 @@ class _CarAdsScreenState extends State<CarAdsScreen> {
               child: isSearching
                   ? const ExploreSearchResults()
                   : ExploreDefaultView(
-                provider: carAdsProvider,
-                searchController: _searchController,
-                focusNode: _focusNode,
-                currentBrand: currentBrand,
-                selectedIndex: selectedIndex,
-              ),
+                      provider: carAdsProvider,
+                      searchController: _searchController,
+                      focusNode: _focusNode,
+                      currentBrand: currentBrand,
+                      selectedIndex: selectedIndex,
+                    ),
             ),
           ],
         ),

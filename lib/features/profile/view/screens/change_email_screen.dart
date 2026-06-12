@@ -63,9 +63,7 @@ class ChangeEmailScreen extends StatelessWidget {
                 ),
                 Container(
                   padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
+                  decoration: const BoxDecoration(color: Colors.white),
                   child: PrimaryButton(
                     text: 'Continue',
                     onPressed: provider.isLoading
@@ -77,9 +75,7 @@ class ChangeEmailScreen extends StatelessWidget {
             ),
           ),
           if (provider.isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
+            const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

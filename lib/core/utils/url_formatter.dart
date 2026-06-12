@@ -1,7 +1,7 @@
 class UrlFormatter {
   static String? getDirectGoogleDriveUrl(String? url) {
     if (url == null || url.isEmpty) return url;
-    
+
     if (!url.contains('drive.google.com')) return url;
 
     try {
@@ -14,7 +14,7 @@ class UrlFormatter {
           }
         }
       }
-      
+
       if (url.contains('?id=')) {
         final parts = url.split('?id=');
         if (parts.length > 1) {
@@ -27,7 +27,7 @@ class UrlFormatter {
     } catch (e) {
       // If parsing fails, return original URL
     }
-    
+
     return url;
   }
 }

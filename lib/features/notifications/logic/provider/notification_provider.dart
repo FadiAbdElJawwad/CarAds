@@ -1,5 +1,5 @@
 import 'package:car_ads/core/services/notification_service.dart';
-import 'package:car_ads/core/models/notification_model.dart';
+import 'package:car_ads/features/notifications/model/notification_model.dart';
 import 'package:flutter/material.dart';
 
 class NotificationProvider extends ChangeNotifier {
@@ -10,7 +10,8 @@ class NotificationProvider extends ChangeNotifier {
 
   Stream<bool> hasUnreadNotificationsStream(String userId) {
     return getNotificationsStream(userId).map(
-      (notifications) => notifications.any((notification) => !notification.isRead),
+      (notifications) =>
+          notifications.any((notification) => !notification.isRead),
     );
   }
 

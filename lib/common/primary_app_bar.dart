@@ -8,7 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../core/constant/images_manager.dart';
 import '../core/routes/app_router.dart';
-import '../core/models/notification_model.dart';
+import '../features/notifications/model/notification_model.dart';
 
 class PrimaryAppBar extends StatelessWidget {
   final bool backIconVisible;
@@ -27,18 +27,16 @@ class PrimaryAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(
-        text,
-        style: context.h1Bold28,
-      ),
+      title: Text(text, style: context.h1Bold28),
       leading: backIconVisible
           ? Card(
-            child: IconButton(
+              child: IconButton(
                 onPressed: () {
                   AppRouter.back();
                 },
-                icon: SvgPicture.asset(ImagesManager.arrowLeft)),
-          )
+                icon: SvgPicture.asset(ImagesManager.arrowLeft),
+              ),
+            )
           : null,
       actions: [
         if (notificationVisible)
@@ -51,7 +49,8 @@ class PrimaryAppBar extends StatelessWidget {
               return StreamBuilder<List<NotificationModel>>(
                 stream: notificationProvider.getNotificationsStream(userId),
                 builder: (context, snapshot) {
-                  final hasUnread = snapshot.data?.any((n) => !n.isRead) ?? false;
+                  final hasUnread =
+                      snapshot.data?.any((n) => !n.isRead) ?? false;
                   return _buildNotificationIcon(hasUnread);
                 },
               );
@@ -83,10 +82,7 @@ class PrimaryAppBar extends StatelessWidget {
                   color: Colors.red,
                   shape: BoxShape.circle,
                 ),
-                constraints: const BoxConstraints(
-                  minWidth: 8,
-                  minHeight: 8,
-                ),
+                constraints: const BoxConstraints(minWidth: 8, minHeight: 8),
               ),
             ),
         ],

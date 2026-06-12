@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-
-class ColorManager{
+class ColorManager {
   static const mainColor = Color(0xff232325);
   static const blackColor = Color(0xff000000);
   static const whiteColor = Color(0xffFFFFFF);
@@ -13,6 +12,4 @@ class ColorManager{
   static const alertColor = Color(0xffe29835);
   static const ratingColor = Color(0xffFCF4EA);
   static const gearTypeColor = Color(0xff636C9E);
-
-
 }

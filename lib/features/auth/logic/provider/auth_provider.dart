@@ -3,17 +3,14 @@ import 'package:car_ads/core/app_logger.dart';
 import 'package:car_ads/core/constant/app_constants.dart';
 import 'package:car_ads/core/services/notification_service.dart';
 import 'package:car_ads/features/auth/model/auth_state.dart';
-import 'package:car_ads/core/models/user_model.dart';
+import 'package:car_ads/features/auth/model/user_model.dart';
 import 'package:car_ads/features/auth/logic/helper/auth_service.dart';
 import 'package:car_ads/core/services/car_firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// [AuthProvider] manages the authentication state and user data operations.
-/// It interacts with [AuthService], [FirebaseFirestore], and [FlutterSecureStorage].
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService;
   final FirebaseFirestore _firestore;
@@ -27,11 +24,11 @@ class AuthProvider extends ChangeNotifier {
     FlutterSecureStorage? storage,
     CarFirestoreService? firestoreService,
     NotificationService? notificationService,
-  })  : _authService = authService ?? AuthService(),
-        _firestore = firestore ?? FirebaseFirestore.instance,
-        _storage = storage ?? const FlutterSecureStorage(),
-        _firestoreService = firestoreService ?? CarFirestoreService(),
-        _notificationService = notificationService ?? NotificationService();
+  }) : _authService = authService ?? AuthService(),
+       _firestore = firestore ?? FirebaseFirestore.instance,
+       _storage = storage ?? const FlutterSecureStorage(),
+       _firestoreService = firestoreService ?? CarFirestoreService(),
+       _notificationService = notificationService ?? NotificationService();
 
   AuthState _state = const AuthState();
 
@@ -48,27 +45,35 @@ class AuthProvider extends ChangeNotifier {
       await operation();
       _setState(_state.copyWith(status: AuthStatus.success));
     } on FirebaseAuthException catch (e) {
-      _setState(_state.copyWith(
-        status: AuthStatus.failure,
-        errorKey: e.code,
-        fallbackMessage: e.message,
-      ));
+      _setState(
+        _state.copyWith(
+          status: AuthStatus.failure,
+          errorKey: e.code,
+          fallbackMessage: e.message,
+        ),
+      );
     } catch (e) {
-      _setState(_state.copyWith(
-        status: AuthStatus.failure,
-        fallbackMessage: e.toString(),
-      ));
+      _setState(
+        _state.copyWith(
+          status: AuthStatus.failure,
+          fallbackMessage: e.toString(),
+        ),
+      );
     }
   }
 
-  Future<void> _storeUserDataLocal(String uid) async {
+  Future<void> _storeUserDataLocal(String uid, {String? role}) async {
     await _storage.write(key: AppConstants.storageKeyUid, value: uid);
     await _storage.write(key: AppConstants.storageKeyLogin, value: 'true');
+    if (role != null) {
+      await _storage.write(key: AppConstants.storageKeyRole, value: role);
+    }
   }
 
   Future<void> _clearUserDataLocal() async {
     await _storage.delete(key: AppConstants.storageKeyUid);
     await _storage.delete(key: AppConstants.storageKeyLogin);
+    await _storage.delete(key: AppConstants.storageKeyRole);
   }
 
   Future<void> signUpUser({
@@ -76,6 +81,7 @@ class AuthProvider extends ChangeNotifier {
     required String email,
     required String password,
     required String phone,
+    required String role,
   }) async {
     await _handleAuthOperation(() async {
       final userCredential = await _authService.signUpUser(
@@ -86,15 +92,27 @@ class AuthProvider extends ChangeNotifier {
       );
       final user = userCredential.user;
       if (user != null) {
-        final fcmToken = await FirebaseMessaging.instance.getToken();
-        await _firestore.collection(AppConstants.usersCollection).doc(user.uid).set({
+        final userData = {
           'name': name,
           'email': email,
           'uid': user.uid,
           'phone': phone,
-          'fcmToken': fcmToken,
-        });
-        await _storeUserDataLocal(user.uid);
+          'role': role,
+        };
+
+        if (role == 'showroom') {
+          userData['showroomName'] =
+              name; // Auto-fill showroomName with user's name
+          userData['commercialRegister'] = '';
+        }
+
+        await _firestore
+            .collection(AppConstants.usersCollection)
+            .doc(user.uid)
+            .set(userData);
+        await _storeUserDataLocal(user.uid, role: role);
+        // Explicitly update FCM token immediately after UID is saved locally
+        await _notificationService.updateFcmTokenForUser(user.uid);
         await fetchUserData();
         await _notificationService.sendNotification(
           userId: user.uid,
@@ -110,11 +128,22 @@ class AuthProvider extends ChangeNotifier {
     required String password,
   }) async {
     await _handleAuthOperation(() async {
-      final userCredential =
-          await _authService.loginUser(email: email, password: password);
+      final userCredential = await _authService.loginUser(
+        email: email,
+        password: password,
+      );
       final user = userCredential.user;
       if (user != null) {
-        await _storeUserDataLocal(user.uid);
+        // Fetch role from Firestore
+        final doc = await _firestore
+            .collection(AppConstants.usersCollection)
+            .doc(user.uid)
+            .get();
+        final role = doc.data()?['role'] as String? ?? 'user';
+
+        await _storeUserDataLocal(user.uid, role: role);
+        // Explicitly update FCM token immediately after UID is saved locally
+        await _notificationService.updateFcmTokenForUser(user.uid);
         await fetchUserData();
         await _notificationService.sendNotification(
           userId: user.uid,
@@ -142,7 +171,10 @@ class AuthProvider extends ChangeNotifier {
   Future<void> fetchUserData() async {
     final uid = await _storage.read(key: AppConstants.storageKeyUid);
     if (uid != null) {
-      final doc = await _firestore.collection(AppConstants.usersCollection).doc(uid).get();
+      final doc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(uid)
+          .get();
       if (doc.exists) {
         _setState(_state.copyWith(user: UserModel.fromFirestore(doc)));
       }
@@ -163,7 +195,10 @@ class AuthProvider extends ChangeNotifier {
         if (profileImage != null) updateData['profileImage'] = profileImage;
 
         if (updateData.isNotEmpty) {
-          await _firestore.collection(AppConstants.usersCollection).doc(uid).update(updateData);
+          await _firestore
+              .collection(AppConstants.usersCollection)
+              .doc(uid)
+              .update(updateData);
           await fetchUserData();
         }
       }
@@ -179,10 +214,12 @@ class AuthProvider extends ChangeNotifier {
         return;
       }
 
-      AppLogger.info("Starting profile image upload to Drive via Apps Script...");
+      AppLogger.info(
+        "Starting profile image upload to Drive via Apps Script...",
+      );
 
       driveImageUrl = await _firestoreService.uploadImageToDrive(imageFile);
-      
+
       if (driveImageUrl != null) {
         AppLogger.info("Profile image upload successful. URL: $driveImageUrl");
       } else {
@@ -204,10 +241,12 @@ class AuthProvider extends ChangeNotifier {
         _setState(_state.copyWith(status: AuthStatus.initial));
       }
     } catch (e) {
-      _setState(_state.copyWith(
-        status: AuthStatus.failure,
-        fallbackMessage: e.toString(),
-      ));
+      _setState(
+        _state.copyWith(
+          status: AuthStatus.failure,
+          fallbackMessage: e.toString(),
+        ),
+      );
     }
   }
 
@@ -215,7 +254,10 @@ class AuthProvider extends ChangeNotifier {
     await _handleAuthOperation(() async {
       final uid = await _storage.read(key: AppConstants.storageKeyUid);
       if (uid != null) {
-        await _firestore.collection(AppConstants.usersCollection).doc(uid).update({'email': newEmail});
+        await _firestore
+            .collection(AppConstants.usersCollection)
+            .doc(uid)
+            .update({'email': newEmail});
         await fetchUserData();
       }
     });

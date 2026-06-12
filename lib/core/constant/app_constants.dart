@@ -3,9 +3,6 @@ class AppConstants {
   static const int taxCost = 1000;
   static const String currency = 'AED';
 
-  // Google Drive Upload
-  static const String googleAppsScriptUrl = "https://script.google.com/macros/s/AKfycbxLoVibqfBooQY4b64HXJ7HJcKzSlAlJSzwoDMN34YlEgodg6N8NeQNzKFe-amvt2nO9Q/exec";
-
   // Firestore Collections
   static const String usersCollection = 'users';
   static const String carsCollection = 'cars';
@@ -16,5 +13,5 @@ class AppConstants {
   static const String storageKeyOnboarding = 'onboarding';
   static const String storageKeyName = 'name';
   static const String storageKeyOnboardingCompleted = 'onboarding_completed';
-
+  static const String storageKeyRole = 'role';
 }

@@ -15,24 +15,26 @@ class RentalCompletedScreen extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: Card(
         child: PrimaryButton(
-            text: 'Go to home',
-            onPressed: () {
-              AppRouter.goToAndRemove(
-                  screenName: ScreenName.navButtonBar,);
-            })
-            .padSymmetric(20)
-            .padVerticalSymmetric(17),
+          text: 'Go to home',
+          onPressed: () {
+            AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+          },
+        ).padSymmetric(20).padVerticalSymmetric(17),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(ImagesManager.rentalCompletedImage,height: 200,),
-            context.addVerticalSpace(40),
-            Text('Rental Completed',style: context.h2Bold22,),
-            context.addVerticalSpace(16),
-            Text('Your car rental request has been received, and we will get back to you as soon as we can. Please keep an eye out for notifications to stay updated.',style: context.bodyRegular, textAlign: TextAlign.center,)
-          ],
+        children: [
+          Image.asset(ImagesManager.rentalCompletedImage, height: 200),
+          context.addVerticalSpace(40),
+          Text('Rental Completed', style: context.h2Bold22),
+          context.addVerticalSpace(16),
+          Text(
+            'Your car rental request has been received, and we will get back to you as soon as we can. Please keep an eye out for notifications to stay updated.',
+            style: context.bodyRegular,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ).padSymmetric(20),
     );
   }

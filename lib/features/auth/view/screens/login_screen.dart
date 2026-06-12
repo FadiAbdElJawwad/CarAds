@@ -13,9 +13,9 @@ import '../../../../common/show_snack_bar.dart';
 import '../../logic/helper/auth_error_messages.dart';
 import '../../logic/provider/auth_provider.dart';
 
-
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final String? role;
+  const LoginScreen({super.key, this.role});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -35,19 +35,23 @@ class _LoginScreenState extends State<LoginScreen> {
     authProvider.addListener(loginListener);
   }
 
-
   void loginListener() {
     if (!mounted) return;
     final state = authProvider.state;
     if (state.isSuccess) {
-      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+      if (state.user?.role == 'showroom') {
+        AppRouter.goToAndRemove(screenName: ScreenName.showroomMainScreen);
+      } else {
+        AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+      }
     } else if (state.isFailure) {
       final errorMessage = AuthErrorMessages.getErrorMessage(
-          context, state.errorKey ?? '');
+        context,
+        state.errorKey ?? '',
+      );
       showSnackBar(context, errorMessage);
     }
   }
-
 
   Future<void> _handleLogin() async {
     if (!formState.currentState!.validate()) return;
@@ -71,101 +75,99 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
-        builder: (context, authProvider, child) {
-          return ModalProgressHUD(
-            inAsyncCall: authProvider.state.isLoading,
-            child: Scaffold(
-                body: Form(
-                  key: formState,
-                  child: ListView(
+      builder: (context, authProvider, child) {
+        return ModalProgressHUD(
+          inAsyncCall: authProvider.state.isLoading,
+          child: Scaffold(
+            body: Form(
+              key: formState,
+              child: ListView(
+                children: [
+                  context.addVerticalSpace(60),
+                  Image.asset(ImagesManager.registration),
+                  context.addVerticalSpace(16),
+                  Text(
+                    context.loc.loginTitle,
+                    textAlign: TextAlign.center,
+                    style: context.titleBold18,
+                  ),
+                  context.addVerticalSpace(4),
+                  Text(
+                    context.loc.loginBody,
+                    textAlign: TextAlign.center,
+                    style: context.bodyRegular,
+                  ),
+                  context.addVerticalSpace(32),
+                  PrimaryTextField(
+                    controller: emailController,
+                    validator: (value) {
+                      return value!.validateEmail(context);
+                    },
+                    hint: context.loc.email,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  context.addVerticalSpace(16),
+                  PrimaryTextField(
+                    controller: passwordController,
+                    validator: (value) {
+                      return value!.validatePassword(context);
+                    },
+                    hint: context.loc.password,
+                    obscureText: true,
+                    keyboardType: TextInputType.visiblePassword,
+                  ),
+                  context.addVerticalSpace(8),
+                  Row(
                     children: [
-                      context.addVerticalSpace(60),
-                      Image.asset(ImagesManager.registration),
-                      context.addVerticalSpace(16),
-                      Text(
-                          context.loc
-                              .loginTitle,
-                          textAlign: TextAlign.center,
-                          style: context.titleBold18
-                      ),
-                      context.addVerticalSpace(4),
-                      Text(
-                          context.loc
-                              .loginBody,
-                          textAlign: TextAlign.center,
-                          style: context.bodyRegular
-                      ),
-                      context.addVerticalSpace(32),
-                      PrimaryTextField(
-                        controller: emailController,
-                        validator: (value) {
-                          return value!.validateEmail(context);
+                      TextButton(
+                        onPressed: () {
+                          AppRouter.goTo(screenName: ScreenName.resetPassword);
                         },
-                        hint: context.loc
-                            .email,
-                        keyboardType: TextInputType.emailAddress,
+                        child: Text(
+                          context.loc.forgotPassword,
+                          style: context.inputRegular14.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
                       ),
-                      context.addVerticalSpace(16),
-                      PrimaryTextField(
-                        controller: passwordController,
-                        validator: (value) {
-                          return value!.validatePassword(context);
-                        },
-                        hint: context.loc
-                            .password,
-                        obscureText: true,
-                        keyboardType: TextInputType.visiblePassword,
-                      ),
-                      context.addVerticalSpace(8),
-                      Row(
-                        children: [
-                          TextButton(
-                              onPressed: () {
-                                AppRouter.goTo(
-                                    screenName: ScreenName.resetPassword);
-                              },
-                              child: Text(
-                                  context.loc
-                                      .forgotPassword,
-                                  style: context.inputRegular14.copyWith(
-                                      color: Colors.grey)
-                              )),
-                        ],
-                      ),
-                      context.addVerticalSpace(24),
-
-                      PrimaryButton(
-                          text: context.loc
-                              .login,
-                          onPressed: _handleLogin
-                      ),
-                      context.addVerticalSpace(32),
-
-                      Row(mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                                context.loc
-                                    .dontHaveAccount,
-                                style: context.bodyRegular.copyWith(
-                                    color: Colors.grey)),
-
-                            TextButton(
-                                onPressed: () {
-                                  AppRouter.goTo(
-                                      screenName: ScreenName
-                                          .signUpScreen);
-                                },
-                                child: Text(
-                                  context.loc
-                                      .signUp,
-                                  style: context.bodyRegular,
-                                )),
-                          ]),
                     ],
                   ),
-                ).padSymmetric(20)
-            ),
-          );
-        });
+                  context.addVerticalSpace(24),
+
+                  PrimaryButton(
+                    text: context.loc.login,
+                    onPressed: _handleLogin,
+                  ),
+                  context.addVerticalSpace(32),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        context.loc.dontHaveAccount,
+                        style: context.bodyRegular.copyWith(color: Colors.grey),
+                      ),
+
+                      TextButton(
+                        onPressed: () {
+                          AppRouter.goTo(
+                            screenName: ScreenName.signUpScreen,
+                            arguments: widget.role,
+                          );
+                        },
+                        child: Text(
+                          context.loc.signUp,
+                          style: context.bodyRegular,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ).padSymmetric(20),
+          ),
+        );
+      },
+    );
   }
 }

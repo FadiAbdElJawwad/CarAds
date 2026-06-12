@@ -44,12 +44,12 @@ class ExploreSearchHeader extends StatelessWidget {
               },
               suffixIcon: controller.text.isNotEmpty
                   ? IconButton(
-                icon: const Icon(Icons.cancel, color: Colors.grey),
-                onPressed: () {
-                  controller.clear();
-                  provider.setSearchQuery('');
-                },
-              )
+                      icon: const Icon(Icons.cancel, color: Colors.grey),
+                      onPressed: () {
+                        controller.clear();
+                        provider.setSearchQuery('');
+                      },
+                    )
                   : null,
             ),
           ),

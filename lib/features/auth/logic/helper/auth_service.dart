@@ -2,8 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  Future<UserCredential> loginUser({required String email, required String password}) async {
-    return await _auth.signInWithEmailAndPassword(email: email.trim(), password: password);
+  Future<UserCredential> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    return await _auth.signInWithEmailAndPassword(
+      email: email.trim(),
+      password: password,
+    );
   }
 
   Future<UserCredential> signUpUser({
@@ -28,16 +34,25 @@ class AuthService {
     await _auth.sendPasswordResetEmail(email: email.trim());
   }
 
-  Future<void> updatePassword({required String currentPassword, required String newPassword}) async {
+  Future<void> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
     User? user = _auth.currentUser;
     if (user?.email == null) throw Exception("User not authenticated");
-    
-    AuthCredential credential = EmailAuthProvider.credential(email: user!.email!, password: currentPassword);
+
+    AuthCredential credential = EmailAuthProvider.credential(
+      email: user!.email!,
+      password: currentPassword,
+    );
     await user.reauthenticateWithCredential(credential);
     await user.updatePassword(newPassword);
   }
 
-  Future<void> updateEmail({required String currentPassword, required String newEmail}) async {
+  Future<void> updateEmail({
+    required String currentPassword,
+    required String newEmail,
+  }) async {
     User? user = _auth.currentUser;
     if (user == null || user.email == null) {
       throw FirebaseAuthException(

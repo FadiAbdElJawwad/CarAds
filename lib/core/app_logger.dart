@@ -21,7 +21,12 @@ class AppLogger {
     _log('ERROR', message, error, stackTrace);
   }
 
-  static void _log(String level, String message, [Object? error, StackTrace? stackTrace]) {
+  static void _log(
+    String level,
+    String message, [
+    Object? error,
+    StackTrace? stackTrace,
+  ]) {
     final logMessage = '[$level] ${DateTime.now()}: $message';
     debugPrint(logMessage);
     if (error != null) {

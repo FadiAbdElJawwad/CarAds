@@ -35,9 +35,7 @@ class NavButtonItem extends StatelessWidget {
               child: Container(
                 height: 3,
                 width: double.maxFinite,
-                decoration: BoxDecoration(
-                  color: ColorManager.mainColor,
-                ),
+                decoration: BoxDecoration(color: ColorManager.mainColor),
               ),
             ),
             Column(
@@ -53,12 +51,13 @@ class NavButtonItem extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight
-                        .normal,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
-                )
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),

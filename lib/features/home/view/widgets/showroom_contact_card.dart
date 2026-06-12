@@ -9,18 +9,14 @@ import '../../../../core/routes/screen_name.dart';
 import '../../../../common/car_image_extractor.dart';
 import '../../../../core/services/url_launcher_service.dart';
 import '../../logic/service/showroom_firestore_service.dart';
-import '../../../../core/models/car_card_model.dart';
-import '../../../../core/models/showroom_model.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
+import '../../model/showroom_model.dart';
 
 class ShowroomContactCard extends StatelessWidget {
   final String? showroomID;
   final CarCardModel? car;
 
-  const ShowroomContactCard({
-    super.key,
-    this.showroomID,
-    this.car,
-  });
+  const ShowroomContactCard({super.key, this.showroomID, this.car});
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +40,9 @@ class ShowroomContactCard extends StatelessWidget {
           return const SizedBox.shrink();
         }
         final showroomDoc = snapshot.data!.docs.first;
-        final showroom =
-            ShowroomModel.fromMap(showroomDoc.data() as Map<String, dynamic>);
+        final showroom = ShowroomModel.fromMap(
+          showroomDoc.data() as Map<String, dynamic>,
+        );
 
         return InkWell(
           onTap: () {
@@ -55,36 +52,38 @@ class ShowroomContactCard extends StatelessWidget {
             );
           },
           child: Card(
-              child: ListTile(
-            leading: SizedBox(
+            child: ListTile(
+              leading: SizedBox(
                 height: 50,
                 width: 50,
-                child: CarImageExtractor.buildImage(
-                  showroom.showroomImage,
-                )),
-            title: Text(
-              showroom.showroomName ?? 'N/A',
-              style: context.bodyBold,
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () => UrlLauncherService.launchWhatsApp(
-                      context, showroom.showroomPhone ?? ''),
-                  icon: Image.asset(
-                    ImagesManager.whatsappIcon,
+                child: CarImageExtractor.buildImage(showroom.showroomImage),
+              ),
+              title: Text(
+                showroom.showroomName ?? 'N/A',
+                style: context.bodyBold,
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => UrlLauncherService.launchWhatsApp(
+                      context,
+                      showroom.showroomPhone ?? '',
+                    ),
+                    icon: Image.asset(ImagesManager.whatsappIcon),
                   ),
-                ),
-                IconButton(
-                  onPressed: () => UrlLauncherService.launchCall(
-                      context, showroom.showroomPhone ?? ''),
-                  icon: Image.asset(ImagesManager.callIcon),
-                ),
-              ],
+                  IconButton(
+                    onPressed: () => UrlLauncherService.launchCall(
+                      context,
+                      showroom.showroomPhone ?? '',
+                    ),
+                    icon: Image.asset(ImagesManager.callIcon),
+                  ),
+                ],
+              ),
             ),
-          )),
+          ),
         );
       },
     );
@@ -92,34 +91,37 @@ class ShowroomContactCard extends StatelessWidget {
 
   Widget _buildIndividualSellerCard(BuildContext context) {
     return Card(
-        child: ListTile(
-      leading: Card(
-        color: const Color(0xFFF8F8F8),
-        child: const Icon(Icons.person, size: 30).pad(10),
-      ),
-      title: Text(
-        car?.contactName ?? 'Individual Seller',
-        style: context.bodyBold,
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: () => UrlLauncherService.launchWhatsApp(
-                context, car?.contactPhone ?? ''),
-            icon: Image.asset(
-              ImagesManager.whatsappIcon,
+      child: ListTile(
+        leading: Card(
+          color: const Color(0xFFF8F8F8),
+          child: const Icon(Icons.person, size: 30).pad(10),
+        ),
+        title: Text(
+          car?.contactName ?? 'Individual Seller',
+          style: context.bodyBold,
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () => UrlLauncherService.launchWhatsApp(
+                context,
+                car?.contactPhone ?? '',
+              ),
+              icon: Image.asset(ImagesManager.whatsappIcon),
             ),
-          ),
-          IconButton(
-            onPressed: () =>
-                UrlLauncherService.launchCall(context, car?.contactPhone ?? ''),
-            icon: Image.asset(ImagesManager.callIcon),
-          ),
-        ],
+            IconButton(
+              onPressed: () => UrlLauncherService.launchCall(
+                context,
+                car?.contactPhone ?? '',
+              ),
+              icon: Image.asset(ImagesManager.callIcon),
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
 

@@ -17,61 +17,67 @@ class AddAdsCarInfo extends StatelessWidget {
       children: [
         Text('Car Information', style: context.inputRegular14),
         context.addVerticalSpace(16),
-        Row(children: [
-          Expanded(
-            child: PrimaryTextField(
-              controller: provider.brandController,
-              hint: 'Car Brand',
-              validator: (val) => val!.validateGeneric('Brand'),
+        Row(
+          children: [
+            Expanded(
+              child: PrimaryTextField(
+                controller: provider.brandController,
+                hint: 'Car Brand',
+                validator: (val) => val!.validateGeneric('Brand'),
+              ),
             ),
-          ),
-          context.addHorizontalSpace(16),
-          Expanded(
-            child: PrimaryTextField(
-              controller: provider.yearController,
-              hint: 'Year',
-              keyboardType: TextInputType.number,
-              validator: (val) => val!.validateGeneric('Year'),
+            context.addHorizontalSpace(16),
+            Expanded(
+              child: PrimaryTextField(
+                controller: provider.yearController,
+                hint: 'Year',
+                keyboardType: TextInputType.number,
+                validator: (val) => val!.validateGeneric('Year'),
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         context.addVerticalSpace(8),
-        Row(children: [
-          Expanded(
-            child: PrimaryTextField(
-              controller: provider.mileageController,
-              hint: 'Mileage',
-              keyboardType: TextInputType.number,
-              validator: (val) => val!.validateGeneric('Mileage'),
+        Row(
+          children: [
+            Expanded(
+              child: PrimaryTextField(
+                controller: provider.mileageController,
+                hint: 'Mileage',
+                keyboardType: TextInputType.number,
+                validator: (val) => val!.validateGeneric('Mileage'),
+              ),
             ),
-          ),
-          context.addHorizontalSpace(16),
-          Expanded(
-            child: PrimaryTextField(
-              controller: provider.conditionController,
-              hint: 'Condition',
-              validator: (val) => val!.validateGeneric('Condition'),
+            context.addHorizontalSpace(16),
+            Expanded(
+              child: PrimaryTextField(
+                controller: provider.conditionController,
+                hint: 'Condition',
+                validator: (val) => val!.validateGeneric('Condition'),
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         context.addVerticalSpace(8),
-        Row(children: [
-          Expanded(
-            child: PrimaryTextField(
-              controller: provider.tankSizeController,
-              hint: 'Tank Size',
-              validator: (val) => val!.validateGeneric('Tank Size'),
+        Row(
+          children: [
+            Expanded(
+              child: PrimaryTextField(
+                controller: provider.tankSizeController,
+                hint: 'Tank Size',
+                validator: (val) => val!.validateGeneric('Tank Size'),
+              ),
             ),
-          ),
-          context.addHorizontalSpace(16),
-          Expanded(
-            child: PrimaryTextField(
-              controller: provider.gearBoxController,
-              hint: 'Gear box',
-              validator: (val) => val!.validateGeneric('Gear box'),
+            context.addHorizontalSpace(16),
+            Expanded(
+              child: PrimaryTextField(
+                controller: provider.gearBoxController,
+                hint: 'Gear box',
+                validator: (val) => val!.validateGeneric('Gear box'),
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ],
     );
   }

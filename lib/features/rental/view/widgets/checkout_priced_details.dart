@@ -21,7 +21,12 @@ class CheckoutPriceDetails extends StatelessWidget {
     required this.currency,
   });
 
-  Widget _buildPriceRow(BuildContext context, String label, int amount, {bool isTotal = false}) {
+  Widget _buildPriceRow(
+    BuildContext context,
+    String label,
+    int amount, {
+    bool isTotal = false,
+  }) {
     final color = isTotal ? null : Colors.grey;
     return ListTile(
       title: Text(label, style: context.bodyRegular),
@@ -47,7 +52,12 @@ class CheckoutPriceDetails extends StatelessWidget {
               _buildPriceRow(context, 'Shipping', shippingCost),
               _buildPriceRow(context, 'Tax', taxCost),
               const Divider(color: Colors.grey).padSymmetric(20),
-              _buildPriceRow(context, 'Total payment', totalPayment, isTotal: true),
+              _buildPriceRow(
+                context,
+                'Total payment',
+                totalPayment,
+                isTotal: true,
+              ),
             ],
           ),
         ),

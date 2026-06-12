@@ -25,10 +25,7 @@ class UpdateProfileImageSection extends StatelessWidget {
       child: Card(
         child: Column(
           children: [
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: _buildImage(),
-            ),
+            Card(clipBehavior: Clip.antiAlias, child: _buildImage()),
             TextButton(
               onPressed: onPickImage,
               child: Text(
@@ -37,7 +34,7 @@ class UpdateProfileImageSection extends StatelessWidget {
                   color: ColorManager.infoColor,
                 ),
               ),
-            )
+            ),
           ],
         ).padVerticalSymmetric(16),
       ),
@@ -46,12 +43,7 @@ class UpdateProfileImageSection extends StatelessWidget {
 
   Widget _buildImage() {
     if (imageFile != null) {
-      return Image.file(
-        imageFile!,
-        width: 100,
-        height: 100,
-        fit: BoxFit.cover,
-      );
+      return Image.file(imageFile!, width: 100, height: 100, fit: BoxFit.cover);
     } else if (profileImageUrl != null && profileImageUrl!.isNotEmpty) {
       return NetworkCustomImageWidget(
         imageUrl: profileImageUrl!,

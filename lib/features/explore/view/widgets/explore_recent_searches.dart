@@ -26,31 +26,36 @@ class ExploreRecentSearches extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Recent',
-                  style: context.titleBold18.copyWith(fontSize: 16)),
+              Text('Recent', style: context.titleBold18.copyWith(fontSize: 16)),
               TextButton(
                 onPressed: () => provider.clearRecentSearches(),
                 child: const Text(
-                    'Clear All', style: TextStyle(color: Colors.black)),
+                  'Clear All',
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
             ],
           ),
         ),
-        ...provider.recentSearches.map((query) =>
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-              title: Text(query, style: const TextStyle(color: Colors.grey)),
-              trailing: IconButton(
-                icon: const Icon(
-                    Icons.cancel_outlined, color: Colors.grey, size: 20),
-                onPressed: () => provider.removeRecentSearch(query),
+        ...provider.recentSearches.map(
+          (query) => ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            title: Text(query, style: const TextStyle(color: Colors.grey)),
+            trailing: IconButton(
+              icon: const Icon(
+                Icons.cancel_outlined,
+                color: Colors.grey,
+                size: 20,
               ),
-              onTap: () {
-                searchController.text = query;
-                provider.setSearchQuery(query);
-                focusNode.unfocus();
-              },
-            )),
+              onPressed: () => provider.removeRecentSearch(query),
+            ),
+            onTap: () {
+              searchController.text = query;
+              provider.setSearchQuery(query);
+              focusNode.unfocus();
+            },
+          ),
+        ),
       ],
     );
   }

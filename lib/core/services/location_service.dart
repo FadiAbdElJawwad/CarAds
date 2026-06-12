@@ -21,7 +21,8 @@ class LocationService {
 
     if (permission == LocationPermission.deniedForever) {
       throw Exception(
-          'Location permissions are permanently denied, we cannot request permissions.');
+        'Location permissions are permanently denied, we cannot request permissions.',
+      );
     }
     return await Geolocator.getCurrentPosition();
   }

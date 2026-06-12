@@ -27,7 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
-            kToolbarHeight + (MediaQuery.of(context).padding.top)),
+          kToolbarHeight + (MediaQuery.of(context).padding.top),
+        ),
         child: Consumer<AuthProvider>(
           builder: (context, authProvider, child) {
             final user = authProvider.state.user;

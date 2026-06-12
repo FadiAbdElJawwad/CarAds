@@ -20,7 +20,9 @@ class _FilterYearSectionState extends State<FilterYearSection> {
   void initState() {
     super.initState();
     final filter = context.read<CarAdsProvider>().tempFilter;
-    _startController = TextEditingController(text: filter.startYear?.toString());
+    _startController = TextEditingController(
+      text: filter.startYear?.toString(),
+    );
     _endController = TextEditingController(text: filter.endYear?.toString());
   }
 
@@ -40,8 +42,10 @@ class _FilterYearSectionState extends State<FilterYearSection> {
       children: [
         Text('Year', style: context.titleBold18),
         context.addVerticalSpace(8),
-        Text('Select Year Range:',
-            style: context.bodyRegular.copyWith(color: Colors.grey)),
+        Text(
+          'Select Year Range:',
+          style: context.bodyRegular.copyWith(color: Colors.grey),
+        ),
         context.addVerticalSpace(12),
         Row(
           children: [
@@ -51,7 +55,10 @@ class _FilterYearSectionState extends State<FilterYearSection> {
                 hint: 'Start Year',
                 keyboardType: TextInputType.number,
                 onChanged: (val) {
-                  provider.setYear(int.tryParse(val), int.tryParse(_endController.text));
+                  provider.setYear(
+                    int.tryParse(val),
+                    int.tryParse(_endController.text),
+                  );
                   return;
                 },
               ),
@@ -63,7 +70,10 @@ class _FilterYearSectionState extends State<FilterYearSection> {
                 hint: 'End Year',
                 keyboardType: TextInputType.number,
                 onChanged: (val) {
-                  provider.setYear(int.tryParse(_startController.text), int.tryParse(val));
+                  provider.setYear(
+                    int.tryParse(_startController.text),
+                    int.tryParse(val),
+                  );
                   return;
                 },
               ),

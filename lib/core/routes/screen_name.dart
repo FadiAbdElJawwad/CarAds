@@ -1,4 +1,4 @@
-class ScreenName{
+class ScreenName {
   static const String splash = 'splash';
   static const String onbording = 'onbording';
   static const String login = 'login';
@@ -27,4 +27,6 @@ class ScreenName{
   static const String notificationScreen = 'notificationScreen';
   static const String changePhoneScreen = 'changePhoneScreen';
   static const String verifyPhoneOtpScreen = 'verifyPhoneOtpScreen';
+  static const String showroomMainScreen = 'showroomMainScreen';
+  static const String bookingDetailsScreen = 'bookingDetailsScreen';
 }

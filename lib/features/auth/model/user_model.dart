@@ -7,6 +7,9 @@ class UserModel {
   final String? phone;
   final String? profileImage;
   final String? fcmToken;
+  final String? role;
+  final String? showroomName;
+  final String? commercialRegister;
 
   UserModel({
     required this.uid,
@@ -15,6 +18,9 @@ class UserModel {
     this.phone,
     this.profileImage,
     this.fcmToken,
+    this.role,
+    this.showroomName,
+    this.commercialRegister,
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
@@ -26,6 +32,9 @@ class UserModel {
       phone: data['phone'],
       profileImage: data['profileImage'],
       fcmToken: data['fcmToken'],
+      role: data['role'],
+      showroomName: data['showroomName'],
+      commercialRegister: data['commercialRegister'],
     );
   }
 
@@ -37,6 +46,9 @@ class UserModel {
       'phone': phone,
       'profileImage': profileImage,
       'fcmToken': fcmToken,
+      'role': role,
+      'showroomName': showroomName,
+      'commercialRegister': commercialRegister,
     };
   }
 }

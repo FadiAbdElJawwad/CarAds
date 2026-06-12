@@ -1,4 +1,4 @@
-import 'package:car_ads/core/models/car_card_model.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'package:car_ads/features/explore/logic/helper/car_filter_helper.dart';
 import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,7 +51,10 @@ void main() {
     test('should filter by search query (name)', () {
       final filter = FilterModel(
         searchQuery: 'Audi',
-        priceRange: const RangeValues(0, 200000), // Ensure price doesn't filter it out
+        priceRange: const RangeValues(
+          0,
+          200000,
+        ), // Ensure price doesn't filter it out
       );
       final result = CarFilterHelper.filterCars(docs: mockDocs, filter: filter);
 
@@ -60,9 +63,7 @@ void main() {
     });
 
     test('should filter by price range', () {
-      final filter = FilterModel(
-        priceRange: const RangeValues(30000, 60000),
-      );
+      final filter = FilterModel(priceRange: const RangeValues(30000, 60000));
       final result = CarFilterHelper.filterCars(docs: mockDocs, filter: filter);
 
       expect(result.length, 2);
@@ -96,10 +97,12 @@ void main() {
     });
 
     test('should exclude specific carID', () {
-      final filter = FilterModel(
-        priceRange: const RangeValues(0, 200000),
+      final filter = FilterModel(priceRange: const RangeValues(0, 200000));
+      final result = CarFilterHelper.filterCars(
+        docs: mockDocs,
+        filter: filter,
+        carID: '1',
       );
-      final result = CarFilterHelper.filterCars(docs: mockDocs, filter: filter, carID: '1');
 
       expect(result.length, 2);
       expect(result.any((c) => c.carID == '1'), false);

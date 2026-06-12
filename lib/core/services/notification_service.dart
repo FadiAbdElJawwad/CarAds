@@ -1,5 +1,8 @@
+import 'package:car_ads/core/routes/app_router.dart';
+import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/core/services/fcm_sender_service.dart';
-import 'package:car_ads/core/models/notification_model.dart';
+import 'package:car_ads/features/notifications/model/notification_model.dart';
+import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -7,23 +10,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../app_logger.dart';
 
-/// Top-level background message handler for Firebase Cloud Messaging.
-/// This must be a top-level function and annotated with @pragma('vm:entry-point').
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   AppLogger.info("Background notification received: ${message.messageId}");
 }
 
-/// Service class responsible for managing app notifications (FCM & Firestore).
 class NotificationService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
-  /// Defines the notification channel for Android high importance notifications.
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
     'high_importance_channel',
     'High Importance Notifications',
@@ -31,9 +29,7 @@ class NotificationService {
     importance: Importance.max,
   );
 
-  /// Initializes the notification service, requests permissions, and sets up listeners.
   Future<void> initialize() async {
-    // Request notification permissions for Android 13+ and iOS.
     NotificationSettings settings = await _fcm.requestPermission(
       alert: true,
       badge: true,
@@ -44,27 +40,33 @@ class NotificationService {
       AppLogger.info("Notification permissions granted.");
     }
 
-    // Setup local notifications for foreground head-up alerts.
     await _setupLocalNotifications();
 
-    // Register the background message handler.
+    _setupInteractedMessages();
+
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    // Retrieve and log the FCM Token for the current device.
-    String? token = await _fcm.getToken();
-    AppLogger.info("FCM Token: $token");
+    _fcm.onTokenRefresh.listen((newToken) async {
+      AppLogger.info("FCM Token Refresh detected.");
+      final String? uid = await const FlutterSecureStorage().read(key: 'uid');
+      if (uid != null) {
+        await updateFcmTokenForUser(uid);
+      }
+    });
 
-    // Automatically update the FCM token in Firestore if the user is logged in.
-    if (token != null) {
-      await _updateTokenInFirestore(token);
+    String? token = await _fcm.getToken();
+    AppLogger.info("Current Device FCM Token acquired.");
+
+    final String? uid = await const FlutterSecureStorage().read(key: 'uid');
+    if (uid != null && token != null) {
+      await updateFcmTokenForUser(uid);
     }
 
-    // Handle incoming notifications while the app is in the foreground.
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
 
-      AppLogger.info("Foreground notification received: ${notification?.title}");
+      AppLogger.info("Foreground notification: ${notification?.title}");
 
       if (notification != null && android != null) {
         _localNotifications.show(
@@ -86,83 +88,158 @@ class NotificationService {
               presentSound: true,
             ),
           ),
+          payload: jsonEncode(message.data),
         );
       }
     });
   }
 
-  /// Configures local notification settings and creates the Android notification channel.
+  Future<void> _setupInteractedMessages() async {
+    RemoteMessage? initialMessage = await _fcm.getInitialMessage();
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    AppLogger.info("Handling notification interaction data: ${message.data}");
+    final String? bookingId = message.data['bookingId'];
+    if (bookingId != null && bookingId.isNotEmpty) {
+      final type = message.data['type'];
+      if (type == 'receipt' || type == 'order_status') {
+        AppRouter.goTo(
+          screenName: ScreenName.confirmRentScreen,
+          arguments: {'orderId': bookingId, 'isViewMode': true},
+        );
+      } else {
+        AppRouter.goTo(
+          screenName: ScreenName.bookingDetailsScreen,
+          arguments: bookingId,
+        );
+      }
+    }
+  }
+
   Future<void> _setupLocalNotifications() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    const DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings();
-
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
+    const initializationSettings = InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(),
     );
 
     await _localNotifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(_channel);
 
     await _localNotifications.initialize(
       settings: initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        AppLogger.info("Notification tapped: ${response.payload}");
+      onDidReceiveNotificationResponse: (response) {
+        AppLogger.info("Notification interaction: ${response.payload}");
+        if (response.payload != null) {
+          final Map<String, dynamic> data = jsonDecode(response.payload!);
+          final String? bookingId = data['bookingId'];
+          if (bookingId != null && bookingId.isNotEmpty) {
+            final type = data['type'];
+            if (type == 'receipt' || type == 'order_status') {
+              AppRouter.goTo(
+                screenName: ScreenName.confirmRentScreen,
+                arguments: {'orderId': bookingId, 'isViewMode': true},
+              );
+            } else {
+              AppRouter.goTo(
+                screenName: ScreenName.bookingDetailsScreen,
+                arguments: bookingId,
+              );
+            }
+          }
+        }
       },
     );
   }
 
-  /// Updates the user's FCM token in their Firestore document.
-  Future<void> _updateTokenInFirestore(String token) async {
+  /// Synchronizes the device FCM token with the user's Firestore document.
+  Future<void> updateFcmTokenForUser(String userId) async {
     try {
-      final String? uid = await const FlutterSecureStorage().read(key: 'uid');
-      if (uid != null) {
-        await _db.collection('users').doc(uid).update({
-          'fcmToken': token,
-        });
-        AppLogger.info("FCM Token updated in Firestore for user: $uid");
+      String? token = await _fcm.getToken();
+      if (token != null) {
+        await _db.collection('users').doc(userId).update({'fcmToken': token});
+        AppLogger.info("User FCM Token synchronized in Firestore.");
       }
     } catch (e) {
-      AppLogger.error("Failed to update FCM Token in Firestore", e);
+      AppLogger.error("Failed to sync FCM Token for user $userId", e);
     }
   }
 
-  // --- Firestore Notification Operations ---
+  Future<void> sendNotification({
+    required String userId,
+    required String title,
+    required String body,
+    Map<String, dynamic>? extraData,
+  }) async {
+    try {
+      // 1. In-app Persistence
+      await _db.collection('notifications').add({
+        'userId': userId,
+        'title': title,
+        'body': body,
+        'time': FieldValue.serverTimestamp(),
+        'isRead': false,
+        'data': extraData ?? {},
+      });
 
-  /// Returns a stream of notifications for a specific user, sorted by time.
+      final userDoc = await _db.collection('users').doc(userId).get();
+
+      if (userDoc.exists) {
+        final data = userDoc.data();
+        final String? fcmToken = data?['fcmToken'];
+
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          await FcmSenderService.sendNotificationToUser(
+            targetFcmToken: fcmToken,
+            title: title,
+            body: body,
+            extraData: extraData,
+          );
+        } else {
+          AppLogger.warning(
+            "Push relay skipped: User $userId lacks a registered token.",
+          );
+        }
+      }
+    } catch (e) {
+      AppLogger.error(
+        "Dual-notification orchestration failure for user $userId",
+        e,
+      );
+    }
+  }
+
   Stream<List<NotificationModel>> getNotificationsStream(String userId) {
     return _db
         .collection('notifications')
         .where('userId', isEqualTo: userId)
         .snapshots()
         .map((snapshot) {
-      final notifications = snapshot.docs
-          .map((doc) => NotificationModel.fromFirestore(doc))
-          .toList();
-
-      notifications.sort((a, b) => b.time.compareTo(a.time));
-      return notifications;
-    });
+          final notifications = snapshot.docs
+              .map((doc) => NotificationModel.fromFirestore(doc))
+              .toList();
+          notifications.sort((a, b) => b.time.compareTo(a.time));
+          return notifications;
+        });
   }
 
-  /// Marks a specific notification as read in Firestore.
   Future<void> markAsRead(String notificationId) async {
     await _db.collection('notifications').doc(notificationId).update({
       'isRead': true,
     });
   }
 
-  /// Deletes a specific notification from Firestore.
   Future<void> deleteNotification(String notificationId) async {
     await _db.collection('notifications').doc(notificationId).delete();
   }
 
-  /// Clears all notifications for a specific user using a batch operation.
   Future<void> clearAllNotifications(String userId) async {
     final snapshot = await _db
         .collection('notifications')
@@ -174,45 +251,5 @@ class NotificationService {
       batch.delete(doc.reference);
     }
     await batch.commit();
-  }
-
-
-  /// The DUAL ACTION: Saves to Firestore AND triggers FCM Push via GAS bridge.
-  Future<void> sendNotification({
-    required String userId,
-    required String title,
-    required String body,
-  }) async {
-    try {
-      // 1. Save to Firestore for in-app display.
-      await _db.collection('notifications').add({
-        'userId': userId,
-        'title': title,
-        'body': body,
-        'time': FieldValue.serverTimestamp(),
-        'isRead': false,
-      });
-
-      // 2. Fetch the target user's FCM Token from Firestore.
-      final userDoc = await _db.collection('users').doc(userId).get();
-
-      if (userDoc.exists) {
-        final data = userDoc.data();
-        final String? fcmToken = data?['fcmToken'];
-
-        if (fcmToken != null && fcmToken.isNotEmpty) {
-          // 3. Trigger external push notification via FcmSenderService.
-          await FcmSenderService.sendNotificationToUser(
-            targetFcmToken: fcmToken,
-            title: title,
-            body: body,
-          );
-        } else {
-          AppLogger.warning("Push notification skipped: User $userId has no fcmToken.");
-        }
-      }
-    } catch (e) {
-      AppLogger.error("Failed to process dual-notification (Firestore & FCM) for user $userId", e);
-    }
   }
 }

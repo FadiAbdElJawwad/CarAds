@@ -2,7 +2,19 @@ import '../../../core/constant/images_manager.dart';
 import 'package:flutter/material.dart';
 
 class CarsBannerModel {
-  CarsBannerModel({this.image  , this.model, this.price, this.gear, this.seats, this.fuel, this.rent, this.fuelType, this.year, this.mileage, this.doors});
+  CarsBannerModel({
+    this.image,
+    this.model,
+    this.price,
+    this.gear,
+    this.seats,
+    this.fuel,
+    this.rent,
+    this.fuelType,
+    this.year,
+    this.mileage,
+    this.doors,
+  });
   final String? image;
   final String? model;
   final int? price;
@@ -14,10 +26,9 @@ class CarsBannerModel {
   final String? rent;
   final String? year;
   final String? mileage;
-
 }
 
-List<CarsBannerModel>carsBannerList(BuildContext context) {
+List<CarsBannerModel> carsBannerList(BuildContext context) {
   return [
     CarsBannerModel(
       image: ImagesManager.toyota,
@@ -30,7 +41,7 @@ List<CarsBannerModel>carsBannerList(BuildContext context) {
       fuel: '63 Liters',
       rent: '',
       year: '2023',
-      mileage: '15,000 km'
+      mileage: '15,000 km',
     ),
     CarsBannerModel(
       image: ImagesManager.hyundai,
@@ -43,7 +54,7 @@ List<CarsBannerModel>carsBannerList(BuildContext context) {
       fuel: '63 Liters',
       rent: '',
       year: '2023',
-      mileage: '15,000 km'
+      mileage: '15,000 km',
     ),
     CarsBannerModel(
       image: ImagesManager.mazda,
@@ -56,7 +67,7 @@ List<CarsBannerModel>carsBannerList(BuildContext context) {
       fuel: '63 Liters',
       rent: '/Day',
       year: '2023',
-      mileage: '15,000 km'
+      mileage: '15,000 km',
     ),
     CarsBannerModel(
       image: ImagesManager.mercedesBenz,
@@ -69,8 +80,7 @@ List<CarsBannerModel>carsBannerList(BuildContext context) {
       fuel: '63 Liters',
       rent: '/Day',
       year: '2023',
-      mileage: '15,000 km'
-
+      mileage: '15,000 km',
     ),
     CarsBannerModel(
       image: ImagesManager.audi,
@@ -83,8 +93,7 @@ List<CarsBannerModel>carsBannerList(BuildContext context) {
       fuel: '63 Liters',
       rent: '/Day',
       year: '2023',
-      mileage: '15,000 km'
+      mileage: '15,000 km',
     ),
-
   ];
 }

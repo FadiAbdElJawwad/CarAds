@@ -20,7 +20,9 @@ class _FilterMileageSectionState extends State<FilterMileageSection> {
   void initState() {
     super.initState();
     final filter = context.read<CarAdsProvider>().tempFilter;
-    _startController = TextEditingController(text: filter.startMileage?.toString());
+    _startController = TextEditingController(
+      text: filter.startMileage?.toString(),
+    );
     _endController = TextEditingController(text: filter.endMileage?.toString());
   }
 
@@ -40,8 +42,10 @@ class _FilterMileageSectionState extends State<FilterMileageSection> {
       children: [
         Text('Mileage', style: context.titleBold18),
         context.addVerticalSpace(8),
-        Text('Select Mileage Range:',
-            style: context.bodyRegular.copyWith(color: Colors.grey)),
+        Text(
+          'Select Mileage Range:',
+          style: context.bodyRegular.copyWith(color: Colors.grey),
+        ),
         context.addVerticalSpace(12),
         Row(
           children: [
@@ -51,7 +55,10 @@ class _FilterMileageSectionState extends State<FilterMileageSection> {
                 hint: 'Start Mileage',
                 keyboardType: TextInputType.number,
                 onChanged: (val) {
-                  provider.setMileage(int.tryParse(val), int.tryParse(_endController.text));
+                  provider.setMileage(
+                    int.tryParse(val),
+                    int.tryParse(_endController.text),
+                  );
                   return;
                 },
               ),
@@ -63,7 +70,10 @@ class _FilterMileageSectionState extends State<FilterMileageSection> {
                 hint: 'End Mileage',
                 keyboardType: TextInputType.number,
                 onChanged: (val) {
-                  provider.setMileage(int.tryParse(_startController.text), int.tryParse(val));
+                  provider.setMileage(
+                    int.tryParse(_startController.text),
+                    int.tryParse(val),
+                  );
                   return;
                 },
               ),

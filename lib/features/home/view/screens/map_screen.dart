@@ -12,9 +12,7 @@ class MapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) =>
-      MapProvider()
-        ..fetchLocation(),
+      create: (_) => MapProvider()..fetchLocation(),
       child: Consumer<MapProvider>(
         builder: (context, model, child) {
           return Scaffold(
@@ -25,9 +23,9 @@ class MapScreen extends StatelessWidget {
             body: model.address == "Loading Location..."
                 ? const Center(child: CircularProgressIndicator())
                 : MapWidget(
-              currentPosition: model.currentPosition,
-              onMapTapped: model.onMapTapped,
-            ),
+                    currentPosition: model.currentPosition,
+                    onMapTapped: model.onMapTapped,
+                  ),
           );
         },
       ),

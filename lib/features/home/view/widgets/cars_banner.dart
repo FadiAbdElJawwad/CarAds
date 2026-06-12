@@ -11,7 +11,7 @@ import 'package:car_ads/core/extension/app_sizes.dart';
 import '../../../auth/view/widgets/slider_indicator.dart';
 import '../../../../common/car_image_extractor.dart';
 import '../../../../core/services/car_firestore_service.dart';
-import '../../../../core/models/car_card_model.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
 
 class CarsBanner extends StatefulWidget {
   const CarsBanner({super.key});
@@ -53,140 +53,137 @@ class _CarsBannerState extends State<CarsBanner> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: context.screenHeight(300),
-        child: StreamBuilder<QuerySnapshot>(
-            stream: _carsStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const _CarsBannerSkeleton();
-              }
+      height: context.screenHeight(300),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: _carsStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const _CarsBannerSkeleton();
+          }
 
-              if (snapshot.hasError) {
-                AppLogger.error('Error in CarsBanner stream', snapshot.error);
-                return const SizedBox();
-              }
-              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return const SizedBox();
-              }
+          if (snapshot.hasError) {
+            AppLogger.error('Error in CarsBanner stream', snapshot.error);
+            return const SizedBox();
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const SizedBox();
+          }
 
-              final allCars = snapshot.data!.docs
-                  .map((doc) =>
-                  CarCardModel.fromMap(doc.data() as Map<String, dynamic>))
-                  .toList();
-              
+          final allCars = snapshot.data!.docs
+              .map(
+                (doc) =>
+                    CarCardModel.fromMap(doc.data() as Map<String, dynamic>),
+              )
+              .toList();
 
-              final cars = _filterOnePerType(allCars);
-              cars.sort((a, b) => (a.carName ?? '').compareTo(b.carName ?? ''));
+          final cars = _filterOnePerType(allCars);
+          cars.sort((a, b) => (a.carName ?? '').compareTo(b.carName ?? ''));
 
-              if (cars.isEmpty) return const SizedBox();
+          if (cars.isEmpty) return const SizedBox();
 
-              final safeIndex = _currentPage >= cars.length ? 0 : _currentPage;
-              final currentCar = cars[safeIndex];
+          final safeIndex = _currentPage >= cars.length ? 0 : _currentPage;
+          final currentCar = cars[safeIndex];
 
-              return InkWell(
-                onTap: () {
-                  AppRouter.goTo(
-                    screenName: ScreenName.carDetailsForm,
-                    arguments: currentCar,
-                  );
-                },
-                child: Card(
-                  child: Column(
+          return InkWell(
+            onTap: () {
+              AppRouter.goTo(
+                screenName: ScreenName.carDetailsForm,
+                arguments: currentCar,
+              );
+            },
+            child: Card(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: PageView.builder(
+                      onPageChanged: (int currentPage) {
+                        setState(() {
+                          _currentPage = currentPage;
+                        });
+                      },
+                      controller: _pageController,
+                      itemCount: cars.length,
+                      itemBuilder: (context, i) {
+                        return CarImageExtractor.buildImage(
+                          cars[i].carImage,
+                          height: context.screenHeight(200),
+                          fit: BoxFit.contain,
+                        );
+                      },
+                    ),
+                  ),
+                  context.addVerticalSpace(10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: PageView.builder(
-                            onPageChanged: (int currentPage) {
-                              setState(() {
-                                _currentPage = currentPage;
-                              });
-                            },
-                            controller: _pageController,
-                            itemCount: cars.length,
-                            itemBuilder: (context, i) {
-                              return CarImageExtractor.buildImage(
-                                  cars[i].carImage, height: context.screenHeight(200),fit: BoxFit.contain);
-                            }
-                        ),
+                      Text(
+                        currentCar.carName ?? 'N/A',
+                        style: context.titleBold18,
                       ),
-                      context.addVerticalSpace(10),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment
-                            .spaceBetween,
                         children: [
                           Text(
-                            currentCar.carName ?? 'N/A',
-                            style: context.titleBold18,
+                            '${currentCar.price}K',
+                            style: context.inputBold16,
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                '${currentCar.price}K' ,
-                                style: context.inputBold16,
-                              ),
-                              Text(
-                                'AED',
-                                style: context.inputRegular16,
-                              ),
-                            ],
-                          ),
+                          Text('AED', style: context.inputRegular16),
                         ],
                       ),
-                      context.addVerticalSpace(8),
-                      IntrinsicHeight(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .spaceBetween,
-                          children: [
-                            SvgPicture.asset(ImagesManager.gear),
-                            Text(
-                              currentCar.gearType ?? 'N/A',
-                              style: context.inputRegular14.copyWith(
-                                  color: Colors.grey),
-                            ),
-                            const VerticalDivider(
-                                color: Colors.grey, thickness: 1),
-                            SvgPicture.asset(ImagesManager.seats),
-                            Text(
-                              '${currentCar.seats ?? '0'} seats',
-                              style: context.inputRegular14.copyWith(
-                                  color: Colors.grey),
-                            ),
-                            const VerticalDivider(
-                                color: Colors.grey, thickness: 1),
-                            SvgPicture.asset(ImagesManager.fuel),
-                            Text(
-                              currentCar.fuel ?? 'N/A',
-                              style: context.inputRegular14.copyWith(
-                                  color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ),
-                      context.addVerticalSpace(20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(cars.length, (index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 2),
-                            child: SliderIndicator(
-                              selected: safeIndex == index,
-                              currentPage: index,
-                            ),
-                          );
-                        }
-                        ),
-                      ),
                     ],
-                  ).pad(20),
-                ),
-              );
-            }
-        )
+                  ),
+                  context.addVerticalSpace(8),
+                  IntrinsicHeight(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SvgPicture.asset(ImagesManager.gear),
+                        Text(
+                          currentCar.gearType ?? 'N/A',
+                          style: context.inputRegular14.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const VerticalDivider(color: Colors.grey, thickness: 1),
+                        SvgPicture.asset(ImagesManager.seats),
+                        Text(
+                          '${currentCar.seats ?? '0'} seats',
+                          style: context.inputRegular14.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const VerticalDivider(color: Colors.grey, thickness: 1),
+                        SvgPicture.asset(ImagesManager.fuel),
+                        Text(
+                          currentCar.fuel ?? 'N/A',
+                          style: context.inputRegular14.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  context.addVerticalSpace(20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(cars.length, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: SliderIndicator(
+                          selected: safeIndex == index,
+                          currentPage: index,
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ).pad(20),
+            ),
+          );
+        },
+      ),
     );
   }
 }
-
 
 class _CarsBannerSkeleton extends StatelessWidget {
   const _CarsBannerSkeleton();
@@ -196,9 +193,7 @@ class _CarsBannerSkeleton extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          const Expanded(
-            child: Skeleton(width: double.infinity),
-          ),
+          const Expanded(child: Skeleton(width: double.infinity)),
           context.addVerticalSpace(10),
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

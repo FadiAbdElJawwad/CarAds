@@ -19,8 +19,9 @@ class FilterPriceRangeSection extends StatelessWidget {
           children: [
             Text('Price Range', style: context.titleBold18),
             Text(
-                '${priceRange.start.round() ~/ 1000}K AED - ${priceRange.end.round() ~/ 1000}K AED',
-                style: context.bodyBold),
+              '${priceRange.start.round() ~/ 1000}K AED - ${priceRange.end.round() ~/ 1000}K AED',
+              style: context.bodyBold,
+            ),
           ],
         ),
         RangeSlider(

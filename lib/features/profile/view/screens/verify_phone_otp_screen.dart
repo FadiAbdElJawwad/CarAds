@@ -30,7 +30,9 @@ class VerifyPhoneOtpScreen extends StatelessWidget {
                         context.addVerticalSpace(20),
                         Text(
                           'Enter the 6-digit code sent to ${provider.phoneController.text}',
-                          style: context.bodyRegular.copyWith(color: Colors.grey[600]),
+                          style: context.bodyRegular.copyWith(
+                            color: Colors.grey[600],
+                          ),
                         ),
                         context.addVerticalSpace(32),
                         OtpTextField(
@@ -55,7 +57,9 @@ class VerifyPhoneOtpScreen extends StatelessWidget {
                     ),
                     child: PrimaryButton(
                       text: 'Verify & Update',
-                      onPressed: provider.isLoading ? null : () => provider.verifyOtp(context),
+                      onPressed: provider.isLoading
+                          ? null
+                          : () => provider.verifyOtp(context),
                     ),
                   ),
                 ],

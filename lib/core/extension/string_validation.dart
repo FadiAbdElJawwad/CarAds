@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../generated/l10n.dart';
 
 extension StringValidation on String {
-
   String? validateGeneric(String fieldName) {
     if (trim().isEmpty) {
       return '$fieldName cannot be empty';
@@ -38,18 +37,14 @@ extension StringValidation on String {
 
   String? validateName(BuildContext context) {
     if (isEmpty) {
-      return S
-          .of(context)
-          .emptyName;
+      return S.of(context).emptyName;
     }
     return null;
   }
 
   String? validateMobile(BuildContext context) {
     if (trim().isEmpty) {
-      return S
-          .of(context)
-          .emptyMobile;
+      return S.of(context).emptyMobile;
     }
     if (!trim().startsWith('+')) {
       return 'Phone number must start with a country code (e.g. +971)';
@@ -62,7 +57,8 @@ extension StringValidation on String {
 
   String? validateEmail(BuildContext context) {
     final emailRegExp = RegExp(
-        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$");
+      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
+    );
     if (isEmpty) {
       return S.of(context).emptyEmail;
     } else if (!emailRegExp.hasMatch(this)) {
@@ -73,13 +69,9 @@ extension StringValidation on String {
 
   String? validatePassword(BuildContext context) {
     if (isEmpty) {
-      return S
-          .of(context)
-          .emptyPassword;
+      return S.of(context).emptyPassword;
     } else if (length < 6) {
-      return S
-          .of(context)
-          .incorrectPassword;
+      return S.of(context).incorrectPassword;
     }
     return null;
   }

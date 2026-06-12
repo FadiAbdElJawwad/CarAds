@@ -58,8 +58,9 @@ class ClearHistoryConfirmation {
                 },
                 child: Text(
                   'NO, I CHANGED MY MIND!',
-                  style: sheetContext.bodyBold
-                      .copyWith(color: const Color(0xffB71C1C)),
+                  style: sheetContext.bodyBold.copyWith(
+                    color: const Color(0xffB71C1C),
+                  ),
                 ),
               ),
             ],

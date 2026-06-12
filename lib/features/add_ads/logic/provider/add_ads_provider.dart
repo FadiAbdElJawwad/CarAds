@@ -54,7 +54,7 @@ class AddAdsProvider extends ChangeNotifier {
 
   Future<bool> postAdvertisement(BuildContext context) async {
     if (!formKey.currentState!.validate()) return false;
-    
+
     if (_selectedImage == null) {
       throw Exception('Please select a vehicle image');
     }
@@ -62,8 +62,10 @@ class AddAdsProvider extends ChangeNotifier {
     _setLoading(true);
     try {
       // 1. Upload to Drive
-      String? driveImageUrl = await _firestoreService.uploadImageToDrive(_selectedImage!);
-      
+      String? driveImageUrl = await _firestoreService.uploadImageToDrive(
+        _selectedImage!,
+      );
+
       if (driveImageUrl == null) {
         throw Exception('Failed to upload image to Drive');
       }
@@ -92,12 +94,16 @@ class AddAdsProvider extends ChangeNotifier {
 
       // Send notification
       if (context.mounted) {
-        final userId = Provider.of<AuthProvider>(context, listen: false).state.user?.uid;
+        final userId = Provider.of<AuthProvider>(
+          context,
+          listen: false,
+        ).state.user?.uid;
         if (userId != null) {
           await _notificationService.sendNotification(
             userId: userId,
             title: 'Advertisement Posted',
-            body: 'Your car advertisement for ${brandController.text.trim()} has been successfully posted.',
+            body:
+                'Your car advertisement for ${brandController.text.trim()} has been successfully posted.',
           );
         }
       }

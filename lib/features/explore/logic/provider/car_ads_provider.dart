@@ -61,7 +61,9 @@ class CarAdsProvider with ChangeNotifier {
 
   Future<void> _loadRecentSearches() async {
     final prefs = await SharedPreferences.getInstance();
-    _recentSearches = prefs.getStringList(_recentSearchesKey) ?? ['Toyota', 'Audi', 'Hyundai', 'Mazda'];
+    _recentSearches =
+        prefs.getStringList(_recentSearchesKey) ??
+        ['Toyota', 'Audi', 'Hyundai', 'Mazda'];
     notifyListeners();
   }
 
@@ -83,14 +85,16 @@ class CarAdsProvider with ChangeNotifier {
   void addRecentSearch(String query) {
     String trimmedQuery = query.trim();
     if (trimmedQuery.isEmpty) return;
-    
-    _recentSearches.removeWhere((s) => s.toLowerCase() == trimmedQuery.toLowerCase());
+
+    _recentSearches.removeWhere(
+      (s) => s.toLowerCase() == trimmedQuery.toLowerCase(),
+    );
     _recentSearches.insert(0, trimmedQuery);
-    
+
     if (_recentSearches.length > 10) {
       _recentSearches = _recentSearches.sublist(0, 10);
     }
-    
+
     _saveRecentSearches();
     notifyListeners();
   }

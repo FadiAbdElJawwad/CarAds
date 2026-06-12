@@ -1,7 +1,7 @@
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
-import 'package:car_ads/core/models/car_card_model.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utils/url_formatter.dart';
@@ -25,18 +25,29 @@ class CheckoutOrderSummary extends StatelessWidget {
     const size = 50.0;
 
     if (directUrl == null || directUrl.isEmpty) {
-      return  Image.asset(ImagesManager.toyota, height: size, width: size, fit: BoxFit.contain);
+      return Image.asset(
+        ImagesManager.toyota,
+        height: size,
+        width: size,
+        fit: BoxFit.contain,
+      );
     }
 
     return directUrl.startsWith('http')
         ? Image.network(
-      directUrl,
-      height: size,
-      width: size,
-      fit: BoxFit.contain,
-      errorBuilder: (_, _, _) => Image.asset(ImagesManager.toyota, height: size, width: size),
-    )
-        : Image.asset(directUrl, height: size, width: size, fit: BoxFit.contain);
+            directUrl,
+            height: size,
+            width: size,
+            fit: BoxFit.contain,
+            errorBuilder: (_, _, _) =>
+                Image.asset(ImagesManager.toyota, height: size, width: size),
+          )
+        : Image.asset(
+            directUrl,
+            height: size,
+            width: size,
+            fit: BoxFit.contain,
+          );
   }
 
   @override
@@ -51,7 +62,10 @@ class CheckoutOrderSummary extends StatelessWidget {
           child: ListTile(
             leading: _buildCarImage(),
             title: Text(car.carName ?? 'Unknown Name', style: context.bodyBold),
-            trailing: Text('${currencyFormat.format(carPrice)} $currency', style: context.bodyBold),
+            trailing: Text(
+              '${currencyFormat.format(carPrice)} $currency',
+              style: context.bodyBold,
+            ),
           ).padVerticalSymmetric(16),
         ),
       ],

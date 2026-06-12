@@ -6,6 +6,7 @@ class NotificationModel {
   final String body;
   final DateTime time;
   final bool isRead;
+  final Map<String, dynamic>? extraData;
 
   NotificationModel({
     required this.id,
@@ -13,6 +14,7 @@ class NotificationModel {
     required this.body,
     required this.time,
     this.isRead = false,
+    this.extraData,
   });
 
   factory NotificationModel.fromFirestore(DocumentSnapshot doc) {
@@ -23,6 +25,7 @@ class NotificationModel {
       body: data['body'] ?? '',
       time: (data['time'] as Timestamp?)?.toDate() ?? DateTime.now(),
       isRead: data['isRead'] ?? false,
+      extraData: data['data'] as Map<String, dynamic>?,
     );
   }
 
@@ -32,6 +35,7 @@ class NotificationModel {
       'body': body,
       'time': Timestamp.fromDate(time),
       'isRead': isRead,
+      'data': extraData,
     };
   }
 }

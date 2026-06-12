@@ -49,7 +49,6 @@ class CheckoutDateSelector extends StatelessWidget {
                 onTap: onSelectTime,
                 child: AbsorbPointer(
                   child: PrimaryTextField(
-
                     hint: currentTime?.format(context) ?? 'Select Time',
                   ),
                 ),

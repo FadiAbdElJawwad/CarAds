@@ -34,17 +34,18 @@ class ShowroomModel {
 
   factory ShowroomModel.fromMap(Map<String, dynamic> map) {
     return ShowroomModel(
-        showroomID: map['showroomID'] as String?,
-        showroomImage: map['showroomImage'] as String?,
-        showroomName: map['showroomName'] as String?,
-        showroomRating: map['showroomRating'] != null
-            ? (map['showroomRating'] is double
+      showroomID: map['showroomID'] as String?,
+      showroomImage: map['showroomImage'] as String?,
+      showroomName: map['showroomName'] as String?,
+      showroomRating: map['showroomRating'] != null
+          ? (map['showroomRating'] is double
                 ? map['showroomRating'] as double
                 : double.tryParse(map['showroomRating'].toString()))
-            : null,
-        showroomLocation: map['showroomLocation'] as String?,
-        showroomPhone: map['showroomPhone'] as String?,
-        showroomDescription: map['showroomDescription'] as String?,
-        carID: map['carID'] != null ? List<String>.from(map['carID']) : null);
+          : null,
+      showroomLocation: map['showroomLocation'] as String?,
+      showroomPhone: map['showroomPhone'] as String?,
+      showroomDescription: map['showroomDescription'] as String?,
+      carID: map['carID'] != null ? List<String>.from(map['carID']) : null,
+    );
   }
 }

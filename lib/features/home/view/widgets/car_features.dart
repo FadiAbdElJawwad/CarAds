@@ -4,11 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../core/extension/text_style_extension.dart';
 
 class CarFeatures extends StatelessWidget {
-  const CarFeatures({
-    super.key,
-    required this.assetName,
-    required this.label,
-  });
+  const CarFeatures({super.key, required this.assetName, required this.label});
 
   final String assetName;
   final String label;
@@ -20,10 +16,7 @@ class CarFeatures extends StatelessWidget {
       children: [
         SvgPicture.asset(assetName),
         context.addVerticalSpace(8),
-        Text(
-          label,
-          style: context.inputBold14.copyWith(fontSize: 12),
-        ),
+        Text(label, style: context.inputBold14.copyWith(fontSize: 12)),
       ],
     );
   }

@@ -16,8 +16,13 @@ import '../widgets/checkout_priced_details.dart';
 
 class ConfirmRentScreen extends StatelessWidget {
   final String orderId;
+  final bool isViewMode;
 
-  const ConfirmRentScreen({super.key, required this.orderId});
+  const ConfirmRentScreen({
+    super.key,
+    required this.orderId,
+    this.isViewMode = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,22 +33,25 @@ class ConfirmRentScreen extends StatelessWidget {
           return Scaffold(
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(
-                  kToolbarHeight + MediaQuery
-                      .of(context)
-                      .padding
-                      .top),
-              child: const PrimaryAppBar(
-                  backIconVisible: true, text: 'Confirm Rent'),
+                kToolbarHeight + MediaQuery.of(context).padding.top,
+              ),
+              child: PrimaryAppBar(
+                backIconVisible: true,
+                text: isViewMode ? 'Rental Receipt' : 'Confirm Rent',
+              ),
             ),
-            bottomNavigationBar: Card(
-              child: PrimaryButton(
-                text: 'Confirm Rent',
-                onPressed: () {
-                  AppRouter.goToAndRemove(
-                      screenName: ScreenName.rentalCompletedScreen);
-                },
-              ).padSymmetric(20).padVerticalSymmetric(17),
-            ),
+            bottomNavigationBar: isViewMode
+                ? null
+                : Card(
+                    child: PrimaryButton(
+                      text: 'Confirm Rent',
+                      onPressed: () {
+                        AppRouter.goToAndRemove(
+                          screenName: ScreenName.rentalCompletedScreen,
+                        );
+                      },
+                    ).padSymmetric(20).padVerticalSymmetric(17),
+                  ),
             body: model.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : model.error != null
@@ -68,8 +76,10 @@ class ConfirmRentScreen extends StatelessWidget {
           child: ListTile(
             leading: Image.asset(ImagesManager.location),
             title: Text('Your Location', style: context.bodyBold),
-            subtitle: Text(order.location ?? 'No address provided',
-                style: context.bodyRegular),
+            subtitle: Text(
+              order.location ?? 'No address provided',
+              style: context.bodyRegular,
+            ),
           ),
         ),
         context.addVerticalSpace(24),
@@ -96,10 +106,11 @@ class ConfirmRentScreen extends StatelessWidget {
             side: const BorderSide(color: ColorManager.successColor),
           ),
           child: ListTile(
-            title: Text('Driving License No',
-                style: context.inputRegular14.copyWith(fontSize: 12)),
-            subtitle: Text(order.licenseNumber,
-                style: context.inputRegular14),
+            title: Text(
+              'Driving License No',
+              style: context.inputRegular14.copyWith(fontSize: 12),
+            ),
+            subtitle: Text(order.licenseNumber, style: context.inputRegular14),
           ),
         ),
         context.addVerticalSpace(24),
@@ -109,8 +120,10 @@ class ConfirmRentScreen extends StatelessWidget {
             side: const BorderSide(color: ColorManager.successColor),
           ),
           child: ListTile(
-            title: Text('ID Number',
-                style: context.inputRegular14.copyWith(fontSize: 12)),
+            title: Text(
+              'ID Number',
+              style: context.inputRegular14.copyWith(fontSize: 12),
+            ),
             subtitle: Text(order.idNumber, style: context.inputRegular14),
           ),
         ),
@@ -121,8 +134,10 @@ class ConfirmRentScreen extends StatelessWidget {
             side: const BorderSide(color: ColorManager.successColor),
           ),
           child: ListTile(
-            title: Text('Phone Number',
-                style: context.inputRegular14.copyWith(fontSize: 12)),
+            title: Text(
+              'Phone Number',
+              style: context.inputRegular14.copyWith(fontSize: 12),
+            ),
             subtitle: Text(order.phoneNumber, style: context.inputRegular14),
           ),
         ),

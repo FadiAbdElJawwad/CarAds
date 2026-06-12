@@ -1,7 +1,7 @@
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/features/explore/logic/helper/car_filter_helper.dart';
 import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
-import 'package:car_ads/core/models/car_card_model.dart';
+import '../../model/car_card_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -58,12 +58,14 @@ class CarAdList extends StatelessWidget {
 
         if (snapshot.hasError) {
           return const CarsAdsErrorMessage(
-              message: "An error occurred while loading data");
+            message: "An error occurred while loading data",
+          );
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return const CarsAdsErrorMessage(
-              message: "No ads available matching your filters");
+            message: "No ads available matching your filters",
+          );
         }
 
         final filteredCars = CarFilterHelper.filterCars(
@@ -74,13 +76,14 @@ class CarAdList extends StatelessWidget {
 
         if (filteredCars.isEmpty) {
           return const CarsAdsErrorMessage(
-              message: "No ads matching your filters");
+            message: "No ads matching your filters",
+          );
         }
 
         final displayCount =
             listLength != null && listLength! < filteredCars.length
-                ? listLength!
-                : filteredCars.length;
+            ? listLength!
+            : filteredCars.length;
 
         return CustomScrollView(
           shrinkWrap: true,
@@ -88,7 +91,9 @@ class CarAdList extends StatelessWidget {
           slivers: [
             if (filter.searchQuery.isNotEmpty)
               _ResultsHeader(
-                  query: filter.searchQuery, count: filteredCars.length),
+                query: filter.searchQuery,
+                count: filteredCars.length,
+              ),
             _CarGrid(cars: filteredCars, count: displayCount),
           ],
         );
@@ -109,10 +114,7 @@ class _ResultsHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            'Results for "$query"',
-            style: context.titleBold18,
-          ),
+          Text('Results for "$query"', style: context.titleBold18),
           Text(
             '$count founds',
             style: context.bodyRegular.copyWith(color: Colors.grey),
@@ -150,11 +152,7 @@ class CarAdListSkeleton extends StatelessWidget {
   final int itemCount;
   final ScrollPhysics? physics;
 
-  const CarAdListSkeleton({
-    super.key,
-    this.itemCount = 4,
-    this.physics,
-  });
+  const CarAdListSkeleton({super.key, this.itemCount = 4, this.physics});
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +185,7 @@ class CarAdListSkeleton extends StatelessWidget {
                   Skeleton(height: 24, width: 60),
                   Skeleton(height: 24, width: 24, radius: 12),
                 ],
-              )
+              ),
             ],
           ).padSymmetric(8).padVerticalSymmetric(16),
         );

@@ -7,8 +7,6 @@ class ExploreSearchResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CarAdList(
-      physics: const BouncingScrollPhysics(),
-    ).padSymmetric(20);
+    return CarAdList(physics: const BouncingScrollPhysics()).padSymmetric(20);
   }
 }

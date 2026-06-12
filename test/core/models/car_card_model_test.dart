@@ -1,4 +1,4 @@
-import 'package:car_ads/core/models/car_card_model.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

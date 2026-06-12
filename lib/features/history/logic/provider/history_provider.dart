@@ -25,7 +25,9 @@ class HistoryProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     _orderSubscription?.cancel();
-    _orderSubscription = _historyService.getOrderHistory(_userId!).listen((orders) {
+    _orderSubscription = _historyService.getOrderHistory(_userId!).listen((
+      orders,
+    ) {
       _orders = orders;
       _isLoading = false;
       notifyListeners();

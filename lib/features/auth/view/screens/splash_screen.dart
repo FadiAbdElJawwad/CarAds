@@ -7,7 +7,6 @@ import '../../../../core/extension/text_style_extension.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -16,35 +15,40 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   Future<void> _checkAuth() async {
     await Future.delayed(const Duration(seconds: 3));
     String? name = await storage.read(key: 'name');
-    (name != null && name.isNotEmpty)  ? AppRouter.goToAndRemove(
-            screenName: ScreenName.navButtonBar) :
-        AppRouter.goToAndRemove(screenName: ScreenName.onbording) ;
+    (name != null && name.isNotEmpty)
+        ? AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar)
+        : AppRouter.goToAndRemove(screenName: ScreenName.onbording);
   }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _checkAuth();
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.mainColor,
-      body:Column(
+      body: Column(
         children: [
-          Image.asset(ImagesManager.splash,),
-          Text(context.loc.splashTitle,style: context.h2Bold22.copyWith(color: Colors.white),),
-          const SizedBox(height: 10,),
-          Text(context.loc.splashBody,style: context.bodyRegular.copyWith(color: Colors.white),)
+          Image.asset(ImagesManager.splash),
+          Text(
+            context.loc.splashTitle,
+            style: context.h2Bold22.copyWith(color: Colors.white),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            context.loc.splashBody,
+            style: context.bodyRegular.copyWith(color: Colors.white),
+          ),
         ],
-      )
+      ),
     );
   }
 }

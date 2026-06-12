@@ -21,18 +21,26 @@ class _FAQScreenScreenState extends State<FAQScreenScreen> {
       ),
       body: Column(
         children: [
-          Text('Have Questions? We Have Answers!',style: context.titleRegular18,),
+          Text(
+            'Have Questions? We Have Answers!',
+            style: context.titleRegular18,
+          ),
           context.addVerticalSpace(8),
           Expanded(
             child: ListView.separated(
               itemCount: faqData.length,
-              separatorBuilder: (context, index) => const Divider(color: Colors.grey).padVerticalSymmetric(8),
+              separatorBuilder: (context, index) =>
+                  const Divider(color: Colors.grey).padVerticalSymmetric(8),
               itemBuilder: (context, index) {
                 final faq = faqData[index];
                 return ExpansionTile(
                   childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.all(Radius.circular(16))),
-                  collapsedShape: const RoundedRectangleBorder(side: BorderSide.none),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.all(Radius.circular(16)),
+                  ),
+                  collapsedShape: const RoundedRectangleBorder(
+                    side: BorderSide.none,
+                  ),
                   backgroundColor: Colors.white,
                   title: Text(faq.question, style: context.titleBold18),
                   children: [
@@ -42,8 +50,7 @@ class _FAQScreenScreenState extends State<FAQScreenScreen> {
                 );
               },
             ),
-          )
-
+          ),
         ],
       ).padSymmetric(20),
     );

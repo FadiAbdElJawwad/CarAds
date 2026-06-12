@@ -14,26 +14,25 @@ class AddAdsPostButton extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(
-          top: BorderSide(color: Color(0xFFE0E0E0), width: 0.5),
-        ),
+        border: Border(top: BorderSide(color: Color(0xFFE0E0E0), width: 0.5)),
       ),
       child: PrimaryButton(
-          text: 'POST ADVERTISEMENT',
-          onPressed: provider.isLoading
-              ? null
-              : () async {
-            try {
-              final success = await provider.postAdvertisement(context);
-              if (success && context.mounted) {
-                showSnackBar(context, 'Advertisement posted successfully!');
-              }
-            } catch (e) {
-              if (context.mounted) {
-                showSnackBar(context, e.toString());
-              }
-            }
-          }),
+        text: 'POST ADVERTISEMENT',
+        onPressed: provider.isLoading
+            ? null
+            : () async {
+                try {
+                  final success = await provider.postAdvertisement(context);
+                  if (success && context.mounted) {
+                    showSnackBar(context, 'Advertisement posted successfully!');
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    showSnackBar(context, e.toString());
+                  }
+                }
+              },
+      ),
     );
   }
 }

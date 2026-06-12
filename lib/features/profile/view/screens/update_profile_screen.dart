@@ -22,10 +22,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void initState() {
     super.initState();
     _updateProfileProvider = UpdateProfileProvider();
-    final user = context
-        .read<AuthProvider>()
-        .state
-        .user;
+    final user = context.read<AuthProvider>().state.user;
     _updateProfileProvider.init(user?.name);
   }
 
@@ -43,9 +40,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         appBar: const PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: PrimaryAppBar(
-              backIconVisible: true, text: 'Update Your Profile'),
+            backIconVisible: true,
+            text: 'Update Your Profile',
+          ),
         ),
-
 
         body: Consumer2<AuthProvider, UpdateProfileProvider>(
           builder: (context, authProvider, updateProvider, _) {
@@ -60,7 +58,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           children: [
                             UpdateProfileImageSection(
                               imageFile: updateProvider.imageFile,
-                              profileImageUrl: authProvider.state.user?.profileImage,
+                              profileImageUrl:
+                                  authProvider.state.user?.profileImage,
                               onPickImage: () {
                                 updateProvider.pickImage();
                               },
@@ -68,20 +67,22 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             context.addVerticalSpace(24),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                    color: const Color(0xFFE0E0E0)),
+                                  color: const Color(0xFFE0E0E0),
+                                ),
                               ),
                               child: PrimaryTextField(
                                 label: 'Full Name',
                                 isBorderVisible: false,
                                 controller: updateProvider.nameController,
                                 hint: 'Enter your name',
-                                validator: (val) =>
-                                val?.isEmpty ?? true
+                                validator: (val) => val?.isEmpty ?? true
                                     ? 'Please enter your name'
                                     : null,
                               ),
@@ -95,7 +96,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           color: Colors.white,
                           border: Border(
                             top: BorderSide(
-                                color: Color(0xFFE0E0E0), width: 0.5),
+                              color: Color(0xFFE0E0E0),
+                              width: 0.5,
+                            ),
                           ),
                         ),
                         child: PrimaryButton(

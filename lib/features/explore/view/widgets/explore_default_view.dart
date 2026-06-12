@@ -24,8 +24,8 @@ class ExploreDefaultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool showHistory = focusNode.hasFocus &&
-        provider.recentSearches.isNotEmpty;
+    final bool showHistory =
+        focusNode.hasFocus && provider.recentSearches.isNotEmpty;
 
     return ListView(
       padding: EdgeInsets.zero,
@@ -36,22 +36,21 @@ class ExploreDefaultView extends StatelessWidget {
             searchController: searchController,
             focusNode: focusNode,
           )
-        else
-          ...[
-            context.addVerticalSpace(16),
-            CarTypeListView(
-              carTypeData: carTypeList,
-              selectedIndex: selectedIndex == -1 ? 0 : selectedIndex,
-              onCarTypeSelected: (index) {
-                provider.setBrandAndApply(carTypeList[index].carType);
-              },
-            ).padStart(20),
-            context.addVerticalSpace(16),
-            CarAdList(
-              selectedCarType: currentBrand,
-              physics: const NeverScrollableScrollPhysics(),
-            ).padSymmetric(20),
-          ],
+        else ...[
+          context.addVerticalSpace(16),
+          CarTypeListView(
+            carTypeData: carTypeList,
+            selectedIndex: selectedIndex == -1 ? 0 : selectedIndex,
+            onCarTypeSelected: (index) {
+              provider.setBrandAndApply(carTypeList[index].carType);
+            },
+          ).padStart(20),
+          context.addVerticalSpace(16),
+          CarAdList(
+            selectedCarType: currentBrand,
+            physics: const NeverScrollableScrollPhysics(),
+          ).padSymmetric(20),
+        ],
       ],
     );
   }

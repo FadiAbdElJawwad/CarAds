@@ -27,40 +27,48 @@ class AddAdsImagePicker extends StatelessWidget {
             ),
             child: provider.selectedImage == null
                 ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.add_a_photo_outlined,
-                    color: Colors.grey, size: 40),
-                context.addVerticalSpace(8),
-                Text('Add high-quality photos to showcase your car',
-                    style: context.bodyRegular.copyWith(color: Colors.grey)),
-              ],
-            )
-                : ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Stack(
-                children: [
-                  Image.file(
-                    provider.selectedImage!,
-                    fit: BoxFit.contain,
-                    width: double.infinity,
-                    height: double.infinity,
-                  ),
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.black54,
-                      child: IconButton(
-                        icon: const Icon(Icons.edit,
-                            color: Colors.white, size: 20),
-                        onPressed: () => provider.pickImage(),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.add_a_photo_outlined,
+                        color: Colors.grey,
+                        size: 40,
                       ),
+                      context.addVerticalSpace(8),
+                      Text(
+                        'Add high-quality photos to showcase your car',
+                        style: context.bodyRegular.copyWith(color: Colors.grey),
+                      ),
+                    ],
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Stack(
+                      children: [
+                        Image.file(
+                          provider.selectedImage!,
+                          fit: BoxFit.contain,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.black54,
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              onPressed: () => provider.pickImage(),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         ),
       ],

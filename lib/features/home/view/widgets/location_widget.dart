@@ -19,14 +19,19 @@ class LocationWidget extends StatelessWidget {
     if (model.locationFetchFailed || model.shippingPosition == null) {
       return InkWell(
         onTap: () async {
-          final result =
-          await Navigator.of(context).pushNamed(ScreenName.mapScreen);
+          final result = await Navigator.of(
+            context,
+          ).pushNamed(ScreenName.mapScreen);
           if (result is MapSelectionResult) {
             model.handleMapResult(result);
           }
         },
-        child: Image.asset(ImagesManager.map,
-            height: 150, width: double.infinity, fit: BoxFit.cover),
+        child: Image.asset(
+          ImagesManager.map,
+          height: 150,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
       );
     }
     return GoogleMap(
@@ -39,14 +44,15 @@ class LocationWidget extends StatelessWidget {
         Marker(
           markerId: const MarkerId("currentLocation"),
           position: model.shippingPosition!,
-        )
+        ),
       },
       myLocationButtonEnabled: false,
       zoomControlsEnabled: false,
       scrollGesturesEnabled: false,
       onTap: (LatLng position) async {
-        final result =
-        await Navigator.of(context).pushNamed(ScreenName.mapScreen);
+        final result = await Navigator.of(
+          context,
+        ).pushNamed(ScreenName.mapScreen);
         if (result is MapSelectionResult) {
           model.handleMapResult(result);
         }

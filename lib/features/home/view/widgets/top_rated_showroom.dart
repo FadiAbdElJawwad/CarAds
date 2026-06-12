@@ -10,7 +10,7 @@ import '../../../../core/extension/text_style_extension.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
 import '../../logic/service/showroom_firestore_service.dart';
-import '../../../../core/models/showroom_model.dart';
+import '../../model/showroom_model.dart';
 
 class TopRatedShowroom extends StatefulWidget {
   const TopRatedShowroom({super.key});
@@ -44,10 +44,7 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Top rated Showroom ',
-              style: context.titleRegular18,
-            ),
+            Text('Top rated Showroom ', style: context.titleRegular18),
             context.addVerticalSpace(8),
             GridView.builder(
               shrinkWrap: true,
@@ -60,7 +57,8 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
                 childAspectRatio: 0.75,
               ),
               itemBuilder: (context, i) {
-                final showroomData = showroomDocs[i].data() as Map<String, dynamic>;
+                final showroomData =
+                    showroomDocs[i].data() as Map<String, dynamic>;
                 final showroom = ShowroomModel.fromMap(showroomData);
 
                 return InkWell(
@@ -95,8 +93,11 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
                               onPressed: () {},
-                              icon: SvgPicture.asset(ImagesManager.share, width: 8),
-                            )
+                              icon: SvgPicture.asset(
+                                ImagesManager.share,
+                                width: 8,
+                              ),
+                            ),
                           ],
                         ),
                         context.addVerticalSpace(4),
@@ -106,15 +107,17 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(showroom.showroomRating?.toString() ?? 'N/A'),
+                              Text(
+                                showroom.showroomRating?.toString() ?? 'N/A',
+                              ),
                               const Icon(
                                 Icons.star,
                                 color: Colors.amber,
                                 size: 16,
-                              )
+                              ),
                             ],
                           ).padSymmetric(8),
-                        )
+                        ),
                       ],
                     ).pad(8),
                   ),
@@ -127,7 +130,6 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
     );
   }
 }
-
 
 class TopRatedShowroomSkeleton extends StatelessWidget {
   const TopRatedShowroomSkeleton({super.key});
@@ -154,9 +156,7 @@ class TopRatedShowroomSkeleton extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Expanded(
-                    child: Skeleton(width: double.infinity),
-                  ),
+                  const Expanded(child: Skeleton(width: double.infinity)),
                   context.addVerticalSpace(4),
                   Row(
                     children: [

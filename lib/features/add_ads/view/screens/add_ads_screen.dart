@@ -24,10 +24,9 @@ class AddAdsScreen extends StatelessWidget {
           children: [
             Scaffold(
               appBar: const PreferredSize(
-                  preferredSize: Size.fromHeight(kToolbarHeight + 16),
-                  child: PrimaryAppBar(
-                    text: 'Post Your Advertisement',
-                  )),
+                preferredSize: Size.fromHeight(kToolbarHeight + 16),
+                child: PrimaryAppBar(text: 'Post Your Advertisement'),
+              ),
               body: Form(
                 key: provider.formKey,
                 child: Column(
@@ -66,9 +65,7 @@ class AddAdsScreen extends StatelessWidget {
               ),
             ),
             if (provider.isLoading)
-              const Center(
-                child: CircularProgressIndicator(),
-              ),
+              const Center(child: CircularProgressIndicator()),
           ],
         );
       },

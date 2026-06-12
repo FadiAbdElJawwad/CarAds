@@ -7,6 +7,7 @@ import 'package:car_ads/features/nav_button_bar/provider/nav_button_provider.dar
 import 'package:car_ads/features/profile/logic/provider/change_email_provider.dart';
 import 'package:car_ads/features/profile/logic/provider/language_provider.dart';
 import 'package:car_ads/features/profile/logic/provider/change_phone_provider.dart';
+import 'package:car_ads/features/showroom/logic/provider/showroom_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ import 'features/notifications/logic/provider/notification_provider.dart';
 import 'firebase_options.dart';
 import 'generated/l10n.dart';
 import 'features/history/logic/provider/history_provider.dart';
-
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'core/services/notification_service.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -36,12 +37,12 @@ class MyHttpOverrides extends HttpOverrides {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  
-  // Initialize Notification Service
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   await NotificationService().initialize();
+
+  Stripe.publishableKey =
+      'pk_test_51TTpSD0hSv5UbIOcI3lPgK3Q0pqO7BVflAYffamsBbQpHB89jJBwJnrtXTv1OJgw2EWWuJbv5SFXBuSEZkdjtKVR00XMxqJdtv';
 
   runApp(const CarAds());
 }
@@ -63,6 +64,7 @@ class CarAds extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AddAdsProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => ChangePhoneProvider()),
+        ChangeNotifierProvider(create: (_) => ShowroomProvider()),
       ],
       child: Consumer<LanguageProvider>(
         builder: (context, languageProvider, child) {
@@ -117,10 +119,6 @@ class _InitializerWidgetState extends State<InitializerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

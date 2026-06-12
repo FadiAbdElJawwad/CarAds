@@ -8,7 +8,7 @@ import 'package:car_ads/common/car_image_extractor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../explore/logic/helper/suggested_ads.dart';
-import '../../../../core/models/car_card_model.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
 import '../widgets/car_features_card.dart';
 import '../widgets/showroom_contact_card.dart';
 
@@ -26,13 +26,14 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
     return Scaffold(
       bottomNavigationBar: Card(
         child: PrimaryButton(
-            text: 'Rental',
-            onPressed: () {
-              AppRouter.goTo(
-                  screenName: ScreenName.checkout, arguments: widget.car);
-            })
-            .padSymmetric(20)
-            .padVerticalSymmetric(17),
+          text: 'Rental',
+          onPressed: () {
+            AppRouter.goTo(
+              screenName: ScreenName.checkout,
+              arguments: widget.car,
+            );
+          },
+        ).padSymmetric(20).padVerticalSymmetric(17),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -41,14 +42,18 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
             children: [
               Card(
                 child: IconButton(
-                    onPressed: () {
-                      AppRouter.back();
-                    },
-                    icon: SvgPicture.asset(ImagesManager.arrowLeft)),
+                  onPressed: () {
+                    AppRouter.back();
+                  },
+                  icon: SvgPicture.asset(ImagesManager.arrowLeft),
+                ),
               ),
               context.addVerticalSpace(16),
-              CarImageExtractor.buildImage(widget.car.carImage,
-                  height: 160, fit: BoxFit.contain),
+              CarImageExtractor.buildImage(
+                widget.car.carImage,
+                height: 160,
+                fit: BoxFit.contain,
+              ),
               context.addVerticalSpace(8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,30 +68,21 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                         '${widget.car.price ?? 0}K',
                         style: context.bodyBold,
                       ),
-                      Text(
-                        '/AED',
-                        style: context.bodyRegular,
-                      )
+                      Text('/AED', style: context.bodyRegular),
                     ],
-                  )
+                  ),
                 ],
               ),
               context.addVerticalSpace(24),
               CarFeaturesCard(car: widget.car),
               context.addVerticalSpace(24),
-              Text(
-                'Car Information:',
-                style: context.bodyBold,
-              ),
+              Text('Car Information:', style: context.bodyBold),
               context.addVerticalSpace(8),
               infoBulletPoint("Car Model", widget.car.carModel ?? 'N/A'),
               infoBulletPoint("Year", widget.car.year ?? 'N/A'),
               infoBulletPoint("Mileage", widget.car.mileage ?? 'N/A'),
               context.addVerticalSpace(24),
-              Text(
-                'Description',
-                style: context.bodyBold,
-              ),
+              Text('Description', style: context.bodyBold),
               context.addVerticalSpace(4),
               Text(
                 widget.car.description ?? 'No description available.',
@@ -98,10 +94,7 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                 car: widget.car,
               ),
               context.addVerticalSpace(24),
-              Text(
-                'Suggested Ads',
-                style: context.bodyBold,
-              ),
+              Text('Suggested Ads', style: context.bodyBold),
               context.addVerticalSpace(8),
               SuggestedAds(car: widget.car),
             ],

@@ -21,12 +21,16 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       ),
       body: Column(
         children: [
-          Text('At Car Ads, we are committed to safeguarding your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and protect your data when you use our mobile application.',style: context.titleRegular18,),
+          Text(
+            'At Car Ads, we are committed to safeguarding your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and protect your data when you use our mobile application.',
+            style: context.titleRegular18,
+          ),
           context.addVerticalSpace(16),
           Expanded(
             child: ListView.separated(
               itemCount: privacyPolicyData.length,
-              separatorBuilder: (context, index) => context.addVerticalSpace(16),
+              separatorBuilder: (context, index) =>
+                  context.addVerticalSpace(16),
               itemBuilder: (context, index) {
                 final item = privacyPolicyData[index];
                 return Column(
@@ -38,7 +42,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                 );
               },
             ),
-          )
+          ),
         ],
       ).padSymmetric(20),
     );

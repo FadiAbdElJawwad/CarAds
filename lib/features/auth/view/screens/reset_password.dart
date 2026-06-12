@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
-import '../../../../common/show_snack_bar.dart' ;
+import '../../../../common/show_snack_bar.dart';
 import '../../../../core/extension/string_validation.dart';
 import '../../logic/helper/auth_error_messages.dart';
 import '../../logic/provider/auth_provider.dart';
@@ -42,7 +42,10 @@ class _ResetPasswordState extends State<ResetPassword> {
           showSnackBar(context, 'Password reset email sent successfully!');
           AppRouter.goTo(screenName: ScreenName.login);
         } else if (state.isFailure) {
-          final errorMessage = AuthErrorMessages.getErrorMessage(context, state.errorKey ?? '');
+          final errorMessage = AuthErrorMessages.getErrorMessage(
+            context,
+            state.errorKey ?? '',
+          );
           showSnackBar(context, errorMessage);
         }
       });
@@ -84,13 +87,16 @@ class _ResetPasswordState extends State<ResetPassword> {
                             onPressed: () => AppRouter.back(),
                             icon: SvgPicture.asset(ImagesManager.arrowLeft),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     context.addVerticalSpace(40),
                     Image.asset(ImagesManager.resetPassword),
                     context.addVerticalSpace(16),
-                    Text(context.loc.forgotPassword, style: context.titleBold18),
+                    Text(
+                      context.loc.forgotPassword,
+                      style: context.titleBold18,
+                    ),
                     context.addVerticalSpace(4),
                     Text(
                       context.loc.forgotPasswordBody,
@@ -105,7 +111,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                       keyboardType: TextInputType.emailAddress,
                     ),
                     context.addVerticalSpace(24),
-                    PrimaryButton(text: 'Send', onPressed: _handleResetPassword),
+                    PrimaryButton(
+                      text: 'Send',
+                      onPressed: _handleResetPassword,
+                    ),
                   ],
                 ),
               ).padSymmetric(20),

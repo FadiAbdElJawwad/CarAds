@@ -26,17 +26,14 @@ class LocationDetailsCard extends StatelessWidget {
             style: context.bodyRegular.copyWith(color: Colors.grey),
           ),
           context.addVerticalSpace(8),
-          Row(children: [
-            Image.asset(ImagesManager.locationIcon).padEnd(4),
-            Expanded(
-              child: Text(address, style: context.bodyRegular),
-            )
-          ]),
+          Row(
+            children: [
+              Image.asset(ImagesManager.locationIcon).padEnd(4),
+              Expanded(child: Text(address, style: context.bodyRegular)),
+            ],
+          ),
           context.addVerticalSpace(18),
-          PrimaryButton(
-            text: 'Set Location',
-            onPressed: onSetLocationPressed,
-          )
+          PrimaryButton(text: 'Set Location', onPressed: onSetLocationPressed),
         ],
       ).padSymmetric(20).padVerticalSymmetric(24),
     );

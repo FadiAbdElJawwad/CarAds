@@ -32,15 +32,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   Widget build(BuildContext context) {
     final carAdsProvider = context.watch<CarAdsProvider>();
     final currentBrand = carAdsProvider.tempFilter.brand;
-    final selectedBrandIndex =
-    carTypeList.indexWhere((type) => type.carType == currentBrand);
+    final selectedBrandIndex = carTypeList.indexWhere(
+      (type) => type.carType == currentBrand,
+    );
 
     return Padding(
       padding: EdgeInsets.only(
-        bottom: MediaQuery
-            .of(context)
-            .viewInsets
-            .bottom,
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Container(
         padding: context.spaceAroundAll(24.0),

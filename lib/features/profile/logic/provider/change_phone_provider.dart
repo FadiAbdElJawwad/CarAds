@@ -87,7 +87,8 @@ class ChangePhoneProvider extends ChangeNotifier {
           await _notificationService.sendNotification(
             userId: userId,
             title: 'Phone Number Updated',
-            body: 'Your phone number has been updated to $newPhone successfully.',
+            body:
+                'Your phone number has been updated to $newPhone successfully.',
           );
         }
       }

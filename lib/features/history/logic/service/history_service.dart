@@ -10,10 +10,10 @@ class HistoryService {
         .where('userId', isEqualTo: userId)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => HistoryOrder.fromFirestore(doc))
-          .toList();
-    });
+          return snapshot.docs
+              .map((doc) => HistoryOrder.fromFirestore(doc))
+              .toList();
+        });
   }
 
   Future<void> clearHistory(String userId) async {

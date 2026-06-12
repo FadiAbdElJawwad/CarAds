@@ -50,40 +50,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       ProfileMenuItem(title: 'Payment Methods', onTap: () {}),
                       const Divider(color: ColorManager.backgroundColor),
-                      ProfileMenuItem(title: 'Change Your Email', onTap: () {
-                        AppRouter.goTo(screenName: ScreenName.changeEmailScreen);
-                      }),
+                      ProfileMenuItem(
+                        title: 'Change Your Email',
+                        onTap: () {
+                          AppRouter.goTo(
+                            screenName: ScreenName.changeEmailScreen,
+                          );
+                        },
+                      ),
                       const Divider(color: ColorManager.backgroundColor),
-                      ProfileMenuItem(title: 'Change Your Phone Number', onTap: () {
-                        AppRouter.goTo(screenName: ScreenName.changePhoneScreen);
-                      }),
+                      ProfileMenuItem(
+                        title: 'Change Your Phone Number',
+                        onTap: () {
+                          AppRouter.goTo(
+                            screenName: ScreenName.changePhoneScreen,
+                          );
+                        },
+                      ),
                       const Divider(color: ColorManager.backgroundColor),
-                      ProfileMenuItem(title: 'Change Your Password', onTap: () {
-                        AppRouter.goTo(screenName: ScreenName.changePasswordScreen);
-                      }),
+                      ProfileMenuItem(
+                        title: 'Change Your Password',
+                        onTap: () {
+                          AppRouter.goTo(
+                            screenName: ScreenName.changePasswordScreen,
+                          );
+                        },
+                      ),
                       const Divider(color: ColorManager.backgroundColor),
-                      ProfileMenuItem(title: 'Change Language', onTap: () {
-                        AppRouter.goTo(screenName: ScreenName.changeLanguageScreen);
-                      }),
+                      ProfileMenuItem(
+                        title: 'Change Language',
+                        onTap: () {
+                          AppRouter.goTo(
+                            screenName: ScreenName.changeLanguageScreen,
+                          );
+                        },
+                      ),
                       const Divider(color: ColorManager.backgroundColor),
-                      ProfileMenuItem(title: 'FAQ’S', onTap: () {
-                        AppRouter.goTo(screenName: ScreenName.faqScreenScreen);
-                      }),
+                      ProfileMenuItem(
+                        title: 'FAQ’S',
+                        onTap: () {
+                          AppRouter.goTo(
+                            screenName: ScreenName.faqScreenScreen,
+                          );
+                        },
+                      ),
                       const Divider(color: ColorManager.backgroundColor),
-                      ProfileMenuItem(title: 'Privacy Policy', onTap: () {
-                        AppRouter.goTo(screenName: ScreenName.privacyPolicyScreen);
-                      }),
+                      ProfileMenuItem(
+                        title: 'Privacy Policy',
+                        onTap: () {
+                          AppRouter.goTo(
+                            screenName: ScreenName.privacyPolicyScreen,
+                          );
+                        },
+                      ),
                       const Divider(color: ColorManager.backgroundColor),
-                      ProfileMenuItem(title: 'Terms & Conditions', onTap: () {
-                        AppRouter.goTo(screenName: ScreenName.termsConditionsScreen);
-                      }),
+                      ProfileMenuItem(
+                        title: 'Terms & Conditions',
+                        onTap: () {
+                          AppRouter.goTo(
+                            screenName: ScreenName.termsConditionsScreen,
+                          );
+                        },
+                      ),
                       const Divider(color: ColorManager.backgroundColor),
                       ProfileMenuItem(
                         title: 'Logout',
                         onTap: () async {
                           await authProvider.logout();
                           if (context.mounted) {
-                            AppRouter.goToAndRemove(screenName: ScreenName.login);
+                            AppRouter.goToAndRemove(
+                              screenName: ScreenName.login,
+                            );
                           }
                         },
                         isLogout: true,
@@ -92,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           );
         },

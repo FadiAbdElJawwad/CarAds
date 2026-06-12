@@ -25,7 +25,7 @@ class MapWidget extends StatelessWidget {
           Marker(
             markerId: const MarkerId('currentLocation'),
             position: currentPosition!,
-          )
+          ),
       },
     );
   }

@@ -19,7 +19,10 @@ class ChangePhoneScreen extends StatelessWidget {
             Scaffold(
               appBar: const PreferredSize(
                 preferredSize: Size.fromHeight(kToolbarHeight),
-                child: PrimaryAppBar(backIconVisible: true, text: 'Change Phone'),
+                child: PrimaryAppBar(
+                  backIconVisible: true,
+                  text: 'Change Phone',
+                ),
               ),
               body: Form(
                 key: provider.phoneFormKey,
@@ -32,7 +35,9 @@ class ChangePhoneScreen extends StatelessWidget {
                           context.addVerticalSpace(20),
                           Text(
                             'Enter your new mobile number to receive an OTP code.',
-                            style: context.bodyRegular.copyWith(color: Colors.grey[600]),
+                            style: context.bodyRegular.copyWith(
+                              color: Colors.grey[600],
+                            ),
                           ),
                           context.addVerticalSpace(24),
                           PrimaryTextField(
@@ -63,7 +68,9 @@ class ChangePhoneScreen extends StatelessWidget {
                       ),
                       child: PrimaryButton(
                         text: 'Send OTP',
-                        onPressed: provider.isLoading ? null : () => provider.sendOtp(context),
+                        onPressed: provider.isLoading
+                            ? null
+                            : () => provider.sendOtp(context),
                       ),
                     ),
                   ],

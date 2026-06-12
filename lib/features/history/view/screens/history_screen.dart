@@ -16,7 +16,8 @@ class HistoryScreen extends StatefulWidget {
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveClientMixin {
+class _HistoryScreenState extends State<HistoryScreen>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -26,52 +27,49 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
     return Consumer2<AuthProvider, HistoryProvider>(
       builder: (context, authProvider, model, child) {
         final userId = authProvider.state.user?.uid;
-          if (userId != null) {
-            model.init(userId);
-          }
+        if (userId != null) {
+          model.init(userId);
+        }
 
-          return Scaffold(
-            appBar: const PreferredSize(
-              preferredSize: Size.fromHeight(kToolbarHeight),
-              child: PrimaryAppBar(text: 'History',),
-            ),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () =>
-                      ClearHistoryConfirmation.show(
-                        context,
-                        onConfirm: model.clearHistory,
+        return Scaffold(
+          appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: PrimaryAppBar(text: 'History'),
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => ClearHistoryConfirmation.show(
+                  context,
+                  onConfirm: model.clearHistory,
+                ),
+                child: Text(
+                  'Clear ALL',
+                  style: context.bodyRegular.copyWith(color: Colors.grey),
+                ),
+              ),
+              Expanded(
+                child: model.isLoading
+                    ? ListView.builder(
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return const HistoryCardSkeleton();
+                        },
+                      )
+                    : model.orders.isEmpty
+                    ? const Center(child: Text('No history yet.'))
+                    : ListView.builder(
+                        itemCount: model.orders.length,
+                        itemBuilder: (context, index) {
+                          return HistoryCard(order: model.orders[index]);
+                        },
                       ),
-                  child: Text(
-                    'Clear ALL',
-                    style: context.bodyRegular.copyWith(color: Colors.grey),
-                  ),
-                ),
-                Expanded(
-                  child: model.isLoading
-                      ? ListView.builder(
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return const HistoryCardSkeleton();
-                    },
-                  )
-                      : model.orders.isEmpty
-                      ? const Center(
-                    child: Text('No history yet.'),
-                  )
-                      : ListView.builder(
-                    itemCount: model.orders.length,
-                    itemBuilder: (context, index) {
-                      return HistoryCard(order: model.orders[index]);
-                    },
-                  ),
-                ),
-              ],
-            ).padSymmetric(20),
-          );
-        },
+              ),
+            ],
+          ).padSymmetric(20),
+        );
+      },
     );
   }
 }

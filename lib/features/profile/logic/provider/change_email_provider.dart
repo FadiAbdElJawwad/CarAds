@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class ChangeEmailProvider extends ChangeNotifier {
   final GlobalKey<FormState> currentEmailFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> newEmailFormKey = GlobalKey<FormState>();
-  
+
   final TextEditingController currentEmailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController newEmailController = TextEditingController();
@@ -40,30 +40,34 @@ class ChangeEmailProvider extends ChangeNotifier {
         currentPassword: passwordController.text,
         newEmail: newEmailController.text.trim(),
       );
-      
+
       if (!context.mounted) return;
-      showSnackBar(context, 'A verification link has been sent to your new email. Please verify it and log in again.');
-      
+      showSnackBar(
+        context,
+        'A verification link has been sent to your new email. Please verify it and log in again.',
+      );
+
       final newEmail = newEmailController.text.trim();
       final authProvider = context.read<AuthProvider>();
       await authProvider.updateEmailInFirestore(newEmail);
-      
+
       final userId = authProvider.state.user?.uid;
       if (userId != null) {
         await _notificationService.sendNotification(
           userId: userId,
           title: 'Email Change Requested',
-          body: 'A request to change your email to $newEmail has been initiated.',
+          body:
+              'A request to change your email to $newEmail has been initiated.',
         );
       }
-      
+
       if (!context.mounted) return;
       currentEmailController.clear();
       newEmailController.clear();
       passwordController.clear();
-      
+
       await context.read<AuthProvider>().logout();
-      
+
       AppRouter.goToAndRemove(screenName: ScreenName.login);
     } catch (e) {
       if (context.mounted) {
@@ -77,7 +81,7 @@ class ChangeEmailProvider extends ChangeNotifier {
 
   String _handleAuthError(dynamic e) {
     if (e is String) return e;
-    
+
     final message = e.toString().toLowerCase();
     if (message.contains('email-already-in-use')) {
       return 'This email is already in use by another account.';
@@ -101,4 +105,3 @@ class ChangeEmailProvider extends ChangeNotifier {
     super.dispose();
   }
 }
-

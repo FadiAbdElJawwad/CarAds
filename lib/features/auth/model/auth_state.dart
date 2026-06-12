@@ -1,4 +1,4 @@
-import '../../../core/models/user_model.dart';
+import 'user_model.dart';
 
 enum AuthStatus { initial, loading, success, failure }
 
@@ -14,7 +14,6 @@ class AuthState {
     this.fallbackMessage,
     this.user,
   });
-
 
   bool get isLoading => status == AuthStatus.loading;
   bool get isSuccess => status == AuthStatus.success;

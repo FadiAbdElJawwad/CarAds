@@ -7,7 +7,7 @@ import '../../../../core/extension/text_style_extension.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
 import '../../../../common/car_image_extractor.dart';
-import '../../../../core/models/car_card_model.dart';
+import '../../model/car_card_model.dart';
 
 class CarAdsCard extends StatelessWidget {
   final CarCardModel car;
@@ -19,10 +19,7 @@ class CarAdsCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (car.carID != null) {
-          AppRouter.goTo(
-            screenName: ScreenName.carDetailsForm,
-            arguments: car,
-          );
+          AppRouter.goTo(screenName: ScreenName.carDetailsForm, arguments: car);
         }
       },
 
@@ -31,7 +28,9 @@ class CarAdsCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: CarImageExtractor.buildImage(UrlFormatter.getDirectGoogleDriveUrl(car.carImage)),
+              child: CarImageExtractor.buildImage(
+                UrlFormatter.getDirectGoogleDriveUrl(car.carImage),
+              ),
             ),
             context.addVerticalSpace(16),
             Text(
@@ -71,12 +70,16 @@ class CarAdsCard extends StatelessWidget {
                   child: Text(
                     car.gearType ?? '',
                     style: context.inputRegular14.copyWith(
-                        fontSize: 12, color: ColorManager.gearTypeColor),
+                      fontSize: 12,
+                      color: ColorManager.gearTypeColor,
+                    ),
                   ).padVerticalSymmetric(4).padSymmetric(11),
                 ),
-                CarImageExtractor.buildLogo(UrlFormatter.getDirectGoogleDriveUrl(car.carLogo)),
+                CarImageExtractor.buildLogo(
+                  UrlFormatter.getDirectGoogleDriveUrl(car.carLogo),
+                ),
               ],
-            )
+            ),
           ],
         ).padSymmetric(8).padVerticalSymmetric(16),
       ),
