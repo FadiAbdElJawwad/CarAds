@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:car_ads/common/show_snack_bar.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
@@ -32,34 +33,49 @@ class ChangePhoneProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendOtp(BuildContext context) async {
-    if (!phoneFormKey.currentState!.validate()) return;
+  Future<dynamic> sendOtp(
+    BuildContext context, {
+    bool isRegistration = false,
+  }) async {
+    if (!isRegistration && !phoneFormKey.currentState!.validate()) return;
 
     _setLoading(true);
+    final completer = Completer<dynamic>();
+
     try {
       await _authService.verifyPhoneNumber(
         phoneNumber: phoneController.text.trim(),
-        codeSent: (verificationId, resendToken) {
+        codeSent: (verificationId, resendToken) async {
           _verificationId = verificationId;
           _setLoading(false);
-          AppRouter.goTo(screenName: ScreenName.verifyPhoneOtpScreen);
+          final result = await AppRouter.goTo(
+            screenName: ScreenName.verifyPhoneOtpScreen,
+            arguments: isRegistration,
+          );
+          completer.complete(result);
         },
         verificationFailed: (e) {
           _setLoading(false);
           if (context.mounted) {
             showSnackBar(context, e.message ?? 'Verification failed');
           }
+          completer.complete(null);
         },
       );
+      return completer.future;
     } catch (e) {
       _setLoading(false);
       if (context.mounted) {
         showSnackBar(context, e.toString());
       }
+      return null;
     }
   }
 
-  Future<void> verifyOtp(BuildContext context) async {
+  Future<void> verifyOtp(
+    BuildContext context, {
+    bool isRegistration = false,
+  }) async {
     if (_otpCode.length != 6) {
       showSnackBar(context, 'Please enter the 6-digit OTP code');
       return;
@@ -73,15 +89,27 @@ class ChangePhoneProvider extends ChangeNotifier {
         smsCode: _otpCode,
       );
 
-      await _authService.updatePhoneNumber(credential);
+      if (isRegistration) {
+        final userCredential = await FirebaseAuth.instance.signInWithCredential(
+          credential,
+        );
 
-      // Update Firestore
+        await userCredential.user?.delete();
+        await _authService.signOut();
+
+        _setLoading(false);
+        if (context.mounted) {
+          Navigator.pop(context, true);
+        }
+        return;
+      }
+
+      await _authService.updatePhoneNumber(credential);
       final newPhone = phoneController.text.trim();
       if (context.mounted) {
         final authProvider = context.read<AuthProvider>();
         await authProvider.updateUserData(phone: newPhone);
 
-        // Send notification
         final userId = authProvider.state.user?.uid;
         if (userId != null) {
           await _notificationService.sendNotification(

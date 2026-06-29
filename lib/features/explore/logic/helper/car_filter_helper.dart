@@ -1,19 +1,17 @@
 import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
 import '../../model/car_card_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CarFilterHelper {
   static List<CarCardModel> filterCars({
-    required List<QueryDocumentSnapshot> docs,
+    required List<CarCardModel> availableCars,
     required FilterModel filter,
     String? carID,
   }) {
-    List<CarCardModel> fetchedCars = docs
-        .map((doc) => CarCardModel.fromMap(doc.data() as Map<String, dynamic>))
-        .toList();
-
-    return fetchedCars.where((car) {
+    return availableCars.where((car) {
       if (carID != null && car.carID == carID) return false;
+
+      // Safety check: ensure only available cars are shown in global lists
+      if (car.status != 'available' && carID == null) return false;
 
       bool match = true;
 

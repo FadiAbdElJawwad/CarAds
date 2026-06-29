@@ -1,5 +1,6 @@
 import 'package:car_ads/core/app_logger.dart';
 import 'package:car_ads/features/showroom/model/booking_model.dart';
+import 'package:car_ads/features/showroom/model/rent_request_model.dart'; // Added
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,20 @@ class ShowroomProvider extends ChangeNotifier {
 
   List<BookingModel> get recentBookings => _recentBookings;
   bool get isLoading => _isLoading;
+
+  Stream<List<RentRequestModel>> getRecentRentRequests(String showroomId) {
+    return _firestore
+        .collection('rent_requests')
+        .where('showroomId', isEqualTo: showroomId)
+        .orderBy('createdAt', descending: true)
+        .limit(5)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => RentRequestModel.fromFirestore(doc))
+              .toList(),
+        );
+  }
 
   Future<void> fetchRecentRentRequests(String showroomId) async {
     _isLoading = true;

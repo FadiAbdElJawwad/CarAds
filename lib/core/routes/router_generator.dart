@@ -3,7 +3,6 @@ import 'package:car_ads/features/home/model/showroom_model.dart';
 import 'package:car_ads/features/profile/view/screens/update_profile_screen.dart';
 import 'package:car_ads/features/profile/view/screens/change_phone_screen.dart';
 import 'package:car_ads/features/profile/view/screens/verify_phone_otp_screen.dart';
-import 'package:car_ads/features/showroom/view/screens/showroom_main_screen.dart';
 import 'package:flutter/material.dart';
 import '../../features/add_ads/view/screens/add_ads_screen.dart';
 import '../../features/auth/view/screens/login_screen.dart';
@@ -31,6 +30,10 @@ import '../../features/profile/view/screens/faq_screen.dart';
 import '../../features/profile/view/screens/new_email_screen.dart';
 import '../../features/profile/view/screens/privacy_policy_screen.dart';
 import '../../features/profile/view/screens/terms_conditions_screen.dart';
+import '../../features/showroom/model/rent_request_model.dart';
+import '../../features/showroom/view/screens/license_upload_screen.dart';
+import '../../features/showroom/view/screens/request_screen.dart';
+import '../../features/showroom/view/screens/verification_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -56,9 +59,6 @@ class RouteGenerator {
         break;
       case ScreenName.navButtonBar:
         result = const NavButtonBar();
-        break;
-      case ScreenName.showroomMainScreen:
-        result = const ShowroomMainScreen();
         break;
       case ScreenName.carDetailsForm:
         result = CarDetailsForm(car: settings.arguments as CarCardModel);
@@ -135,7 +135,22 @@ class RouteGenerator {
         result = const ChangePhoneScreen();
         break;
       case ScreenName.verifyPhoneOtpScreen:
-        result = const VerifyPhoneOtpScreen();
+        result = VerifyPhoneOtpScreen(
+          isRegistration: settings.arguments as bool? ?? false,
+        );
+        break;
+      case ScreenName.verificationScreen:
+        result = VerificationScreen(
+          userData: settings.arguments as Map<String, dynamic>,
+        );
+        break;
+      case ScreenName.requestScreen:
+        result = RequestScreen(
+          requestModel: settings.arguments as RentRequestModel,
+        );
+        break;
+      case ScreenName.licenseUploadScreen:
+        result = const LicenseUploadScreen();
         break;
 
       default:

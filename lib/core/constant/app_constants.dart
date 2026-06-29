@@ -14,4 +14,8 @@ class AppConstants {
   static const String storageKeyName = 'name';
   static const String storageKeyOnboardingCompleted = 'onboarding_completed';
   static const String storageKeyRole = 'role';
+
+  // Filter Defaults
+  static const double minPrice = 0;
+  static const double maxPrice = 1000000;
 }

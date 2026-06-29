@@ -1,16 +1,11 @@
 import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'package:car_ads/features/explore/logic/helper/car_filter_helper.dart';
 import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-
-class MockQueryDocumentSnapshot extends Mock implements QueryDocumentSnapshot {}
 
 void main() {
   group('CarFilterHelper', () {
-    late List<MockQueryDocumentSnapshot> mockDocs;
     late List<CarCardModel> testCars;
 
     setUp(() {
@@ -22,6 +17,7 @@ void main() {
           price: '50', // 50,000 AED
           mileage: '10,000 km',
           year: '2022',
+          status: 'available',
         ),
         CarCardModel(
           carID: '2',
@@ -30,6 +26,7 @@ void main() {
           price: '100', // 100,000 AED
           mileage: '5,000 km',
           year: '2023',
+          status: 'available',
         ),
         CarCardModel(
           carID: '3',
@@ -38,14 +35,9 @@ void main() {
           price: '40', // 40,000 AED
           mileage: '20,000 km',
           year: '2021',
+          status: 'available',
         ),
       ];
-
-      mockDocs = testCars.map((car) {
-        final mock = MockQueryDocumentSnapshot();
-        when(() => mock.data()).thenReturn(car.toMap());
-        return mock;
-      }).toList();
     });
 
     test('should filter by search query (name)', () {
@@ -56,7 +48,10 @@ void main() {
           200000,
         ), // Ensure price doesn't filter it out
       );
-      final result = CarFilterHelper.filterCars(docs: mockDocs, filter: filter);
+      final result = CarFilterHelper.filterCars(
+        availableCars: testCars,
+        filter: filter,
+      );
 
       expect(result.length, 1);
       expect(result.first.carName, 'Audi A4');
@@ -64,7 +59,10 @@ void main() {
 
     test('should filter by price range', () {
       final filter = FilterModel(priceRange: const RangeValues(30000, 60000));
-      final result = CarFilterHelper.filterCars(docs: mockDocs, filter: filter);
+      final result = CarFilterHelper.filterCars(
+        availableCars: testCars,
+        filter: filter,
+      );
 
       expect(result.length, 2);
       expect(result.any((c) => c.carID == '1'), true);
@@ -77,7 +75,10 @@ void main() {
         endMileage: 8000,
         priceRange: const RangeValues(0, 200000),
       );
-      final result = CarFilterHelper.filterCars(docs: mockDocs, filter: filter);
+      final result = CarFilterHelper.filterCars(
+        availableCars: testCars,
+        filter: filter,
+      );
 
       expect(result.length, 1);
       expect(result.first.carID, '2');
@@ -89,7 +90,10 @@ void main() {
         endYear: 2023,
         priceRange: const RangeValues(0, 200000),
       );
-      final result = CarFilterHelper.filterCars(docs: mockDocs, filter: filter);
+      final result = CarFilterHelper.filterCars(
+        availableCars: testCars,
+        filter: filter,
+      );
 
       expect(result.length, 2);
       expect(result.any((c) => c.carID == '1'), true);
@@ -99,7 +103,7 @@ void main() {
     test('should exclude specific carID', () {
       final filter = FilterModel(priceRange: const RangeValues(0, 200000));
       final result = CarFilterHelper.filterCars(
-        docs: mockDocs,
+        availableCars: testCars,
         filter: filter,
         carID: '1',
       );

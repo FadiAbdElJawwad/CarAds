@@ -1,3 +1,4 @@
+import 'package:car_ads/core/constant/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/extension/text_style_extension.dart';
@@ -26,8 +27,8 @@ class FilterPriceRangeSection extends StatelessWidget {
         ),
         RangeSlider(
           values: priceRange,
-          min: 0,
-          max: 100000,
+          min: AppConstants.minPrice,
+          max: AppConstants.maxPrice,
           divisions: 100,
           activeColor: Colors.black,
           inactiveColor: Colors.grey.shade300,

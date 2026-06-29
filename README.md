@@ -1,84 +1,114 @@
-# CarAds 🚗 
-**A high-performance, secure, and scalable Car E-Commerce solution built with Flutter.**
+# 🏎️ CarAds: Premium Automotive Marketplace
+
+**A high-performance, multi-role car rental and marketplace mobile application built with Flutter and Firebase.**
+
+[![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
+[![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)](https://firebase.google.com)
+[![Architecture](https://img.shields.io/badge/Architecture-Feature--Based-orange.svg?style=for-the-badge)](https://pub.dev)
 
 ---
 
-## 📖 Introduction
-**CarAds** is a premium automotive marketplace designed to provide a seamless car buying and selling experience. Engineered with a **Feature-Driven Architecture** and **MVC design principles**, the application ensures high maintainability and industrial-grade scalability. 
+## 📖 Overview
 
-By integrating a robust backend powered by **Firebase** and a custom **Google Apps Script (GAS)** bridge for image management and push notifications, CarAds delivers real-time data synchronization, enterprise-level security, and a fluid user experience with full native localization support.
+**CarAds** is a sophisticated automotive marketplace designed to bridge the gap between individual renters and professional car showrooms. Engineered with a scalable **Feature-Based Architecture**, the application provides a specialized dual-role ecosystem that delivers a tailored experience for both consumers and business owners.
+
+By leveraging a serverless orchestration layer and a robust Firebase backend, CarAds ensures real-time data synchronization, secure data persistence in the `checkout` collection, and a fluid, zero-latency user experience.
+
+---
 
 ## ✨ Key Features
-- **User Authentication:** Secure Sign-up, Login, and Password Reset using **Firebase Auth**.
-- **Dual-Action Notifications:** 
-    - **Firestore Integration:** Real-time in-app notifications stored and synced via Cloud Firestore.
-    - **FCM Push Notifications:** System-level alerts triggered via a custom Google Apps Script bridge.
-    - **Head-up Alerts:** High-importance foreground notifications using `flutter_local_notifications`.
-    - **Event-based triggers:** Auth, Transactions (Rental/Posting), and Security updates.
-- **Secure Account Management:** 
-    - **Phone Change with OTP**: Secure update of mobile numbers using Firebase Phone Auth.
-    - **FCM Token Syncing**: Automatic device token registration in Firestore for targeted push delivery.
-    - **Profile Image Sync**: Upload and persistent storage of profile pictures via Google Drive (GAS) and Firestore.
-- **Localization:** Full support for **Arabic 🇸🇦** and **English 🇺🇸**.
-- **Secure Local Storage:** Sensitive data protected using **Flutter Secure Storage** and **Shared Preferences**.
-- **Real-time Database:** Car listings and user data synced via **Cloud Firestore**.
-- **State Management:** Efficient app state handling using **Provider**.
-- **Navigation:** Centralized routing logic using `onGenerateRoute` and a global Navigator key.
-- **UI/UX:**
-    - Structured logging via **AppLogger**.
-    - Centralized UI constants and responsive sizing extensions.
-    - Native Splash Screen and SVG support.
 
-## 🏗️ Project Architecture
-The project follows a **Feature-based** structure combined with **MVC** principles (Model-View-Logic) within each feature to keep the code organized and modular.
+### 👥 Intelligent Multi-Role System
+The app utilizes **Dynamic Root Navigation** to detect user roles at launch and dynamically configure the workspace:
+- **Normal Users:** Streamlined car exploration, advanced filtering, and a robust checkout flow.
+- **Showroom Owners:** High-fidelity business dashboard with profit analytics and real-time rent request management.
 
-### Core Services
-- **AppLogger**: Centralized logging for debug and production environments.
-- **NotificationService**: Manages the dual-action alert system (In-app + FCM Push).
-- **FcmSenderService**: Relays notification requests to the Google Apps Script web app.
-- **CarFirestoreService**: Handles vehicle data and image hosting via the GAS Drive bridge.
-- **RedirectService**: Unified logic for app startup and user redirection flow.
+### 📊 Showroom Dashboard & Business Logic
+A dedicated professional workspace for showroom owners:
+- **Financial Tracking:** Dynamic "Profit Cards" for Sales and Rental revenue metrics.
+- **Real-time Requests:** A live "Last 5 Rent Requests" feed allowing owners to view customer details, IDs, and licenses instantly.
 
-### Directory Structure
+### 🔎 Optimized Client-Side Filtering
+The exploration module implements a high-performance **Client-Side Filtering** strategy:
+- **Zero-Latency Search:** Instant brand filtering and text-based search queries processed in memory.
+- **Index Independence:** Bypasses Firestore composite index limitations, ensuring the app remains robust and fast even with complex filter combinations.
+
+### 💳 Robust Data Persistence (`checkout` collection)
+A comprehensive booking system that ensures high data integrity:
+- **Comprehensive Capture:** Securely syncs National IDs, Driver's Licenses, and contact metadata during the checkout process.
+- **Digital Receipts:** Instant access to read-only rental receipts populated directly from the `checkout` collection.
+
+---
+
+## 🏗️ Architecture
+
+CarAds follows a strict **Feature-Based Architecture**, promoting high modularity and clean separation of concerns.
+
 ```text
 lib/
-├── common/             # Reusable atomic widgets (Buttons, AppBars, Skeletons)
-├── core/               # Core application logic and utilities
-│   ├── constant/       # App-wide constants (GAS URLs, Collections, Colors)
-│   ├── extension/      # Dart extensions for sizing, styling, and validation
-│   ├── models/         # Global data models (User, Car, Order, Notification)
-│   ├── routes/         # Navigation setup (AppRouter, RouteGenerator)
-│   ├── services/       # Global services (FCM, Location, Firestore, URL)
-│   └── themes/         # App theming configuration
-├── features/           # Feature-specific modules
-│   ├── auth/           # Login, Signup, Onboarding, Password Reset
-│   ├── home/           # Dashboard, Maps, and Showroom discovery
-│   ├── explore/        # Vehicle discovery and advanced filtering
-│   ├── add_ads/        # UI for posting car advertisements
-│   ├── rental/         # Checkout flow and rental confirmation
-│   ├── history/        # User-specific transaction records
-│   ├── notifications/  # In-app notification management
-│   ├── profile/        # User profile and security settings
-│   └── nav_button_bar/ # Main persistent navigation implementation
-└── main.dart           # App entry point and provider initialization
+├── core/               # Global services (Auth, Firestore), themes, and constants
+├── common/             # Atomic, reusable UI widgets (Buttons, Text-fields, Skeletons)
+├── features/           # Self-contained modules
+│   ├── auth/           # Multi-role authentication & user models
+│   ├── explore/        # Search engine, local filtering logic, and car discovery
+│   ├── rental/         # Booking logic, data persistence, and receipt generation
+│   ├── history/        # Chronological order tracking for users
+│   ├── showroom/       # Showroom dashboards, requests, and verification wizard
+│   └── notifications/  # Real-time alert management
+└── main.dart           # App entry point & Provider state initialization
 ```
 
+### 🧠 Single Source of Truth (SSOT)
+The application adheres to the **SSOT** principle by centralizing data fetching into specialized Providers. This ensures that every screen (Home, Explore, Search) displays consistent data and minimizes redundant network calls.
+
+---
+
 ## 🛠️ Tech Stack
-- **Framework:** Flutter
-- **Backend:** Firebase (Auth, Firestore, Messaging)
-- **Bridge Service:** Google Apps Script (FCM Relay & Drive Hosting)
-- **State Management:** Provider
-- **Local Notifications:** Flutter Local Notifications Plugin
-- **Image Handling:** CachedNetworkImage + Custom GAS Drive Extractor
-- **Security:** Flutter Secure Storage, OTP Verification
+
+- **Framework:** [Flutter](https://flutter.dev) & [Dart](https://dart.dev)
+- **State Management:** [Provider](https://pub.dev/packages/provider)
+- **Backend:** Firebase (Authentication, Cloud Firestore, Cloud Messaging)
+- **Microservices:** Google Apps Script (GAS) for FCM v1 relay and Drive Image hosting.
+- **Storage:** Flutter Secure Storage (Sensitive data) & Shared Preferences.
 
 ---
 
 ## 🚀 Getting Started
-1. Ensure Flutter is installed (`flutter doctor`).
-2. Clone the repository.
-3. Run `flutter pub get` to install dependencies.
-4. Configure `firebase_options.dart` for your Firebase project.
-5. Update the GAS Deployment URL in `AppConstants` if necessary.
-6. Run `flutter run`.
-```
+
+### Prerequisites
+- Flutter SDK (`stable` channel)
+- A Firebase project with Firestore and Auth enabled.
+- Google Apps Script deployment URL configured in `ApiConstants`.
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/fadi-abd-el-jawwad/car_ads.git
+   cd car_ads
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   flutter pub get
+   ```
+
+3. **Firebase Configuration:**
+   - Place your `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) in their respective directories.
+
+4. **Run the application:**
+   ```bash
+   flutter run
+   ```
+
+---
+
+## ✍️ Author
+
+**Fadi Abd ElJawwad**  
+* Flutter Software Architect*
+
+- **GitHub:** [Fadi Abd ElJawwad](https://github.com/FadiAbdElJawwad)
+- **Role:**  Developer
+

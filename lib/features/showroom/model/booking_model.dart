@@ -10,7 +10,7 @@ class BookingModel {
   final String carImage;
   final double pricePerDay;
   final DateTime requestDate;
-  final String status; // e.g., 'pending', 'accepted', 'rejected'
+  final String status;
 
   BookingModel({
     required this.id,

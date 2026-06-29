@@ -11,8 +11,15 @@ class AppRouter {
     );
   }
 
-  static void goTo({required String screenName, Object? arguments}) {
-    navigatorKey.currentState!.pushNamed(screenName, arguments: arguments);
+  static Future<T?> goTo<T>({
+    required String screenName,
+    Object? arguments,
+  }) async {
+    final result = await navigatorKey.currentState!.pushNamed(
+      screenName,
+      arguments: arguments,
+    );
+    return result as T?;
   }
 
   static void back() {

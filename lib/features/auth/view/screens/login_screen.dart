@@ -39,11 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
     final state = authProvider.state;
     if (state.isSuccess) {
-      if (state.user?.role == 'showroom') {
-        AppRouter.goToAndRemove(screenName: ScreenName.showroomMainScreen);
-      } else {
-        AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
-      }
+      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
     } else if (state.isFailure) {
       final errorMessage = AuthErrorMessages.getErrorMessage(
         context,

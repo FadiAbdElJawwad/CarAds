@@ -14,8 +14,13 @@ class CarFirestoreService {
     String? showroomID,
     List<String>? carIDs,
     FilterModel? filter,
+    bool onlyAvailable = true,
   }) {
     Query query = _db.collection('cars');
+
+    if (onlyAvailable) {
+      query = query.where('status', isEqualTo: 'available');
+    }
 
     if (carIDs != null && carIDs.isNotEmpty) {
       final idsToQuery = carIDs.length > 10 ? carIDs.sublist(0, 10) : carIDs;
@@ -36,7 +41,7 @@ class CarFirestoreService {
       }
     }
 
-    return query.snapshots();
+    return query.orderBy('createdAt', descending: true).snapshots();
   }
 
   Future<DocumentSnapshot> getCar(String carId) {

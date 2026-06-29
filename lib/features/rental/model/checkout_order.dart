@@ -11,11 +11,13 @@ class CheckoutOrder {
   final int shippingCost;
   final int taxCost;
   final String carName;
+  final String carId;
   final String carImage;
   final int carPrice;
   final String? userEmail;
   final String? userId;
   final String? location;
+  final String? showroomID;
 
   CheckoutOrder({
     required this.licenseNumber,
@@ -28,11 +30,13 @@ class CheckoutOrder {
     required this.shippingCost,
     required this.taxCost,
     required this.carName,
+    required this.carId,
     required this.carImage,
     required this.carPrice,
     this.userEmail,
     this.userId,
     this.location,
+    this.showroomID,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,6 +44,9 @@ class CheckoutOrder {
       'license_number': licenseNumber,
       'id_number': idNumber,
       'phone_number': phoneNumber,
+      'nationalId': idNumber,
+      'driverLicenseNo': licenseNumber,
+      'phoneNumber': phoneNumber,
       'rental_start': Timestamp.fromDate(rentalStart),
       'rental_end': Timestamp.fromDate(rentalEnd),
       'total_payment': totalPayment,
@@ -48,11 +55,13 @@ class CheckoutOrder {
       'shipping_cost': shippingCost,
       'tax_cost': taxCost,
       'car_name': carName,
+      'carID': carId,
       'car_image': carImage,
       'car_price': carPrice,
       'user_email': userEmail,
       'userId': userId,
       'location': location,
+      'showroomID': showroomID,
     };
   }
 
@@ -72,11 +81,13 @@ class CheckoutOrder {
       shippingCost: map['shipping_cost'] as int? ?? 0,
       taxCost: map['tax_cost'] as int? ?? 0,
       carName: map['car_name'] as String? ?? 'Unknown Car',
+      carId: (map['carID'] ?? map['carId']) as String? ?? '',
       carImage: map['car_image'] as String? ?? '',
       carPrice: map['car_price'] as int? ?? 0,
       userEmail: map['user_email'] as String?,
       userId: map['userId'] as String?,
       location: map['location'] as String?,
+      showroomID: map['showroomID'] as String?,
     );
   }
 }

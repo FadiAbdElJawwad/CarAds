@@ -5,6 +5,7 @@ import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/common/car_image_extractor.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../explore/logic/helper/suggested_ads.dart';
@@ -89,10 +90,50 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                 style: context.bodyRegular,
               ),
               context.addVerticalSpace(24),
-              ShowroomContactCard(
-                showroomID: widget.car.showroomID,
-                car: widget.car,
-              ),
+
+              // Dynamic Showroom/Seller Fetching
+              if (widget.car.showroomID != null &&
+                  widget.car.showroomID!.isNotEmpty)
+                FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(widget.car.showroomID)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError ||
+                        !snapshot.hasData ||
+                        !snapshot.data!.exists) {
+                      // Fallback to static info from car model if user doc fails
+                      return ShowroomContactCard(
+                        showroomName:
+                            widget.car.showroomName ??
+                            widget.car.contactName ??
+                            'Seller',
+                        phoneNumber: widget.car.contactPhone ?? 'N/A',
+                      );
+                    }
+
+                    final data = snapshot.data!.data() as Map<String, dynamic>;
+                    return ShowroomContactCard(
+                      showroomName:
+                          data['showroomName'] ?? data['name'] ?? 'Showroom',
+                      phoneNumber: data['phone'] ?? 'N/A',
+                      imageUrl: data['profileImage'] ?? data['licenseImageUrl'],
+                      showroomID: widget.car.showroomID,
+                    );
+                  },
+                )
+              else
+                ShowroomContactCard(
+                  showroomName: widget.car.contactName ?? 'Individual Seller',
+                  phoneNumber: widget.car.contactPhone ?? 'N/A',
+                  showroomID: widget.car.showroomID,
+                ),
+
               context.addVerticalSpace(24),
               Text('Suggested Ads', style: context.bodyBold),
               context.addVerticalSpace(8),

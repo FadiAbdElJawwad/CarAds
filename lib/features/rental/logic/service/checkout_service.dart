@@ -5,9 +5,27 @@ class CheckoutService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<DocumentReference<Map<String, dynamic>>> submitCheckoutData(
-    Map<String, dynamic> data,
-  ) async {
-    return await _firestore.collection('checkout').add(data);
+    Map<String, dynamic> data, {
+    required String customerName,
+  }) async {
+    final orderRef = await _firestore.collection('checkout').add(data);
+
+    await _firestore.collection('rent_requests').add({
+      'requestId': orderRef.id,
+      'carId': data['carID'] ?? '',
+      'carName': data['car_name'] ?? 'Unknown Car',
+      'price': data['total_payment']?.toString() ?? '',
+      'showroomId': data['showroomID'] ?? '',
+      'customerName': customerName,
+      'status': 'pending',
+      'createdAt': FieldValue.serverTimestamp(),
+      'carImage': data['car_image'] ?? '',
+      'nationalId': data['id_number'] ?? '',
+      'driverLicenseNo': data['license_number'] ?? '',
+      'phoneNumber': data['phone_number'] ?? '',
+    });
+
+    return orderRef;
   }
 
   Future<void> updateOrderLocation(String orderId, String location) async {

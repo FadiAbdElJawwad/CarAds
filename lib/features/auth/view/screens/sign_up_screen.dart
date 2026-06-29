@@ -25,6 +25,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _commercialController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
   @override
   void dispose() {
@@ -32,29 +34,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
+    _commercialController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
   Future<void> _handleSignUp() async {
     if (!_formState.currentState!.validate()) return;
+
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final phone = _phoneController.text.trim();
+    final password = _passwordController.text;
+    final role = widget.role ?? 'user';
+    final commercialLicense = role == 'showroom'
+        ? _commercialController.text.trim()
+        : null;
+    final address = role == 'showroom' ? _addressController.text.trim() : null;
+
+    if (role == 'showroom') {
+      AppRouter.goTo(
+        screenName: ScreenName.verificationScreen,
+        arguments: {
+          'name': name,
+          'email': email,
+          'phone': phone,
+          'password': password,
+          'role': role,
+          'commercialLicenseNumber': commercialLicense,
+          'address': address,
+        },
+      );
+      return;
+    }
+
     final authProvider = context.read<AuthProvider>();
 
     await authProvider.signUpUser(
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      password: _passwordController.text,
-      phone: _phoneController.text.trim(),
-      role: widget.role ?? 'user',
+      name: name,
+      email: email,
+      password: password,
+      phone: phone,
+      role: role,
     );
 
     if (!mounted) return;
 
     if (authProvider.state.isSuccess) {
-      if (authProvider.state.user?.role == 'showroom') {
-        AppRouter.goToAndRemove(screenName: ScreenName.showroomMainScreen);
-      } else {
-        AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
-      }
+      AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
     } else if (authProvider.state.isFailure) {
       showSnackBar(
         context,
@@ -113,6 +140,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     validator: (value) => value!.validateMobile(context),
                     keyboardType: TextInputType.phone,
                   ),
+                  if (widget.role == 'showroom') ...[
+                    context.addVerticalSpace(16),
+                    PrimaryTextField(
+                      controller: _commercialController,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter license number' : null,
+                      hint: 'Commercial License Number',
+                      keyboardType: TextInputType.number,
+                    ),
+                    context.addVerticalSpace(16),
+                    PrimaryTextField(
+                      controller: _addressController,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter address' : null,
+                      hint: 'Showroom Address',
+                      keyboardType: TextInputType.streetAddress,
+                    ),
+                  ],
                   context.addVerticalSpace(16),
                   PrimaryTextField(
                     controller: _passwordController,

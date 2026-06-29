@@ -1,17 +1,16 @@
-import 'package:car_ads/core/app_logger.dart';
-import 'package:car_ads/core/extension/text_style_extension.dart';
-import 'package:car_ads/core/routes/app_router.dart';
-import 'package:car_ads/core/routes/screen_name.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import '../../../../common/skeleton.dart';
 import '../../../../core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
+import '../../../../core/extension/text_style_extension.dart';
 import '../../../auth/view/widgets/slider_indicator.dart';
 import '../../../../common/car_image_extractor.dart';
-import '../../../../core/services/car_firestore_service.dart';
 import 'package:car_ads/features/explore/model/car_card_model.dart';
+import '../../../../core/routes/app_router.dart';
+import '../../../../core/routes/screen_name.dart';
 
 class CarsBanner extends StatefulWidget {
   const CarsBanner({super.key});
@@ -23,14 +22,14 @@ class CarsBanner extends StatefulWidget {
 class _CarsBannerState extends State<CarsBanner> {
   late final PageController _pageController;
   int _currentPage = 0;
-  final CarFirestoreService _firestoreService = CarFirestoreService();
-  late final Stream<QuerySnapshot> _carsStream;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-    _carsStream = _firestoreService.getCarsStream();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CarAdsProvider>().fetchAvailableCars();
+    });
   }
 
   @override
@@ -54,27 +53,21 @@ class _CarsBannerState extends State<CarsBanner> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: context.screenHeight(300),
-      child: StreamBuilder<QuerySnapshot>(
-        stream: _carsStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      child: Consumer<CarAdsProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading) {
             return const _CarsBannerSkeleton();
           }
 
-          if (snapshot.hasError) {
-            AppLogger.error('Error in CarsBanner stream', snapshot.error);
-            return const SizedBox();
-          }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          if (provider.errorMessage != null) {
             return const SizedBox();
           }
 
-          final allCars = snapshot.data!.docs
-              .map(
-                (doc) =>
-                    CarCardModel.fromMap(doc.data() as Map<String, dynamic>),
-              )
-              .toList();
+          final allCars = provider.availableCars;
+
+          if (allCars.isEmpty) {
+            return const SizedBox();
+          }
 
           final cars = _filterOnePerType(allCars);
           cars.sort((a, b) => (a.carName ?? '').compareTo(b.carName ?? ''));

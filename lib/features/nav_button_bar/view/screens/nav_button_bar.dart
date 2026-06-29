@@ -1,3 +1,5 @@
+import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
+import 'package:car_ads/features/showroom/view/screens/showroom_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constant/images_manager.dart';
@@ -15,8 +17,13 @@ class NavButtonBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final role = authProvider.state.user?.role ?? 'user';
+
     final List<Widget> screens = [
-      const HomeScreen(key: PageStorageKey('HomeScreen')),
+      role == 'showroom'
+          ? const ShowroomHomeScreen(key: PageStorageKey('ShowroomHomeScreen'))
+          : const HomeScreen(key: PageStorageKey('HomeScreen')),
       const CarAdsScreen(key: PageStorageKey('CarAdsScreen')),
       const AddAdsScreen(key: PageStorageKey('AddAdsScreen')),
       const HistoryScreen(key: PageStorageKey('HistoryScreen')),

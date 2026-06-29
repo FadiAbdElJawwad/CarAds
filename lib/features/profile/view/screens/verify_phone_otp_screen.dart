@@ -8,7 +8,8 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:provider/provider.dart';
 
 class VerifyPhoneOtpScreen extends StatelessWidget {
-  const VerifyPhoneOtpScreen({super.key});
+  final bool isRegistration;
+  const VerifyPhoneOtpScreen({super.key, this.isRegistration = false});
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +57,13 @@ class VerifyPhoneOtpScreen extends StatelessWidget {
                       ),
                     ),
                     child: PrimaryButton(
-                      text: 'Verify & Update',
+                      text: isRegistration ? 'Verify' : 'Verify & Update',
                       onPressed: provider.isLoading
                           ? null
-                          : () => provider.verifyOtp(context),
+                          : () => provider.verifyOtp(
+                              context,
+                              isRegistration: isRegistration,
+                            ),
                     ),
                   ),
                 ],

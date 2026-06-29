@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
 import 'package:car_ads/core/services/car_firestore_service.dart';
 import 'package:car_ads/core/services/notification_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -61,6 +62,9 @@ class AddAdsProvider extends ChangeNotifier {
 
     _setLoading(true);
     try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final userId = authProvider.state.user?.uid;
+
       // 1. Upload to Drive
       String? driveImageUrl = await _firestoreService.uploadImageToDrive(
         _selectedImage!,
@@ -70,7 +74,6 @@ class AddAdsProvider extends ChangeNotifier {
         throw Exception('Failed to upload image to Drive');
       }
 
-      // 2. Save data to Firestore with the Drive link
       final carData = {
         'carName': brandController.text.trim(),
         'year': yearController.text.trim(),
@@ -87,20 +90,29 @@ class AddAdsProvider extends ChangeNotifier {
         'fuel': tankSizeController.text.trim(),
         'seats': '5',
         'doors': '4',
-        'showroomName': 'Individual Seller',
+        'showroomID': userId,
+        'status': 'available',
+        'createdAt': FieldValue.serverTimestamp(),
       };
+
+      if (authProvider.state.user?.role == 'showroom') {
+        carData['showroomName'] =
+            authProvider.state.user?.showroomName ?? 'Showroom';
+      } else {
+        carData['showroomName'] = 'Individual Seller';
+      }
 
       await _firestoreService.addCar(carData);
 
-      // Send notification
       if (context.mounted) {
-        final userId = Provider.of<AuthProvider>(
+        final authProviderMounted = Provider.of<AuthProvider>(
           context,
           listen: false,
-        ).state.user?.uid;
-        if (userId != null) {
+        );
+        final userIdMounted = authProviderMounted.state.user?.uid;
+        if (userIdMounted != null) {
           await _notificationService.sendNotification(
-            userId: userId,
+            userId: userIdMounted,
             title: 'Advertisement Posted',
             body:
                 'Your car advertisement for ${brandController.text.trim()} has been successfully posted.',

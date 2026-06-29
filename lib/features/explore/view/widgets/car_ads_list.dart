@@ -1,14 +1,11 @@
-import 'package:car_ads/core/extension/text_style_extension.dart';
-import 'package:car_ads/features/explore/logic/helper/car_filter_helper.dart';
 import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
+import '../../../../core/extension/text_style_extension.dart';
 import '../../model/car_card_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/skeleton.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import '../../logic/helper/cars_ads_error_message.dart';
-import '../../../../core/services/car_firestore_service.dart';
 import 'car_ads_card.dart';
 
 class CarAdList extends StatelessWidget {
@@ -19,9 +16,7 @@ class CarAdList extends StatelessWidget {
   final String? carID;
   final List<String>? carIDs;
 
-  final CarFirestoreService _firestoreService;
-
-  CarAdList({
+  const CarAdList({
     super.key,
     this.physics,
     this.listLength,
@@ -29,72 +24,65 @@ class CarAdList extends StatelessWidget {
     this.showroomID,
     this.carID,
     this.carIDs,
-  }) : _firestoreService = CarFirestoreService();
+  });
 
   @override
   Widget build(BuildContext context) {
-    final carAdsProvider = context.watch<CarAdsProvider>();
-    final filter = carAdsProvider.filter;
-
-    String? finalCarType = selectedCarType;
-    if (filter.brand != 'All' && filter.brand != 'All Cars') {
-      finalCarType = filter.brand;
-    }
-
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestoreService.getCarsStream(
-        carType: finalCarType,
-        carIDs: carIDs,
-        showroomID: showroomID,
-        filter: filter,
-      ),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+    return Consumer<CarAdsProvider>(
+      builder: (context, carAdsProvider, child) {
+        if (carAdsProvider.isLoading) {
           return CarAdListSkeleton(
             itemCount: listLength ?? 4,
             physics: physics,
           );
         }
 
-        if (snapshot.hasError) {
-          return const CarsAdsErrorMessage(
-            message: "An error occurred while loading data",
-          );
+        if (carAdsProvider.errorMessage != null) {
+          return CarsAdsErrorMessage(message: carAdsProvider.errorMessage!);
         }
 
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const CarsAdsErrorMessage(
-            message: "No ads available matching your filters",
-          );
+        List<CarCardModel> carsToDisplay;
+
+        if (showroomID != null || carIDs != null || carID != null) {
+          carsToDisplay = carAdsProvider.availableCars.where((car) {
+            if (carID != null && car.carID == carID) {
+              return false;
+            }
+            if (showroomID != null && car.showroomID != showroomID) {
+              return false;
+            }
+            if (carIDs != null && !carIDs!.contains(car.carID)) {
+              return false;
+            }
+            return true;
+          }).toList();
+        } else {
+          carsToDisplay = carAdsProvider.filteredCars;
         }
 
-        final filteredCars = CarFilterHelper.filterCars(
-          docs: snapshot.data!.docs,
-          filter: filter,
-          carID: carID,
-        );
-
-        if (filteredCars.isEmpty) {
+        if (carsToDisplay.isEmpty) {
           return const CarsAdsErrorMessage(
             message: "No ads matching your filters",
           );
         }
 
         final displayCount =
-            listLength != null && listLength! < filteredCars.length
+            listLength != null && listLength! < carsToDisplay.length
             ? listLength!
-            : filteredCars.length;
+            : carsToDisplay.length;
+
+        final filter = carAdsProvider.filter;
 
         return CustomScrollView(
           shrinkWrap: true,
           physics: physics ?? const NeverScrollableScrollPhysics(),
           slivers: [
-            if (filter.searchQuery.isNotEmpty)
+            if (filter.searchQuery.isNotEmpty && showroomID == null)
               _ResultsHeader(
                 query: filter.searchQuery,
-                count: filteredCars.length,
+                count: carsToDisplay.length,
               ),
-            _CarGrid(cars: filteredCars, count: displayCount),
+            _CarGrid(cars: carsToDisplay, count: displayCount),
           ],
         );
       },

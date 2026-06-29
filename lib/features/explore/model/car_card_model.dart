@@ -16,6 +16,7 @@ class CarCardModel {
   final String? contactName;
   final String? contactPhone;
   final String? description;
+  final String? status;
 
   CarCardModel({
     this.carID,
@@ -35,6 +36,7 @@ class CarCardModel {
     this.contactName,
     this.contactPhone,
     this.description,
+    this.status,
   });
 
   Map<String, dynamic> toMap() {
@@ -56,6 +58,7 @@ class CarCardModel {
       'contactName': contactName,
       'contactPhone': contactPhone,
       'description': description,
+      'status': status,
     };
   }
 
@@ -78,6 +81,7 @@ class CarCardModel {
       contactName: map['contactName'] as String?,
       contactPhone: map['contactPhone'] as String?,
       description: map['description'] as String?,
+      status: map['status'] as String?,
     );
   }
 }

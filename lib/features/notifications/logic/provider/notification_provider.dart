@@ -19,7 +19,7 @@ class NotificationProvider extends ChangeNotifier {
     try {
       await _notificationService.markAsRead(notificationId);
     } catch (e) {
-      debugPrint('Error marking notification as read: $e');
+      // Error handling via service logging
     }
   }
 
@@ -27,7 +27,7 @@ class NotificationProvider extends ChangeNotifier {
     try {
       await _notificationService.deleteNotification(notificationId);
     } catch (e) {
-      debugPrint('Error deleting notification: $e');
+      // Error handling via service logging
     }
   }
 
@@ -35,7 +35,7 @@ class NotificationProvider extends ChangeNotifier {
     try {
       await _notificationService.clearAllNotifications(userId);
     } catch (e) {
-      debugPrint('Error clearing notifications: $e');
+      // Error handling via service logging
     }
   }
 }

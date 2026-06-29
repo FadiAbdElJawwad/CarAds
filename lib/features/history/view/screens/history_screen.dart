@@ -22,15 +22,25 @@ class _HistoryScreenState extends State<HistoryScreen>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+    // Task 3: Move data fetching to initState safely
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final userId = authProvider.state.user?.uid;
+
+      if (userId != null) {
+        Provider.of<HistoryProvider>(context, listen: false).init(userId);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Consumer2<AuthProvider, HistoryProvider>(
-      builder: (context, authProvider, model, child) {
-        final userId = authProvider.state.user?.uid;
-        if (userId != null) {
-          model.init(userId);
-        }
-
+    // Task 2: Remove fetching call from build/Consumer
+    return Consumer<HistoryProvider>(
+      builder: (context, model, child) {
         return Scaffold(
           appBar: const PreferredSize(
             preferredSize: Size.fromHeight(kToolbarHeight),

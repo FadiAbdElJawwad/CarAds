@@ -20,10 +20,6 @@ class RedirectService {
     return login != null;
   }
 
-  Future<String?> _getUserRole() async {
-    return await _storage.read(key: AppConstants.storageKeyRole);
-  }
-
   Future<String> getInitialScreen() async {
     final isOnboardingCompleted = await _isOnboardingCompleted();
     if (!isOnboardingCompleted) {
@@ -33,11 +29,6 @@ class RedirectService {
     final isLoggedIn = await _isLoggedIn();
     if (!isLoggedIn) {
       return ScreenName.login;
-    }
-
-    final role = await _getUserRole();
-    if (role == 'showroom') {
-      return ScreenName.showroomMainScreen;
     }
 
     return ScreenName.navButtonBar;

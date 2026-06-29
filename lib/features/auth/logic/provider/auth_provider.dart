@@ -82,6 +82,9 @@ class AuthProvider extends ChangeNotifier {
     required String password,
     required String phone,
     required String role,
+    String? commercialLicenseNumber,
+    String? licenseImageUrl,
+    String? address,
   }) async {
     await _handleAuthOperation(() async {
       final userCredential = await _authService.signUpUser(
@@ -101,9 +104,10 @@ class AuthProvider extends ChangeNotifier {
         };
 
         if (role == 'showroom') {
-          userData['showroomName'] =
-              name; // Auto-fill showroomName with user's name
-          userData['commercialRegister'] = '';
+          userData['showroomName'] = name;
+          userData['commercialRegister'] = commercialLicenseNumber ?? '';
+          userData['licenseImageUrl'] = licenseImageUrl ?? '';
+          userData['address'] = address ?? '';
         }
 
         await _firestore
@@ -111,7 +115,6 @@ class AuthProvider extends ChangeNotifier {
             .doc(user.uid)
             .set(userData);
         await _storeUserDataLocal(user.uid, role: role);
-        // Explicitly update FCM token immediately after UID is saved locally
         await _notificationService.updateFcmTokenForUser(user.uid);
         await fetchUserData();
         await _notificationService.sendNotification(
@@ -134,7 +137,6 @@ class AuthProvider extends ChangeNotifier {
       );
       final user = userCredential.user;
       if (user != null) {
-        // Fetch role from Firestore
         final doc = await _firestore
             .collection(AppConstants.usersCollection)
             .doc(user.uid)
@@ -142,7 +144,6 @@ class AuthProvider extends ChangeNotifier {
         final role = doc.data()?['role'] as String? ?? 'user';
 
         await _storeUserDataLocal(user.uid, role: role);
-        // Explicitly update FCM token immediately after UID is saved locally
         await _notificationService.updateFcmTokenForUser(user.uid);
         await fetchUserData();
         await _notificationService.sendNotification(

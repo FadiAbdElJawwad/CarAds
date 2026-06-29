@@ -118,15 +118,23 @@ class CheckoutProvider with ChangeNotifier {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final userId = authProvider.state.user?.uid;
       final userEmail = authProvider.state.user?.email;
+      final userName = authProvider.state.user?.name ?? 'Unknown User';
+      final profilePhone = authProvider.state.user?.phone;
 
       final carPrice = (int.tryParse(car.price ?? '0') ?? 0) * 1000;
       final totalPayment =
           carPrice + AppConstants.shippingCost + AppConstants.taxCost;
 
+      final nationalIdValue = idController.text.trim();
+      final licenseValue = licenseController.text.trim();
+      final phoneValue = phoneController.text.trim().isNotEmpty
+          ? phoneController.text.trim()
+          : profilePhone;
+
       final checkoutData = CheckoutOrder(
-        licenseNumber: licenseController.text,
-        idNumber: idController.text,
-        phoneNumber: phoneController.text,
+        licenseNumber: licenseValue,
+        idNumber: nationalIdValue,
+        phoneNumber: phoneValue ?? '',
         rentalStart: _checkoutService.combineDateAndTime(
           rentalFromDate!,
           rentalFromTime,
@@ -140,19 +148,16 @@ class CheckoutProvider with ChangeNotifier {
         shippingCost: AppConstants.shippingCost,
         taxCost: AppConstants.taxCost,
         carName: car.carName ?? 'Unknown',
+        carId: car.carID ?? '',
         carImage: car.carImage ?? '',
         carPrice: carPrice,
         userId: userId,
         userEmail: userEmail,
         location: shippingAddress,
+        showroomID: car.showroomID,
       );
 
-      // --- START STRIPE PAYMENT FLOW ---
-
-      // Calculate amount in AED (converting to dollars for the demo service if needed,
-      // but usually service takes base currency units).
-      // Assuming makePayment takes dollars as per previous logic.
-      final int amountInDollars = totalPayment ~/ 1000; // Simplified for demo
+      final int amountInDollars = totalPayment ~/ 1000;
 
       AppLogger.info("Initiating Stripe payment for $amountInDollars USD");
 
@@ -174,11 +179,9 @@ class CheckoutProvider with ChangeNotifier {
         return;
       }
 
-      // --- PAYMENT SUCCESSFUL: PERSIST & NOTIFY ---
-
-      // 1. Save order to Firestore
       final orderRef = await _checkoutService.submitCheckoutData(
         checkoutData.toMap(),
+        customerName: userName,
       );
 
       // 2. Dual Action Notification (Firestore + FCM)

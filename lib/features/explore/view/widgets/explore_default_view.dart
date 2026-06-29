@@ -46,9 +46,8 @@ class ExploreDefaultView extends StatelessWidget {
             },
           ).padStart(20),
           context.addVerticalSpace(16),
-          CarAdList(
-            selectedCarType: currentBrand,
-            physics: const NeverScrollableScrollPhysics(),
+          const CarAdList(
+            physics: NeverScrollableScrollPhysics(),
           ).padSymmetric(20),
         ],
       ],
