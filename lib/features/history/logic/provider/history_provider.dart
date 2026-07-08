@@ -25,13 +25,19 @@ class HistoryProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     _orderSubscription?.cancel();
-    _orderSubscription = _historyService.getOrderHistory(_userId!).listen((
-      orders,
-    ) {
-      _orders = orders;
-      _isLoading = false;
-      notifyListeners();
-    });
+    _orderSubscription = _historyService
+        .getOrderHistory(_userId!)
+        .listen(
+          (orders) {
+            _orders = [...orders];
+            _isLoading = false;
+            notifyListeners();
+          },
+          onError: (error) {
+            _isLoading = false;
+            notifyListeners();
+          },
+        );
   }
 
   Future<void> clearHistory() async {

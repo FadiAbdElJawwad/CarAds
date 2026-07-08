@@ -9,10 +9,10 @@ class SuggestedAds extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (car.showroomID != null && car.showroomID!.isNotEmpty) {
+    if (car.showroomId != null && car.showroomId!.isNotEmpty) {
       return CarAdList(
-        showroomID: car.showroomID,
-        carID: car.carID,
+        showroomID: car.showroomId,
+        carID: car.carId,
         listLength: 4,
       );
     }

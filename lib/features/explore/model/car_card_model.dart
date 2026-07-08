@@ -1,11 +1,11 @@
 class CarCardModel {
-  final String? carID;
+  final String? carId;
   final String? carImage;
   final String? carName;
   final String? carModel;
   final String? price;
   final String? showroomName;
-  final String? showroomID;
+  final String? showroomId;
   final String? gearType;
   final String? carLogo;
   final String? year;
@@ -17,15 +17,17 @@ class CarCardModel {
   final String? contactPhone;
   final String? description;
   final String? status;
+  final String? adType;
+  final String? condition;
 
   CarCardModel({
-    this.carID,
+    this.carId,
     this.carImage,
     this.carName,
     this.carModel,
     this.price,
     this.showroomName,
-    this.showroomID,
+    this.showroomId,
     this.gearType,
     this.carLogo,
     this.year,
@@ -37,17 +39,19 @@ class CarCardModel {
     this.contactPhone,
     this.description,
     this.status,
+    this.adType,
+    this.condition,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'carID': carID,
+      'carID': carId,
       'carImage': carImage,
       'carName': carName,
       'carModel': carModel,
       'price': price,
       'showroomName': showroomName,
-      'showroomID': showroomID,
+      'showroomID': showroomId,
       'gearType': gearType,
       'carLogo': carLogo,
       'year': year,
@@ -59,18 +63,20 @@ class CarCardModel {
       'contactPhone': contactPhone,
       'description': description,
       'status': status,
+      'adType': adType,
+      'condition': condition,
     };
   }
 
   factory CarCardModel.fromMap(Map<String, dynamic> map) {
     return CarCardModel(
-      carID: map['carID'] as String?,
+      carId: (map['carID'] ?? map['carId']) as String?,
       carImage: map['carImage'] as String?,
       carName: map['carName'] as String?,
       carModel: map['carModel'] as String?,
       price: map['price']?.toString(),
       showroomName: map['showroomName'] as String?,
-      showroomID: map['showroomID'] as String?,
+      showroomId: (map['showroomID'] ?? map['showroomId']) as String?,
       gearType: map['gearType'] as String?,
       carLogo: map['carLogo'] as String?,
       year: map['year']?.toString(),
@@ -82,6 +88,8 @@ class CarCardModel {
       contactPhone: map['contactPhone'] as String?,
       description: map['description'] as String?,
       status: map['status'] as String?,
+      adType: map['adType'] as String?,
+      condition: map['condition'] as String?,
     );
   }
 }

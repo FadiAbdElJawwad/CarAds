@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/features/showroom/model/booking_model.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +88,7 @@ class RentRequestCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                context.addVerticalSpace(4),
                 // Middle: Request By
                 Text(
                   "Request By : ${booking.requestedByName}",
@@ -96,7 +97,7 @@ class RentRequestCard extends StatelessWidget {
                     fontSize: 13,
                   ),
                 ),
-                const SizedBox(height: 4),
+                context.addVerticalSpace(4),
                 // Bottom: Date of request
                 Text(
                   "The date of request : ${DateFormat('dd MMM').format(booking.requestDate)}",

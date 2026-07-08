@@ -5,11 +5,18 @@ import '../../logic/provider/add_ads_provider.dart';
 
 class AddAdsPostButton extends StatelessWidget {
   final AddAdsProvider provider;
+  final GlobalKey<FormState> formKey;
 
-  const AddAdsPostButton({super.key, required this.provider});
+  const AddAdsPostButton({
+    super.key,
+    required this.provider,
+    required this.formKey,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final bool isEditing = provider.editingCar != null;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
@@ -17,14 +24,20 @@ class AddAdsPostButton extends StatelessWidget {
         border: Border(top: BorderSide(color: Color(0xFFE0E0E0), width: 0.5)),
       ),
       child: PrimaryButton(
-        text: 'POST ADVERTISEMENT',
+        text: isEditing ? 'SAVE CHANGES' : 'POST ADVERTISEMENT',
         onPressed: provider.isLoading
             ? null
             : () async {
                 try {
                   final success = await provider.postAdvertisement(context);
                   if (success && context.mounted) {
-                    showSnackBar(context, 'Advertisement posted successfully!');
+                    showSnackBar(
+                      context,
+                      isEditing
+                          ? 'Advertisement updated successfully!'
+                          : 'Advertisement posted successfully!',
+                    );
+                    Navigator.pop(context);
                   }
                 } catch (e) {
                   if (context.mounted) {

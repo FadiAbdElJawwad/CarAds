@@ -1,4 +1,7 @@
+import 'package:car_ads/common/skeleton.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
+import 'package:car_ads/core/routes/app_router.dart';
+import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/showroom/model/rent_request_model.dart';
 import 'package:car_ads/features/showroom/logic/provider/showroom_provider.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +11,26 @@ import '../../../auth/logic/provider/auth_provider.dart';
 import '../widgets/profit_card_widget.dart';
 import '../widgets/section_header_widget.dart';
 import '../widgets/showroom_request_card_widget.dart';
+import '../widgets/showroom_request_skeleton.dart';
 
-class ShowroomHomeScreen extends StatelessWidget {
+class ShowroomHomeScreen extends StatefulWidget {
   const ShowroomHomeScreen({super.key});
+
+  @override
+  State<ShowroomHomeScreen> createState() => _ShowroomHomeScreenState();
+}
+
+class _ShowroomHomeScreenState extends State<ShowroomHomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final showroomId = context.read<AuthProvider>().state.user?.uid;
+      if (showroomId != null) {
+        context.read<ShowroomProvider>().fetchProfitMetrics(showroomId);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,33 +55,55 @@ class ShowroomHomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
-                children: [
-                  ProfitCardWidget(
-                    title: 'Sales profit',
-                    amount: '\$152,000',
-                    percentage: '12.5',
-                    isPositive: true,
-                    backgroundColor: Color(0xFF1A1D1E),
-                    textColor: Colors.white,
-                  ),
-                  SizedBox(width: 16),
-                  ProfitCardWidget(
-                    title: 'Rent profit',
-                    amount: '\$45,000',
-                    percentage: '8.2',
-                    isPositive: false,
-                    backgroundColor: Colors.white,
-                    textColor: Colors.black,
-                  ),
-                ],
+              Consumer<ShowroomProvider>(
+                builder: (context, showroomProvider, _) {
+                  if (showroomProvider.isLoading &&
+                      showroomProvider.rentProfit == 0) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: const Skeleton(height: 100, radius: 16),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: const Skeleton(height: 100, radius: 16),
+                        ),
+                      ],
+                    );
+                  }
+                  return Row(
+                    children: [
+                      ProfitCardWidget(
+                        title: 'Sales profit',
+                        amount:
+                            '\$${showroomProvider.salesProfit.toStringAsFixed(0)}',
+                        percentage: '0.0',
+                        isPositive: true,
+                        backgroundColor: const Color(0xFF1A1D1E),
+                        textColor: Colors.white,
+                      ),
+                      const SizedBox(width: 16),
+                      ProfitCardWidget(
+                        title: 'Rent profit',
+                        amount:
+                            '\$${showroomProvider.rentProfit.toStringAsFixed(0)}',
+                        percentage: '0.0',
+                        isPositive: true,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black,
+                      ),
+                    ],
+                  );
+                },
               ),
-
               context.addVerticalSpace(30),
               SectionHeaderWidget(
                 title: 'Last 5 Rent Request',
                 onSeeAll: () {
-                  // TODO: Implement See All navigation
+                  AppRouter.goTo(
+                    screenName: ScreenName.requestsScreen,
+                    arguments: true,
+                  );
                 },
               ),
 
@@ -78,7 +120,12 @@ class ShowroomHomeScreen extends StatelessWidget {
                     stream: showroomProvider.getRecentRentRequests(showroomId),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Column(
+                          children: List.generate(
+                            3,
+                            (index) => const ShowroomRequestSkeleton(),
+                          ),
+                        );
                       }
 
                       if (snapshot.hasError) {

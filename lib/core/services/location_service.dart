@@ -3,6 +3,10 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationService {
+  LocationService._internal();
+  static final LocationService _instance = LocationService._internal();
+  factory LocationService() => _instance;
+
   Future<Position> getCurrentPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -29,14 +33,19 @@ class LocationService {
 
   Future<String> getAddressFromLatLng(double latitude, double longitude) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
+      final geocodingInstance = Geocoding();
+      final List<Placemark> placemarks = await geocodingInstance.placemarkFromCoordinates(
         latitude,
         longitude,
       );
 
-      Placemark place = placemarks[0];
+      if (placemarks.isEmpty) {
+        return "Unknown Location";
+      }
 
-      return "${place.street}, ${place.locality}, ${place.country}";
+      final Placemark place = placemarks[0];
+
+      return "${place.street ?? ''}, ${place.locality ?? ''}, ${place.country ?? ''}";
     } catch (e) {
       AppLogger.error("Error getting address from coordinates", e);
       rethrow;

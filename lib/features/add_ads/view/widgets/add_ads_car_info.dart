@@ -29,10 +29,9 @@ class AddAdsCarInfo extends StatelessWidget {
             context.addHorizontalSpace(16),
             Expanded(
               child: PrimaryTextField(
-                controller: provider.yearController,
-                hint: 'Year',
-                keyboardType: TextInputType.number,
-                validator: (val) => val!.validateGeneric('Year'),
+                controller: provider.modelController,
+                hint: 'Car Model',
+                validator: (val) => val!.validateGeneric('Model'),
               ),
             ),
           ],
@@ -42,10 +41,10 @@ class AddAdsCarInfo extends StatelessWidget {
           children: [
             Expanded(
               child: PrimaryTextField(
-                controller: provider.mileageController,
-                hint: 'Mileage',
+                controller: provider.yearController,
+                hint: 'Year',
                 keyboardType: TextInputType.number,
-                validator: (val) => val!.validateGeneric('Mileage'),
+                validator: (val) => val!.validateGeneric('Year'),
               ),
             ),
             context.addHorizontalSpace(16),
@@ -77,6 +76,35 @@ class AddAdsCarInfo extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        context.addVerticalSpace(8),
+        Row(
+          children: [
+            Expanded(
+              child: PrimaryTextField(
+                controller: provider.seatsController,
+                hint: 'Seats',
+                keyboardType: TextInputType.number,
+                validator: (val) => val!.validateGeneric('Seats'),
+              ),
+            ),
+            context.addHorizontalSpace(16),
+            Expanded(
+              child: PrimaryTextField(
+                controller: provider.doorsController,
+                hint: 'Doors',
+                keyboardType: TextInputType.number,
+                validator: (val) => val!.validateGeneric('Doors'),
+              ),
+            ),
+          ],
+        ),
+        context.addVerticalSpace(8),
+        PrimaryTextField(
+          controller: provider.mileageController,
+          hint: 'Mileage',
+          keyboardType: TextInputType.number,
+          validator: (val) => val!.validateGeneric('Mileage'),
         ),
       ],
     );

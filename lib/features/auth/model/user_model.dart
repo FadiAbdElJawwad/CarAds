@@ -10,6 +10,7 @@ class UserModel {
   final String? role;
   final String? showroomName;
   final String? commercialRegister;
+  final String? address;
 
   UserModel({
     required this.uid,
@@ -21,6 +22,7 @@ class UserModel {
     this.role,
     this.showroomName,
     this.commercialRegister,
+    this.address,
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
@@ -35,6 +37,7 @@ class UserModel {
       role: data['role'],
       showroomName: data['showroomName'],
       commercialRegister: data['commercialRegister'],
+      address: data['address'],
     );
   }
 
@@ -49,6 +52,7 @@ class UserModel {
       'role': role,
       'showroomName': showroomName,
       'commercialRegister': commercialRegister,
+      'address': address,
     };
   }
 }

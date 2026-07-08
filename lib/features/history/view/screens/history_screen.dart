@@ -24,13 +24,19 @@ class _HistoryScreenState extends State<HistoryScreen>
   @override
   void initState() {
     super.initState();
-    // Task 3: Move data fetching to initState safely
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      if (authProvider.state.user == null) {
+        await authProvider.checkLoginStatus();
+      }
+
       final userId = authProvider.state.user?.uid;
 
       if (userId != null) {
-        Provider.of<HistoryProvider>(context, listen: false).init(userId);
+        if (mounted) {
+          Provider.of<HistoryProvider>(context, listen: false).init(userId);
+        }
       }
     });
   }
@@ -38,48 +44,54 @@ class _HistoryScreenState extends State<HistoryScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // Task 2: Remove fetching call from build/Consumer
-    return Consumer<HistoryProvider>(
-      builder: (context, model, child) {
-        return Scaffold(
-          appBar: const PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: PrimaryAppBar(text: 'History'),
+    final userId = context.watch<AuthProvider>().state.user?.uid;
+
+    return Scaffold(
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: PrimaryAppBar(text: 'History'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () => ClearHistoryConfirmation.show(
+              context,
+              onConfirm: () => context.read<HistoryProvider>().clearHistory(),
+            ),
+            child: Text(
+              'Clear ALL',
+              style: context.bodyRegular.copyWith(color: Colors.grey),
+            ),
           ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () => ClearHistoryConfirmation.show(
-                  context,
-                  onConfirm: model.clearHistory,
-                ),
-                child: Text(
-                  'Clear ALL',
-                  style: context.bodyRegular.copyWith(color: Colors.grey),
-                ),
-              ),
-              Expanded(
-                child: model.isLoading
-                    ? ListView.builder(
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return const HistoryCardSkeleton();
-                        },
-                      )
-                    : model.orders.isEmpty
-                    ? const Center(child: Text('No history yet.'))
-                    : ListView.builder(
+          Expanded(
+            child: userId == null
+                ? const Center(child: Text('Please log in first.'))
+                : Consumer<HistoryProvider>(
+                    builder: (context, model, child) {
+                      if (model.isLoading) {
+                        return ListView.builder(
+                          itemCount: 5,
+                          itemBuilder: (context, index) =>
+                              const HistoryCardSkeleton(),
+                        );
+                      }
+
+                      if (model.orders.isEmpty) {
+                        return const Center(child: Text('No history yet.'));
+                      }
+
+                      return ListView.builder(
                         itemCount: model.orders.length,
                         itemBuilder: (context, index) {
                           return HistoryCard(order: model.orders[index]);
                         },
-                      ),
-              ),
-            ],
-          ).padSymmetric(20),
-        );
-      },
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ).padSymmetric(20),
     );
   }
 }

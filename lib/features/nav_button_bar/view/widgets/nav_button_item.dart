@@ -1,4 +1,4 @@
-import 'package:car_ads/core/extension/app_sizes.dart';
+import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../core/constant/color_manager.dart';
@@ -24,9 +24,11 @@ class NavButtonItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isSelected = currentIndex == itemIndex;
-    return Expanded(
+    return IntrinsicWidth(
       child: MaterialButton(
         onPressed: onPressed,
+        minWidth: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Stack(
           alignment: Alignment.topCenter,
           children: <Widget>[
@@ -34,28 +36,27 @@ class NavButtonItem extends StatelessWidget {
               visible: isSelected,
               child: Container(
                 height: 3,
-                width: double.maxFinite,
+                width: double.infinity,
                 decoration: BoxDecoration(color: ColorManager.mainColor),
               ),
             ),
             Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                context.addVerticalSpace(15),
+                const SizedBox(height: 15),
                 SvgPicture.asset(
                   isSelected ? selectedIcon : unselectedIcon,
                   height: 20,
                   width: 20,
                 ),
-                context.addVerticalSpace(8),
+                const SizedBox(height: 8),
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                  ),
+                  style: isSelected
+                      ? context.inputBold12
+                      : context.inputRegular12,
                 ),
+                const SizedBox(height: 8),
               ],
             ),
           ],

@@ -3,8 +3,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../routes/screen_name.dart';
 
 class RedirectService {
-  RedirectService._();
-  static final RedirectService instance = RedirectService._();
+  RedirectService._internal();
+  static final RedirectService _instance = RedirectService._internal();
+  factory RedirectService() => _instance;
 
   final _storage = const FlutterSecureStorage();
 

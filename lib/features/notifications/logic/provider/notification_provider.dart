@@ -23,6 +23,14 @@ class NotificationProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> markAllAsRead(String userId) async {
+    try {
+      await _notificationService.markAllAsRead(userId);
+    } catch (e) {
+      // Error handling via service logging
+    }
+  }
+
   Future<void> deleteNotification(String notificationId) async {
     try {
       await _notificationService.deleteNotification(notificationId);

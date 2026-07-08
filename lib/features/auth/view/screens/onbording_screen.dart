@@ -114,7 +114,7 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
               }
             },
           ),
-          const SizedBox(height: 16),
+          context.addVerticalSpace(16),
           Visibility(
             visible: _currentPage == 2,
             child: PrimaryButton(

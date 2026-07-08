@@ -2,29 +2,32 @@ import 'dart:io';
 import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
 import 'package:car_ads/core/services/car_firestore_service.dart';
 import 'package:car_ads/core/services/notification_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-/// [AddAdsProvider] manages the state and business logic for posting new car advertisements.
-/// It handles image picking, form validation, and data submission to Drive and Firestore.
 class AddAdsProvider extends ChangeNotifier {
   final CarFirestoreService _firestoreService = CarFirestoreService();
   final NotificationService _notificationService = NotificationService();
   final ImagePicker _picker = ImagePicker();
 
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController brandController = TextEditingController();
+  final TextEditingController modelController = TextEditingController();
   final TextEditingController yearController = TextEditingController();
   final TextEditingController mileageController = TextEditingController();
   final TextEditingController conditionController = TextEditingController();
   final TextEditingController tankSizeController = TextEditingController();
   final TextEditingController gearBoxController = TextEditingController();
+  final TextEditingController seatsController = TextEditingController();
+  final TextEditingController doorsController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+
+  CarCardModel? _editingCar;
+  CarCardModel? get editingCar => _editingCar;
 
   String _advertisingType = 'Commercial';
   String get advertisingType => _advertisingType;
@@ -45,6 +48,44 @@ class AddAdsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void initEdit(CarCardModel car) {
+    _editingCar = car;
+
+    brandController.text = car.carName ?? '';
+    modelController.text = car.carModel ?? '';
+    yearController.text = car.year ?? '';
+    mileageController.text = car.mileage ?? '';
+    seatsController.text = car.seats ?? '';
+    doorsController.text = car.doors ?? '';
+    descriptionController.text = car.description ?? '';
+    priceController.text = car.price ?? '';
+    nameController.text = car.contactName ?? '';
+    phoneController.text = car.contactPhone ?? '';
+
+    tankSizeController.text = car.fuel ?? '';
+
+    // Standardize dropdown values
+    conditionController.text = (car.condition == null || car.condition!.isEmpty)
+        ? 'New'
+        : _capitalizeFirstLetter(car.condition!);
+
+    gearBoxController.text = (car.gearType == null || car.gearType!.isEmpty)
+        ? 'Automatic'
+        : _capitalizeFirstLetter(car.gearType!);
+
+    _advertisingType = (car.adType == null || car.adType!.isEmpty)
+        ? 'Commercial'
+        : _capitalizeFirstLetter(car.adType!);
+
+    _selectedImage = null;
+    notifyListeners();
+  }
+
+  String _capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return text;
+    return "${text[0].toUpperCase()}${text.substring(1)}";
+  }
+
   Future<void> pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
@@ -54,9 +95,7 @@ class AddAdsProvider extends ChangeNotifier {
   }
 
   Future<bool> postAdvertisement(BuildContext context) async {
-    if (!formKey.currentState!.validate()) return false;
-
-    if (_selectedImage == null) {
+    if (_selectedImage == null && _editingCar == null) {
       throw Exception('Please select a vehicle image');
     }
 
@@ -65,10 +104,13 @@ class AddAdsProvider extends ChangeNotifier {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final userId = authProvider.state.user?.uid;
 
-      // 1. Upload to Drive
-      String? driveImageUrl = await _firestoreService.uploadImageToDrive(
-        _selectedImage!,
-      );
+      String? driveImageUrl = _editingCar?.carImage;
+
+      if (_selectedImage != null) {
+        driveImageUrl = await _firestoreService.uploadImageToDrive(
+          _selectedImage!,
+        );
+      }
 
       if (driveImageUrl == null) {
         throw Exception('Failed to upload image to Drive');
@@ -76,6 +118,7 @@ class AddAdsProvider extends ChangeNotifier {
 
       final carData = {
         'carName': brandController.text.trim(),
+        'carModel': modelController.text.trim(),
         'year': yearController.text.trim(),
         'mileage': mileageController.text.trim(),
         'condition': conditionController.text.trim(),
@@ -88,11 +131,10 @@ class AddAdsProvider extends ChangeNotifier {
         'adType': _advertisingType,
         'carImage': driveImageUrl,
         'fuel': tankSizeController.text.trim(),
-        'seats': '5',
-        'doors': '4',
+        'seats': seatsController.text.trim(),
+        'doors': doorsController.text.trim(),
         'showroomID': userId,
         'status': 'available',
-        'createdAt': FieldValue.serverTimestamp(),
       };
 
       if (authProvider.state.user?.role == 'showroom') {
@@ -102,7 +144,11 @@ class AddAdsProvider extends ChangeNotifier {
         carData['showroomName'] = 'Individual Seller';
       }
 
-      await _firestoreService.addCar(carData);
+      if (_editingCar != null) {
+        await _firestoreService.updateCar(_editingCar!.carId!, carData);
+      } else {
+        await _firestoreService.addCar(carData);
+      }
 
       if (context.mounted) {
         final authProviderMounted = Provider.of<AuthProvider>(
@@ -113,9 +159,12 @@ class AddAdsProvider extends ChangeNotifier {
         if (userIdMounted != null) {
           await _notificationService.sendNotification(
             userId: userIdMounted,
-            title: 'Advertisement Posted',
-            body:
-                'Your car advertisement for ${brandController.text.trim()} has been successfully posted.',
+            title: _editingCar != null
+                ? 'Advertisement Updated'
+                : 'Advertisement Posted',
+            body: _editingCar != null
+                ? 'Your car advertisement for ${brandController.text.trim()} has been successfully updated.'
+                : 'Your car advertisement for ${brandController.text.trim()} has been successfully posted.',
           );
         }
       }
@@ -129,13 +178,21 @@ class AddAdsProvider extends ChangeNotifier {
     }
   }
 
+  void clearForm() {
+    _clearForm();
+  }
+
   void _clearForm() {
+    _editingCar = null;
     brandController.clear();
+    modelController.clear();
     yearController.clear();
     mileageController.clear();
     conditionController.clear();
     tankSizeController.clear();
     gearBoxController.clear();
+    seatsController.clear();
+    doorsController.clear();
     descriptionController.clear();
     priceController.clear();
     nameController.clear();
@@ -148,11 +205,14 @@ class AddAdsProvider extends ChangeNotifier {
   @override
   void dispose() {
     brandController.dispose();
+    modelController.dispose();
     yearController.dispose();
     mileageController.dispose();
     conditionController.dispose();
     tankSizeController.dispose();
     gearBoxController.dispose();
+    seatsController.dispose();
+    doorsController.dispose();
     descriptionController.dispose();
     priceController.dispose();
     nameController.dispose();

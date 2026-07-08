@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -45,7 +46,7 @@ class ProfitCardWidget extends StatelessWidget {
                 color: textColor.withValues(alpha: 0.7),
               ),
             ),
-            const SizedBox(height: 8),
+            context.addVerticalSpace(8),
             Text(
               amount,
               style: context.titleBold18.copyWith(
@@ -53,7 +54,7 @@ class ProfitCardWidget extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-            const SizedBox(height: 12),
+            context.addVerticalSpace(12),
             Row(
               children: [
                 Icon(

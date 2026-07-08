@@ -7,6 +7,10 @@ import 'package:http/http.dart' as http;
 import '../../features/explore/logic/provider/car_ads_provider.dart';
 
 class CarFirestoreService {
+  CarFirestoreService._internal();
+  static final CarFirestoreService _instance = CarFirestoreService._internal();
+  factory CarFirestoreService() => _instance;
+
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Stream<QuerySnapshot> getCarsStream({
@@ -92,5 +96,13 @@ class CarFirestoreService {
       'carID': docRef.id,
       'createdAt': FieldValue.serverTimestamp(),
     });
+  }
+
+  Future<void> updateCar(String carID, Map<String, dynamic> carData) async {
+    await _db.collection('cars').doc(carID).update(carData);
+  }
+
+  Future<void> deleteCar(String carID) async {
+    await _db.collection('cars').doc(carID).delete();
   }
 }

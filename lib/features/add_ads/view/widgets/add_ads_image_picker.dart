@@ -1,3 +1,4 @@
+import 'package:car_ads/common/car_image_extractor.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,9 @@ class AddAdsImagePicker extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: const Color(0xFFE0E0E0)),
             ),
-            child: provider.selectedImage == null
+            child:
+                (provider.selectedImage == null &&
+                    provider.editingCar?.carImage == null)
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -45,12 +48,18 @@ class AddAdsImagePicker extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     child: Stack(
                       children: [
-                        Image.file(
-                          provider.selectedImage!,
-                          fit: BoxFit.contain,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
+                        if (provider.selectedImage != null)
+                          Image.file(
+                            provider.selectedImage!,
+                            fit: BoxFit.contain,
+                            width: double.infinity,
+                            height: double.infinity,
+                          )
+                        else
+                          CarImageExtractor.buildImage(
+                            provider.editingCar!.carImage,
+                            fit: BoxFit.contain,
+                          ).center(),
                         Positioned(
                           right: 8,
                           top: 8,

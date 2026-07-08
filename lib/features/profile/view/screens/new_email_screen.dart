@@ -1,3 +1,4 @@
+import 'package:car_ads/common/loading_overlay.dart';
 import 'package:car_ads/core/extension/string_validation.dart';
 import 'package:car_ads/features/profile/logic/provider/change_email_provider.dart';
 import 'package:flutter/material.dart';
@@ -19,52 +20,49 @@ class NewEmailScreen extends StatelessWidget {
         preferredSize: Size.fromHeight(kToolbarHeight + 20),
         child: PrimaryAppBar(backIconVisible: true, text: 'Change Your Email'),
       ),
-      body: Stack(
-        children: [
-          Form(
-            key: provider.newEmailFormKey,
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    children: [
-                      Text(
-                        'All Done !',
-                        style: context.titleRegular18,
-                        textAlign: TextAlign.center,
-                      ),
-                      context.addVerticalSpace(8),
-                      Text(
-                        'Add your New Email Address',
-                        style: context.bodyRegular,
-                        textAlign: TextAlign.center,
-                      ),
-                      context.addVerticalSpace(24),
-                      PrimaryTextField(
-                        hint: 'New Email Address',
-                        controller: provider.newEmailController,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (val) => val?.validateEmail(context),
-                      ),
-                    ],
-                  ).padSymmetric(20),
+      body: LoadingOverlay(
+        isLoading: provider.isLoading,
+        child: Form(
+          key: provider.newEmailFormKey,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    Text(
+                      'All Done !',
+                      style: context.titleRegular18,
+                      textAlign: TextAlign.center,
+                    ),
+                    context.addVerticalSpace(8),
+                    Text(
+                      'Add your New Email Address',
+                      style: context.bodyRegular,
+                      textAlign: TextAlign.center,
+                    ),
+                    context.addVerticalSpace(24),
+                    PrimaryTextField(
+                      hint: 'New Email Address',
+                      controller: provider.newEmailController,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (val) => val?.validateEmail(context),
+                    ),
+                  ],
+                ).padSymmetric(20),
+              ),
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: const BoxDecoration(color: Colors.white),
+                child: PrimaryButton(
+                  text: 'Reset Your Email',
+                  onPressed: provider.isLoading
+                      ? null
+                      : () => provider.updateEmail(context),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(color: Colors.white),
-                  child: PrimaryButton(
-                    text: 'Reset Your Email',
-                    onPressed: provider.isLoading
-                        ? null
-                        : () => provider.updateEmail(context),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          if (provider.isLoading)
-            const Center(child: CircularProgressIndicator()),
-        ],
+        ),
       ),
     );
   }

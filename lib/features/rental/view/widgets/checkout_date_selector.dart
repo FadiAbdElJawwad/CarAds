@@ -4,7 +4,7 @@ import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class CheckoutDateSelector extends StatelessWidget {
+class CheckoutDateSelector extends StatefulWidget {
   final String label;
   final DateTime? currentDate;
   final TimeOfDay? currentTime;
@@ -21,24 +21,52 @@ class CheckoutDateSelector extends StatelessWidget {
   });
 
   @override
+  State<CheckoutDateSelector> createState() => _CheckoutDateSelectorState();
+}
+
+class _CheckoutDateSelectorState extends State<CheckoutDateSelector> {
+  late TextEditingController _dateController;
+  late TextEditingController _timeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _dateController = TextEditingController();
+    _timeController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    _timeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd/MM/yyyy');
+
+    _dateController.text = widget.currentDate != null
+        ? dateFormat.format(widget.currentDate!)
+        : '';
+    _timeController.text = widget.currentTime != null
+        ? widget.currentTime!.format(context)
+        : '';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: context.bodyRegular),
+        Text(widget.label, style: context.bodyRegular),
         context.addVerticalSpace(8),
         Row(
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: onSelectDate,
+                onTap: widget.onSelectDate,
                 child: AbsorbPointer(
                   child: PrimaryTextField(
-                    hint: currentDate != null
-                        ? dateFormat.format(currentDate!)
-                        : 'Select Date',
+                    controller: _dateController,
+                    hint: 'Select Date',
                   ),
                 ),
               ),
@@ -46,10 +74,11 @@ class CheckoutDateSelector extends StatelessWidget {
             context.addHorizontalSpace(16),
             Expanded(
               child: GestureDetector(
-                onTap: onSelectTime,
+                onTap: widget.onSelectTime,
                 child: AbsorbPointer(
                   child: PrimaryTextField(
-                    hint: currentTime?.format(context) ?? 'Select Time',
+                    controller: _timeController,
+                    hint: 'Select Time',
                   ),
                 ),
               ),

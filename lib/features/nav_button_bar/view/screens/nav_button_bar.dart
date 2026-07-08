@@ -9,15 +9,38 @@ import '../../../history/view/screens/history_screen.dart';
 import '../../../explore/view/screens/car_ads_screen.dart';
 import '../../../home/view/screens/home_screen.dart';
 import '../../../profile/view/screens/profile_screen.dart';
+import '../../../showroom/view/screens/requests_screen.dart';
+import '../../../showroom/view/screens/showroom_profile_screen.dart';
 import '../../provider/nav_button_provider.dart';
 import '../widgets/nav_button_item.dart';
 
-class NavButtonBar extends StatelessWidget {
+class NavButtonBar extends StatefulWidget {
   const NavButtonBar({super.key});
+
+  @override
+  State<NavButtonBar> createState() => _NavButtonBarState();
+}
+
+class _NavButtonBarState extends State<NavButtonBar> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = context.read<AuthProvider>();
+      if (authProvider.state.user == null) {
+        authProvider.checkLoginStatus();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
+
+    if (authProvider.state.isLoading || authProvider.state.user == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     final role = authProvider.state.user?.role ?? 'user';
 
     final List<Widget> screens = [
@@ -26,8 +49,14 @@ class NavButtonBar extends StatelessWidget {
           : const HomeScreen(key: PageStorageKey('HomeScreen')),
       const CarAdsScreen(key: PageStorageKey('CarAdsScreen')),
       const AddAdsScreen(key: PageStorageKey('AddAdsScreen')),
-      const HistoryScreen(key: PageStorageKey('HistoryScreen')),
-      const ProfileScreen(key: PageStorageKey('ProfileScreen')),
+      role == 'showroom'
+          ? const RequestsScreen(key: PageStorageKey('RequestsScreen'))
+          : const HistoryScreen(key: PageStorageKey('HistoryScreen')),
+      role == 'showroom'
+          ? const ShowroomProfileScreen(
+              key: PageStorageKey('ShowroomProfileScreen'),
+            )
+          : const ProfileScreen(key: PageStorageKey('ProfileScreen')),
     ];
 
     return Consumer<NavButtonProvider>(
@@ -74,9 +103,13 @@ class NavButtonBar extends StatelessWidget {
                   itemIndex: 3,
                   currentIndex: model.currentIndex,
                   onPressed: () => model.onItemTapped(3),
-                  selectedIcon: ImagesManager.selectedHistory,
-                  unselectedIcon: ImagesManager.history,
-                  label: S.of(context).history,
+                  selectedIcon: role == 'showroom'
+                      ? ImagesManager.selectedRequest
+                      : ImagesManager.selectedHistory,
+                  unselectedIcon: role == 'showroom'
+                      ? ImagesManager.request
+                      : ImagesManager.history,
+                  label: role == 'showroom' ? 'Request' : S.of(context).history,
                 ),
                 NavButtonItem(
                   itemIndex: 4,

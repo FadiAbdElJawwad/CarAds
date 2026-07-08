@@ -1,3 +1,4 @@
+import 'package:car_ads/common/loading_overlay.dart';
 import 'package:car_ads/common/primary_text_field.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
@@ -47,66 +48,63 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         ),
         body: Consumer<ChangePasswordProvider>(
           builder: (context, provider, _) {
-            return Stack(
-              children: [
-                Form(
-                  key: provider.formKey,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ListView(
-                          children: [
-                            context.addVerticalSpace(20),
-                            _buildPasswordField(
-                              controller: provider.currentPasswordController,
-                              hint: 'Current password',
-                              validator: (value) {
-                                if (provider.currentPasswordError != null) {
-                                  return provider.currentPasswordError;
-                                }
-                                return value!.validatePassword(context);
-                              },
+            return LoadingOverlay(
+              isLoading: provider.isLoading,
+              child: Form(
+                key: provider.formKey,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          context.addVerticalSpace(20),
+                          _buildPasswordField(
+                            controller: provider.currentPasswordController,
+                            hint: 'Current password',
+                            validator: (value) {
+                              if (provider.currentPasswordError != null) {
+                                return provider.currentPasswordError;
+                              }
+                              return value!.validatePassword(context);
+                            },
+                          ),
+                          context.addVerticalSpace(24),
+                          const Divider(color: Colors.grey),
+                          context.addVerticalSpace(24),
+                          _buildPasswordField(
+                            controller: provider.newPasswordController,
+                            hint: 'New Password',
+                            validator: (value) => value!.validateNewPassword(
+                              context,
+                              provider.currentPasswordController.text,
                             ),
-                            context.addVerticalSpace(24),
-                            const Divider(color: Colors.grey),
-                            context.addVerticalSpace(24),
-                            _buildPasswordField(
-                              controller: provider.newPasswordController,
-                              hint: 'New Password',
-                              validator: (value) => value!.validateNewPassword(
-                                context,
-                                provider.currentPasswordController.text,
-                              ),
-                            ),
-                            context.addVerticalSpace(24),
-                            _buildPasswordField(
-                              controller: provider.confirmPasswordController,
-                              hint: 'Confirm Password',
-                              validator: (value) =>
-                                  value!.validateConfirmPassword(
-                                    context,
-                                    provider.newPasswordController.text,
-                                  ),
-                            ),
-                          ],
-                        ).padSymmetric(20),
+                          ),
+                          context.addVerticalSpace(24),
+                          _buildPasswordField(
+                            controller: provider.confirmPasswordController,
+                            hint: 'Confirm Password',
+                            validator: (value) =>
+                                value!.validateConfirmPassword(
+                                  context,
+                                  provider.newPasswordController.text,
+                                ),
+                          ),
+                        ],
+                      ).padSymmetric(20),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: const BoxDecoration(color: Colors.white),
+                      child: PrimaryButton(
+                        text: 'Reset Your Password',
+                        onPressed: provider.isLoading
+                            ? null
+                            : () => provider.handleChangePassword(context),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(24),
-                        decoration: const BoxDecoration(color: Colors.white),
-                        child: PrimaryButton(
-                          text: 'Reset Your Password',
-                          onPressed: provider.isLoading
-                              ? null
-                              : () => provider.handleChangePassword(context),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                if (provider.isLoading)
-                  const Center(child: CircularProgressIndicator()),
-              ],
+              ),
             );
           },
         ),

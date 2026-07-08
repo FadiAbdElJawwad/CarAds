@@ -13,6 +13,7 @@ import '../features/notifications/model/notification_model.dart';
 class PrimaryAppBar extends StatelessWidget {
   final bool backIconVisible;
   final bool notificationVisible;
+  final bool settingsVisible;
   final String text;
   final Widget? trailing;
 
@@ -20,6 +21,7 @@ class PrimaryAppBar extends StatelessWidget {
     super.key,
     this.backIconVisible = false,
     this.notificationVisible = false,
+    this.settingsVisible = false,
     required this.text,
     this.trailing,
   });
@@ -57,6 +59,15 @@ class PrimaryAppBar extends StatelessWidget {
             },
           ),
         ?trailing,
+        if (settingsVisible)
+          Card(
+            child: IconButton(
+              onPressed: () {
+                AppRouter.goTo(screenName: ScreenName.settingsScreen);
+              },
+              icon: Icon(Icons.settings),
+            ),
+          ),
       ],
     ).padSymmetric(20);
   }

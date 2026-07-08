@@ -1,4 +1,5 @@
 import 'package:car_ads/common/primary_button.dart';
+import 'package:car_ads/core/constant/color_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class ClearHistoryConfirmation {
                   borderRadius: BorderRadius.all(Radius.circular(2)),
                 ),
               ),
-              const SizedBox(height: 16),
+              sheetContext.addVerticalSpace(16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -44,25 +45,22 @@ class ClearHistoryConfirmation {
               ),
               sheetContext.addVerticalSpace(32),
               PrimaryButton(
-                color: const Color(0xffB71C1C),
+                color: ColorManager.warningColor,
                 text: 'YES, CLEAR IT',
                 onPressed: () {
                   onConfirm();
                   Navigator.of(sheetContext).pop();
                 },
               ),
-              const SizedBox(height: 8),
-              TextButton(
+              sheetContext.addVerticalSpace(8),
+              PrimaryButton(
+                color: Colors.transparent,
+                text: 'NO, I CHANGED MY MIND!',
+                textColor: ColorManager.warningColor,
                 onPressed: () {
                   Navigator.of(sheetContext).pop();
                 },
-                child: Text(
-                  'NO, I CHANGED MY MIND!',
-                  style: sheetContext.bodyBold.copyWith(
-                    color: const Color(0xffB71C1C),
-                  ),
-                ),
-              ),
+              )
             ],
           ),
         );

@@ -45,13 +45,13 @@ class CarAdList extends StatelessWidget {
 
         if (showroomID != null || carIDs != null || carID != null) {
           carsToDisplay = carAdsProvider.availableCars.where((car) {
-            if (carID != null && car.carID == carID) {
+            if (carID != null && car.carId == carID) {
               return false;
             }
-            if (showroomID != null && car.showroomID != showroomID) {
+            if (showroomID != null && car.showroomId != showroomID) {
               return false;
             }
-            if (carIDs != null && !carIDs!.contains(car.carID)) {
+            if (carIDs != null && !carIDs!.contains(car.carId)) {
               return false;
             }
             return true;

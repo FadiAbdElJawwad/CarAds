@@ -26,7 +26,7 @@ void main() {
     test('should create model from map', () {
       final model = CarCardModel.fromMap(testMap);
 
-      expect(model.carID, '1');
+      expect(model.carId, '1');
       expect(model.carName, 'Toyota Camry');
       expect(model.price, '50');
       expect(model.year, '2023');
@@ -56,7 +56,7 @@ void main() {
     test('should handle null values', () {
       final model = CarCardModel.fromMap({});
 
-      expect(model.carID, isNull);
+      expect(model.carId, isNull);
       expect(model.carName, isNull);
       expect(model.price, isNull);
     });

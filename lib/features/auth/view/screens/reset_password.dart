@@ -1,3 +1,4 @@
+import 'package:car_ads/common/loading_overlay.dart';
 import 'package:car_ads/common/primary_button.dart';
 import 'package:car_ads/common/primary_text_field.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
@@ -7,7 +8,6 @@ import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/show_snack_bar.dart';
 import '../../../../core/extension/string_validation.dart';
@@ -70,8 +70,8 @@ class _ResetPasswordState extends State<ResetPassword> {
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
       builder: (context, provider, child) {
-        return ModalProgressHUD(
-          inAsyncCall: provider.state.isLoading,
+        return LoadingOverlay(
+          isLoading: provider.state.isLoading,
           child: Scaffold(
             body: SafeArea(
               child: Form(

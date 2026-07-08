@@ -5,13 +5,13 @@ class CarFilterHelper {
   static List<CarCardModel> filterCars({
     required List<CarCardModel> availableCars,
     required FilterModel filter,
-    String? carID,
+    String? carId,
   }) {
     return availableCars.where((car) {
-      if (carID != null && car.carID == carID) return false;
+      if (carId != null && car.carId == carId) return false;
 
       // Safety check: ensure only available cars are shown in global lists
-      if (car.status != 'available' && carID == null) return false;
+      if (car.status != 'available' && carId == null) return false;
 
       bool match = true;
 

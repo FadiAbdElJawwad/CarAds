@@ -148,20 +148,20 @@ class CheckoutProvider with ChangeNotifier {
         shippingCost: AppConstants.shippingCost,
         taxCost: AppConstants.taxCost,
         carName: car.carName ?? 'Unknown',
-        carId: car.carID ?? '',
+        carId: car.carId ?? '',
         carImage: car.carImage ?? '',
         carPrice: carPrice,
         userId: userId,
         userEmail: userEmail,
         location: shippingAddress,
-        showroomID: car.showroomID,
+        showroomId: car.showroomId,
       );
 
       final int amountInDollars = totalPayment ~/ 1000;
 
       AppLogger.info("Initiating Stripe payment for $amountInDollars USD");
 
-      bool isPaymentSuccessful = await StripePaymentService.makePayment(
+      bool isPaymentSuccessful = await StripePaymentService().makePayment(
         amountInDollars: amountInDollars,
         currency: AppConstants.currency.toLowerCase(),
       );
@@ -196,13 +196,13 @@ class CheckoutProvider with ChangeNotifier {
         );
 
         // Notify the Showroom Owner (Fetch showroom owner ID from car model)
-        if (car.showroomID != null) {
+        if (car.showroomId != null) {
           await _notificationService.sendNotification(
-            userId: car.showroomID!,
+            userId: car.showroomId!,
             title: 'New Rental Request!',
             body:
                 'A user has requested to rent ${car.carName}. Check your orders.',
-            extraData: {'bookingId': orderRef.id, 'type': 'order_status'},
+            extraData: {'bookingId': orderRef.id, 'type': 'new_request'},
           );
         }
       }

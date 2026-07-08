@@ -1,3 +1,4 @@
+import 'package:car_ads/common/skeleton.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/rental/logic/provider/checkout_provider.dart';
@@ -13,7 +14,7 @@ class LocationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (model.isLocationLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Skeleton(height: 150, width: double.infinity);
     }
 
     if (model.locationFetchFailed || model.shippingPosition == null) {

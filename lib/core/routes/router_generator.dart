@@ -12,15 +12,15 @@ import '../../features/auth/view/screens/sign_up_screen.dart';
 import '../../features/auth/view/screens/splash_screen.dart';
 import '../../features/history/view/screens/history_screen.dart';
 import '../../features/explore/model/car_card_model.dart';
-import '../../features/home/view/screens/car_details_form.dart';
+import '../../features/explore/view/screens/car_details_form.dart';
 import '../../features/explore/view/screens/car_ads_screen.dart';
 import '../../features/rental/view/screens/checkout_screen.dart';
 import '../../features/rental/view/screens/confirm_rent_screen.dart';
 import '../../features/home/view/screens/home_screen.dart';
-import '../../features/home/view/screens/map_screen.dart';
+import '../../features/rental/view/screens/map_screen.dart';
 import '../../features/notifications/view/screens/notification_screen.dart';
 import '../../features/rental/view/screens/rental_completed_screen.dart';
-import '../../features/home/view/screens/showroom_details_form.dart';
+import '../../features/explore/view/screens/showroom_details_form.dart';
 import '../../features/nav_button_bar/view/screens/nav_button_bar.dart';
 import '../../features/profile/view/screens/change_email_screen.dart';
 import '../../features/profile/view/screens/change_language_screen.dart';
@@ -32,7 +32,9 @@ import '../../features/profile/view/screens/privacy_policy_screen.dart';
 import '../../features/profile/view/screens/terms_conditions_screen.dart';
 import '../../features/showroom/model/rent_request_model.dart';
 import '../../features/showroom/view/screens/license_upload_screen.dart';
-import '../../features/showroom/view/screens/request_screen.dart';
+import '../../features/showroom/view/screens/request_details_screen.dart';
+import '../../features/showroom/view/screens/requests_screen.dart';
+import '../../features/showroom/view/screens/settings_screen.dart';
 import '../../features/showroom/view/screens/verification_screen.dart';
 
 class RouteGenerator {
@@ -96,8 +98,11 @@ class RouteGenerator {
         result = RentalCompletedScreen();
         break;
       case ScreenName.addAdsScreen:
-        result = AddAdsScreen();
-        break;
+        final carToEdit = settings.arguments as CarCardModel?;
+        return MaterialPageRoute(
+          builder: (_) => AddAdsScreen(editingCar: carToEdit),
+          settings: RouteSettings(name: settings.name),
+        );
       case ScreenName.historyScreen:
         result = HistoryScreen();
         break;
@@ -144,10 +149,18 @@ class RouteGenerator {
           userData: settings.arguments as Map<String, dynamic>,
         );
         break;
-      case ScreenName.requestScreen:
-        result = RequestScreen(
+      case ScreenName.requestDetailsScreen:
+        result = RequestDetailsScreen(
           requestModel: settings.arguments as RentRequestModel,
         );
+        break;
+      case ScreenName.requestsScreen:
+        result = RequestsScreen(
+          showBackIcon: settings.arguments as bool? ?? false,
+        );
+        break;
+      case ScreenName.settingsScreen:
+        result = const SettingsScreen();
         break;
       case ScreenName.licenseUploadScreen:
         result = const LicenseUploadScreen();

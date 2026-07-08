@@ -6,7 +6,7 @@ import '../../../../core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import '../../../../common/primary_app_bar.dart';
 import 'package:car_ads/features/home/model/showroom_model.dart';
-import '../../../explore/view/widgets/car_ads_list.dart';
+import '../widgets/car_ads_list.dart';
 
 class ShowroomDetailsForm extends StatefulWidget {
   final ShowroomModel showroom;
@@ -58,7 +58,9 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
                 Image.asset(ImagesManager.locationIcon),
                 context.addHorizontalSpace(4),
                 Text(
-                  widget.showroom.showroomLocation ?? '',
+                  widget.showroom.showroomLocation ??
+                      widget.showroom.address ??
+                      'Address not available',
                   style: context.bodyRegular,
                 ),
               ],
@@ -88,8 +90,8 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
             ),
             context.addVerticalSpace(8),
             CarAdList(
-              showroomID: widget.showroom.showroomID,
-              carIDs: widget.showroom.carID,
+              showroomID: widget.showroom.showroomId,
+              carIDs: widget.showroom.carId,
               physics: const NeverScrollableScrollPhysics(),
             ),
           ],

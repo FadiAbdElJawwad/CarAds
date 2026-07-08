@@ -15,6 +15,32 @@ class HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String statusText;
+    Color statusColor;
+
+    switch (order.status.toLowerCase().trim()) {
+      case 'pending':
+        statusText = "Pending";
+        statusColor = ColorManager.alertColor;
+        break;
+      case 'accepted':
+      case 'approved':
+        statusText = "Active";
+        statusColor = ColorManager.successColor;
+        break;
+      case 'rejected':
+        statusText = "Canceled";
+        statusColor = ColorManager.warningColor;
+        break;
+      case 'complete':
+        statusText = "Ended";
+        statusColor = Colors.black;
+        break;
+      default:
+        statusText = order.status;
+        statusColor = Colors.grey;
+    }
+
     return InkWell(
       onTap: () {
         AppRouter.goTo(
@@ -56,12 +82,8 @@ class HistoryCard extends StatelessWidget {
                   style: context.bodyRegular.copyWith(color: Colors.grey),
                 ),
                 Text(
-                  ' ${order.status}',
-                  style: context.bodyBold.copyWith(
-                    color: order.status == 'Active'
-                        ? ColorManager.successColor
-                        : Colors.red,
-                  ),
+                  ' $statusText',
+                  style: context.bodyBold.copyWith(color: statusColor),
                 ),
               ],
             ),

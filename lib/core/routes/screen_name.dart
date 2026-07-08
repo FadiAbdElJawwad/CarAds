@@ -29,6 +29,7 @@ class ScreenName {
   static const String verifyPhoneOtpScreen = 'verifyPhoneOtpScreen';
   static const String verificationScreen = 'verificationScreen';
   static const String licenseUploadScreen = 'licenseUploadScreen';
-  static const String requestScreen = 'requestScreen';
-  static const String bookingDetailsScreen = 'bookingDetailsScreen';
+  static const String requestDetailsScreen = 'requestDetailsScreen';
+  static const String requestsScreen = 'requestsScreen';
+  static const String settingsScreen = 'settingsScreen';
 }

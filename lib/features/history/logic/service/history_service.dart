@@ -8,6 +8,7 @@ class HistoryService {
     return _firestore
         .collection('checkout')
         .where('userId', isEqualTo: userId)
+        .orderBy('created_at', descending: true)
         .snapshots()
         .map((snapshot) {
           return snapshot.docs

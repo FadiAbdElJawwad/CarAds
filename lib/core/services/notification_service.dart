@@ -2,6 +2,7 @@ import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/core/services/fcm_sender_service.dart';
 import 'package:car_ads/features/notifications/model/notification_model.dart';
+import 'package:car_ads/features/showroom/model/rent_request_model.dart';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class NotificationService {
+  NotificationService._internal();
+  static final NotificationService _instance = NotificationService._internal();
+  factory NotificationService() => _instance;
+
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
@@ -97,25 +102,48 @@ class NotificationService {
   Future<void> _setupInteractedMessages() async {
     RemoteMessage? initialMessage = await _fcm.getInitialMessage();
     if (initialMessage != null) {
-      _handleMessage(initialMessage);
+      await _handleMessage(initialMessage);
     }
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+    FirebaseMessaging.onMessageOpenedApp.listen((message) async {
+      await _handleMessage(message);
+    });
   }
 
-  void _handleMessage(RemoteMessage message) {
+  Future<void> _handleMessage(RemoteMessage message) async {
     AppLogger.info("Handling notification interaction data: ${message.data}");
     final String? bookingId = message.data['bookingId'];
+    final String? type = message.data['type'];
+
     if (bookingId != null && bookingId.isNotEmpty) {
-      final type = message.data['type'];
-      if (type == 'receipt' || type == 'order_status') {
+      if (type == 'new_request') {
+        // Showroom Role: Fetch request model and navigate to details
+        final requestSnapshot = await _db
+            .collection('rent_requests')
+            .where('requestId', isEqualTo: bookingId)
+            .limit(1)
+            .get();
+
+        if (requestSnapshot.docs.isNotEmpty) {
+          final request = RentRequestModel.fromFirestore(
+            requestSnapshot.docs.first,
+          );
+          AppRouter.goTo(
+            screenName: ScreenName.requestDetailsScreen,
+            arguments: request,
+          );
+        } else {
+          AppLogger.warning("Request not found for ID: $bookingId");
+          // Fallback to requests list if model not found
+          AppRouter.goTo(
+            screenName: ScreenName.requestsScreen,
+            arguments: true,
+          );
+        }
+      } else {
+        // Customer Role (receipt, order_status, or default)
         AppRouter.goTo(
           screenName: ScreenName.confirmRentScreen,
           arguments: {'orderId': bookingId, 'isViewMode': true},
-        );
-      } else {
-        AppRouter.goTo(
-          screenName: ScreenName.bookingDetailsScreen,
-          arguments: bookingId,
         );
       }
     }
@@ -135,22 +163,39 @@ class NotificationService {
 
     await _localNotifications.initialize(
       settings: initializationSettings,
-      onDidReceiveNotificationResponse: (response) {
+      onDidReceiveNotificationResponse: (response) async {
         AppLogger.info("Notification interaction: ${response.payload}");
         if (response.payload != null) {
           final Map<String, dynamic> data = jsonDecode(response.payload!);
           final String? bookingId = data['bookingId'];
+          final String? type = data['type'];
+
           if (bookingId != null && bookingId.isNotEmpty) {
-            final type = data['type'];
-            if (type == 'receipt' || type == 'order_status') {
+            if (type == 'new_request') {
+              final requestSnapshot = await _db
+                  .collection('rent_requests')
+                  .where('requestId', isEqualTo: bookingId)
+                  .limit(1)
+                  .get();
+
+              if (requestSnapshot.docs.isNotEmpty) {
+                final request = RentRequestModel.fromFirestore(
+                  requestSnapshot.docs.first,
+                );
+                AppRouter.goTo(
+                  screenName: ScreenName.requestDetailsScreen,
+                  arguments: request,
+                );
+              } else {
+                AppRouter.goTo(
+                  screenName: ScreenName.requestsScreen,
+                  arguments: true,
+                );
+              }
+            } else {
               AppRouter.goTo(
                 screenName: ScreenName.confirmRentScreen,
                 arguments: {'orderId': bookingId, 'isViewMode': true},
-              );
-            } else {
-              AppRouter.goTo(
-                screenName: ScreenName.bookingDetailsScreen,
-                arguments: bookingId,
               );
             }
           }
@@ -196,7 +241,7 @@ class NotificationService {
         final String? fcmToken = data?['fcmToken'];
 
         if (fcmToken != null && fcmToken.isNotEmpty) {
-          await FcmSenderService.sendNotificationToUser(
+          await FcmSenderService().sendNotificationToUser(
             targetFcmToken: fcmToken,
             title: title,
             body: body,
@@ -234,6 +279,27 @@ class NotificationService {
     await _db.collection('notifications').doc(notificationId).update({
       'isRead': true,
     });
+  }
+
+  Future<void> markAllAsRead(String userId) async {
+    try {
+      final snapshot = await _db
+          .collection('notifications')
+          .where('userId', isEqualTo: userId)
+          .where('isRead', isEqualTo: false)
+          .get();
+
+      if (snapshot.docs.isEmpty) return;
+
+      final batch = _db.batch();
+      for (final doc in snapshot.docs) {
+        batch.update(doc.reference, {'isRead': true});
+      }
+      await batch.commit();
+      AppLogger.info("All notifications marked as read for user $userId");
+    } catch (e) {
+      AppLogger.error("Failed to mark all notifications as read for user $userId", e);
+    }
   }
 
   Future<void> deleteNotification(String notificationId) async {

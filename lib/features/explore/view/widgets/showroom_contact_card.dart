@@ -49,7 +49,7 @@ class ShowroomContactCard extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () =>
-                    UrlLauncherService.launchWhatsApp(context, phoneNumber),
+                    UrlLauncherService().launchWhatsApp(context, phoneNumber),
                 icon: Image.asset(
                   ImagesManager.whatsappIcon,
                   width: 28,
@@ -58,7 +58,7 @@ class ShowroomContactCard extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () =>
-                    UrlLauncherService.launchCall(context, phoneNumber),
+                    UrlLauncherService().launchCall(context, phoneNumber),
                 icon: Image.asset(
                   ImagesManager.callIcon,
                   width: 28,

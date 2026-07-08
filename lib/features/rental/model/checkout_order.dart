@@ -17,7 +17,7 @@ class CheckoutOrder {
   final String? userEmail;
   final String? userId;
   final String? location;
-  final String? showroomID;
+  final String? showroomId;
 
   CheckoutOrder({
     required this.licenseNumber,
@@ -36,7 +36,7 @@ class CheckoutOrder {
     this.userEmail,
     this.userId,
     this.location,
-    this.showroomID,
+    this.showroomId,
   });
 
   Map<String, dynamic> toMap() {
@@ -61,7 +61,7 @@ class CheckoutOrder {
       'user_email': userEmail,
       'userId': userId,
       'location': location,
-      'showroomID': showroomID,
+      'showroomID': showroomId,
     };
   }
 
@@ -87,7 +87,7 @@ class CheckoutOrder {
       userEmail: map['user_email'] as String?,
       userId: map['userId'] as String?,
       location: map['location'] as String?,
-      showroomID: map['showroomID'] as String?,
+      showroomId: (map['showroomID'] ?? map['showroomId']) as String?,
     );
   }
 }

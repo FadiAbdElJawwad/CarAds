@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:car_ads/core/app_logger.dart';
 import 'package:car_ads/features/add_ads/logic/provider/add_ads_provider.dart';
 import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
-import 'package:car_ads/features/home/logic/provider/map_provider.dart';
 import 'package:car_ads/features/nav_button_bar/provider/nav_button_provider.dart';
 import 'package:car_ads/features/profile/logic/provider/change_email_provider.dart';
 import 'package:car_ads/features/profile/logic/provider/language_provider.dart';
@@ -19,11 +18,13 @@ import 'core/themes/light_theme.dart';
 import 'features/auth/logic/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'features/notifications/logic/provider/notification_provider.dart';
+import 'features/rental/logic/provider/map_provider.dart';
 import 'firebase_options.dart';
 import 'generated/l10n.dart';
 import 'features/history/logic/provider/history_provider.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'core/services/notification_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -36,13 +37,13 @@ class MyHttpOverrides extends HttpOverrides {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   HttpOverrides.global = MyHttpOverrides();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await NotificationService().initialize();
 
-  Stripe.publishableKey =
-      'pk_test_51TTpSD0hSv5UbIOcI3lPgK3Q0pqO7BVflAYffamsBbQpHB89jJBwJnrtXTv1OJgw2EWWuJbv5SFXBuSEZkdjtKVR00XMxqJdtv';
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
 
   runApp(const CarAds());
 }
@@ -106,12 +107,16 @@ class _InitializerWidgetState extends State<InitializerWidget> {
   void initState() {
     super.initState();
     getToken();
-    _determineInitialRoute();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _determineInitialRoute();
+    });
   }
 
   void _determineInitialRoute() async {
-    final redirectService = RedirectService.instance;
-    final determinedRoute = await redirectService.getInitialScreen();
+    final authProvider = context.read<AuthProvider>();
+    await authProvider.checkLoginStatus();
+
+    final determinedRoute = await RedirectService().getInitialScreen();
     if (mounted) {
       Navigator.of(context).pushReplacementNamed(determinedRoute);
     }

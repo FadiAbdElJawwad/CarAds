@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
             context.loc.splashTitle,
             style: context.h2Bold22.copyWith(color: Colors.white),
           ),
-          const SizedBox(height: 10),
+          context.addVerticalSpace(10),
           Text(
             context.loc.splashBody,
             style: context.bodyRegular.copyWith(color: Colors.white),

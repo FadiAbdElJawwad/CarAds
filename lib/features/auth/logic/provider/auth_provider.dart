@@ -31,12 +31,21 @@ class AuthProvider extends ChangeNotifier {
        _notificationService = notificationService ?? NotificationService();
 
   AuthState _state = const AuthState();
+  String _selectedRole = 'user';
 
   AuthState get state => _state;
+  String get selectedRole => _selectedRole;
 
   void _setState(AuthState newState) {
     _state = newState;
     notifyListeners();
+  }
+
+  void setRole(String role) {
+    if (_selectedRole != role) {
+      _selectedRole = role;
+      notifyListeners();
+    }
   }
 
   Future<void> _handleAuthOperation(Future<void> Function() operation) async {
@@ -186,6 +195,7 @@ class AuthProvider extends ChangeNotifier {
     String? name,
     String? phone,
     String? profileImage,
+    String? address,
   }) async {
     await _handleAuthOperation(() async {
       final uid = await _storage.read(key: AppConstants.storageKeyUid);
@@ -194,6 +204,7 @@ class AuthProvider extends ChangeNotifier {
         if (name != null) updateData['name'] = name;
         if (phone != null) updateData['phone'] = phone;
         if (profileImage != null) updateData['profileImage'] = profileImage;
+        if (address != null) updateData['address'] = address;
 
         if (updateData.isNotEmpty) {
           await _firestore

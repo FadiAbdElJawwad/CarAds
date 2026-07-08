@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RentRequestModel {
-  final String requestId;
+  final String id; // Document ID in rent_requests
+  final String checkoutId; // ID of the related checkout document
   final String carId;
+  final String? userId;
   final String carName;
   final String price;
   final String customerName;
@@ -14,8 +16,10 @@ class RentRequestModel {
   final String? phoneNumber;
 
   RentRequestModel({
-    required this.requestId,
+    required this.id,
+    required this.checkoutId,
     required this.carId,
+    this.userId,
     required this.carName,
     required this.price,
     required this.customerName,
@@ -30,14 +34,16 @@ class RentRequestModel {
   factory RentRequestModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return RentRequestModel(
-      requestId: doc.id,
+      id: doc.id,
+      checkoutId: data['requestId'] ?? '',
       carId: data['carId'] ?? '',
+      userId: data['userId'],
       carName: data['carName'] ?? 'Unknown Car',
       price: data['price']?.toString() ?? '',
       customerName: data['customerName'] ?? 'Unknown Customer',
       status: data['status'] ?? 'pending',
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      carImage: data['carImage'],
+      carImage: data['car_image'] ?? data['carImage'],
       nationalId: data['nationalId']?.toString(),
       driverLicenseNo: data['driverLicenseNo']?.toString(),
       phoneNumber: data['phoneNumber']?.toString(),
@@ -46,7 +52,9 @@ class RentRequestModel {
 
   Map<String, dynamic> toMap() {
     return {
+      'requestId': checkoutId,
       'carId': carId,
+      'userId': userId,
       'carName': carName,
       'price': price,
       'customerName': customerName,

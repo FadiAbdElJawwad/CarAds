@@ -1,8 +1,8 @@
+import 'package:car_ads/common/loading_overlay.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/primary_button.dart';
 import '../../../../common/primary_text_field.dart';
@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.resetState();
+    Future.microtask(() => authProvider.resetState());
     authProvider.addListener(loginListener);
   }
 
@@ -72,8 +72,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
-        return ModalProgressHUD(
-          inAsyncCall: authProvider.state.isLoading,
+        return LoadingOverlay(
+          isLoading: authProvider.state.isLoading,
           child: Scaffold(
             body: Form(
               key: formState,

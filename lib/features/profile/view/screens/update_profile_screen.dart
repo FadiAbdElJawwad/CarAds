@@ -1,3 +1,4 @@
+import 'package:car_ads/common/loading_overlay.dart';
 import 'package:car_ads/common/primary_app_bar.dart';
 import 'package:car_ads/common/primary_button.dart';
 import 'package:car_ads/common/primary_text_field.dart';
@@ -47,73 +48,67 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
         body: Consumer2<AuthProvider, UpdateProfileProvider>(
           builder: (context, authProvider, updateProvider, _) {
-            return Stack(
-              children: [
-                Form(
-                  key: updateProvider.formKey,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            UpdateProfileImageSection(
-                              imageFile: updateProvider.imageFile,
-                              profileImageUrl:
-                                  authProvider.state.user?.profileImage,
-                              onPickImage: () {
-                                updateProvider.pickImage();
-                              },
+            return LoadingOverlay(
+              isLoading: authProvider.state.isLoading,
+              child: Form(
+                key: updateProvider.formKey,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          UpdateProfileImageSection(
+                            imageFile: updateProvider.imageFile,
+                            profileImageUrl:
+                                authProvider.state.user?.profileImage,
+                            onPickImage: () {
+                              updateProvider.pickImage();
+                            },
+                          ),
+                          context.addVerticalSpace(24),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
                             ),
-                            context.addVerticalSpace(24),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: const Color(0xFFE0E0E0),
-                                ),
-                              ),
-                              child: PrimaryTextField(
-                                label: 'Full Name',
-                                isBorderVisible: false,
-                                controller: updateProvider.nameController,
-                                hint: 'Enter your name',
-                                validator: (val) => val?.isEmpty ?? true
-                                    ? 'Please enter your name'
-                                    : null,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: const Color(0xFFE0E0E0),
                               ),
                             ),
-                          ],
-                        ).padSymmetric(20),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(24),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          border: Border(
-                            top: BorderSide(
-                              color: Color(0xFFE0E0E0),
-                              width: 0.5,
+                            child: PrimaryTextField(
+                              label: 'Full Name',
+                              isBorderVisible: false,
+                              controller: updateProvider.nameController,
+                              hint: 'Enter your name',
+                              validator: (val) => val?.isEmpty ?? true
+                                  ? 'Please enter your name'
+                                  : null,
                             ),
                           ),
-                        ),
-                        child: PrimaryButton(
-                          text: 'Save Changes',
-                          onPressed: authProvider.state.isLoading
-                              ? null
-                              : () => updateProvider.handleUpdate(context),
+                        ],
+                      ).padSymmetric(20),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(color: Color(0xFFE0E0E0), width: 0.5),
                         ),
                       ),
-                    ],
-                  ),
+                      child: PrimaryButton(
+                        text: 'Save Changes',
+                        onPressed: authProvider.state.isLoading
+                            ? null
+                            : () => updateProvider.handleUpdate(context),
+                      ),
+                    ),
+                  ],
                 ),
-                if (authProvider.state.isLoading)
-                  const Center(child: CircularProgressIndicator()),
-              ],
+              ),
             );
           },
         ),

@@ -6,6 +6,7 @@ import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
 import 'package:car_ads/features/notifications/logic/provider/notification_provider.dart';
 import 'package:car_ads/features/notifications/model/notification_model.dart';
+import 'package:car_ads/features/showroom/logic/provider/showroom_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -25,95 +26,126 @@ class _NotificationScreenState extends State<NotificationScreen> {
       builder: (context, authProvider, notificationProvider, child) {
         final userId = authProvider.state.user?.uid;
 
-        return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: PrimaryAppBar(backIconVisible: true, text: 'Notification'),
-          ),
-          body: userId == null
-              ? const Center(child: Text('User not logged in.'))
-              : StreamBuilder<List<NotificationModel>>(
-                  stream: notificationProvider.getNotificationsStream(userId),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+        return PopScope(
+          canPop: true,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop && userId != null) {
+              context.read<NotificationProvider>().markAllAsRead(userId);
+            }
+          },
+          child: Scaffold(
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: PrimaryAppBar(backIconVisible: true, text: 'Notification'),
+            ),
+            body: userId == null
+                ? const Center(child: Text('User not logged in.'))
+                : StreamBuilder<List<NotificationModel>>(
+                    stream: notificationProvider.getNotificationsStream(userId),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                    if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    }
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      }
 
-                    final notifications = snapshot.data ?? [];
+                      final notifications = snapshot.data ?? [];
 
-                    if (notifications.isEmpty) {
-                      return const Center(child: Text('No notifications yet.'));
-                    }
-                    return ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: notifications.length,
-                      separatorBuilder: (context, index) => const Divider(),
-                      itemBuilder: (context, index) {
-                        final notification = notifications[index];
-                        return ListTile(
-                          onTap: () {
-                            if (!notification.isRead) {
-                              notificationProvider.markAsRead(notification.id);
-                            }
+                      if (notifications.isEmpty) {
+                        return const Center(child: Text('No notifications yet.'));
+                      }
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: notifications.length,
+                        separatorBuilder: (context, index) => const Divider(),
+                        itemBuilder: (context, index) {
+                          final notification = notifications[index];
+                          return ListTile(
+                            onTap: () async {
+                              if (!notification.isRead) {
+                                notificationProvider.markAsRead(notification.id);
+                              }
 
-                            final bookingId =
-                                notification.extraData?['bookingId'];
-                            AppLogger.info(
-                              'Notification tapped: bookingId = $bookingId',
-                            );
+                              final bookingId =
+                                  notification.extraData?['bookingId'];
+                              final type = notification.extraData?['type'];
 
-                            if (bookingId != null) {
-                              AppRouter.goTo(
-                                screenName: ScreenName.confirmRentScreen,
-                                arguments: {
-                                  'orderId': bookingId,
-                                  'isViewMode': true,
-                                },
+                              AppLogger.info(
+                                'Notification tapped: bookingId = $bookingId, type = $type',
                               );
-                            } else {
-                              AppLogger.warning(
-                                'No bookingId found in notification extraData',
-                              );
-                            }
-                          },
-                          title: Text(
-                            notification.title,
-                            style: context.titleBold18,
-                          ),
-                          subtitle: Text(
-                            notification.body,
-                            style: context.bodyRegular,
-                          ),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                DateFormat('h:mm a').format(notification.time),
-                                style: context.bodyRegular.copyWith(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              if (!notification.isRead)
-                                Container(
-                                  height: 10,
-                                  width: 10,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.purple,
-                                    shape: BoxShape.circle,
+
+                              if (bookingId == null) {
+                                AppLogger.warning(
+                                  'No bookingId found in notification extraData',
+                                );
+                                return;
+                              }
+
+                              if (type == 'new_request') {
+                                final showroomProvider = context
+                                    .read<ShowroomProvider>();
+                                final request = await showroomProvider
+                                    .getRentRequestById(bookingId);
+
+                                if (request != null) {
+                                  AppRouter.goTo(
+                                    screenName: ScreenName.requestDetailsScreen,
+                                    arguments: request,
+                                  );
+                                } else {
+                                  AppRouter.goTo(
+                                    screenName: ScreenName.requestsScreen,
+                                    arguments: true,
+                                  );
+                                }
+                              } else {
+                                // Customer Routing (Default)
+                                AppRouter.goTo(
+                                  screenName: ScreenName.confirmRentScreen,
+                                  arguments: {
+                                    'orderId': bookingId,
+                                    'isViewMode': true,
+                                  },
+                                );
+                              }
+                            },
+                            title: Text(
+                              notification.title,
+                              style: context.titleBold18,
+                            ),
+                            subtitle: Text(
+                              notification.body,
+                              style: context.bodyRegular,
+                            ),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  DateFormat('h:mm a').format(notification.time),
+                                  style: context.bodyRegular.copyWith(
+                                    color: Colors.grey,
                                   ),
                                 ),
-                            ],
-                          ),
-                        );
-                      },
-                    ).padSymmetric(20);
-                  },
-                ),
+                                if (!notification.isRead)
+                                  Container(
+                                    height: 10,
+                                    width: 10,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.purple,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          );
+                        },
+                      ).padSymmetric(20);
+                    },
+                  ),
+          ),
         );
       },
     );

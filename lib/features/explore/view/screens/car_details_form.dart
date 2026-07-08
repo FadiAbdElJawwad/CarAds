@@ -1,3 +1,4 @@
+import 'package:car_ads/common/skeleton.dart';
 import 'package:car_ads/common/primary_button.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
@@ -8,7 +9,7 @@ import 'package:car_ads/common/car_image_extractor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../../explore/logic/helper/suggested_ads.dart';
+import '../../logic/helper/suggested_ads.dart';
 import 'package:car_ads/features/explore/model/car_card_model.dart';
 import '../widgets/car_features_card.dart';
 import '../widgets/showroom_contact_card.dart';
@@ -92,22 +93,27 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
               context.addVerticalSpace(24),
 
               // Dynamic Showroom/Seller Fetching
-              if (widget.car.showroomID != null &&
-                  widget.car.showroomID!.isNotEmpty)
+              if (widget.car.showroomId != null &&
+                  widget.car.showroomId!.isNotEmpty)
                 FutureBuilder<DocumentSnapshot>(
                   future: FirebaseFirestore.instance
                       .collection('users')
-                      .doc(widget.car.showroomID)
+                      .doc(widget.car.showroomId)
                       .get(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Card(
+                        child: ListTile(
+                          leading: Skeleton(width: 50, height: 50),
+                          title: Skeleton(width: 120, height: 18),
+                          subtitle: Skeleton(width: 80, height: 14),
+                        ),
+                      );
                     }
 
                     if (snapshot.hasError ||
                         !snapshot.hasData ||
                         !snapshot.data!.exists) {
-                      // Fallback to static info from car model if user doc fails
                       return ShowroomContactCard(
                         showroomName:
                             widget.car.showroomName ??
@@ -123,7 +129,7 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                           data['showroomName'] ?? data['name'] ?? 'Showroom',
                       phoneNumber: data['phone'] ?? 'N/A',
                       imageUrl: data['profileImage'] ?? data['licenseImageUrl'],
-                      showroomID: widget.car.showroomID,
+                      showroomID: widget.car.showroomId,
                     );
                   },
                 )
@@ -131,7 +137,7 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                 ShowroomContactCard(
                   showroomName: widget.car.contactName ?? 'Individual Seller',
                   phoneNumber: widget.car.contactPhone ?? 'N/A',
-                  showroomID: widget.car.showroomID,
+                  showroomID: widget.car.showroomId,
                 ),
 
               context.addVerticalSpace(24),

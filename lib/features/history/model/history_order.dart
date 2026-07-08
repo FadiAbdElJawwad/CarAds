@@ -13,6 +13,7 @@ class HistoryOrder {
     required this.imageUrl,
     required this.rentalStart,
     required this.status,
+    required DateTime createdAt,
   });
 
   factory HistoryOrder.fromFirestore(DocumentSnapshot doc) {
@@ -24,7 +25,10 @@ class HistoryOrder {
       rentalStart: data['rental_start'] is Timestamp
           ? (data['rental_start'] as Timestamp).toDate()
           : DateTime.now(),
-      status: data['status'] ?? 'Active',
+      createdAt: data['created_at'] != null
+          ? (data['created_at'] as Timestamp).toDate()
+          : DateTime.now(),
+      status: data['status'] ?? 'pending',
     );
   }
 }

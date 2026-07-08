@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UrlLauncherService {
-  static Future<void> _launchUrl(Uri url, BuildContext context) async {
+  UrlLauncherService._internal();
+  static final UrlLauncherService _instance = UrlLauncherService._internal();
+  factory UrlLauncherService() => _instance;
+
+  Future<void> _launchUrl(Uri url, BuildContext context) async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     try {
       await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -13,19 +17,13 @@ class UrlLauncherService {
     }
   }
 
-  static Future<void> launchWhatsApp(
-    BuildContext context,
-    String phoneNumber,
-  ) async {
+  Future<void> launchWhatsApp(BuildContext context, String phoneNumber) async {
     final cleanedPhoneNumber = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
     final Uri whatsappUri = Uri.parse("https://wa.me/$cleanedPhoneNumber");
     await _launchUrl(whatsappUri, context);
   }
 
-  static Future<void> launchCall(
-    BuildContext context,
-    String phoneNumber,
-  ) async {
+  Future<void> launchCall(BuildContext context, String phoneNumber) async {
     final Uri callUri = Uri.parse("tel:$phoneNumber");
     await _launchUrl(callUri, context);
   }

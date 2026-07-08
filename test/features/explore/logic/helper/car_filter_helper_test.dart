@@ -11,7 +11,7 @@ void main() {
     setUp(() {
       testCars = [
         CarCardModel(
-          carID: '1',
+          carId: '1',
           carName: 'Toyota Camry',
           carModel: 'Camry',
           price: '50', // 50,000 AED
@@ -20,7 +20,7 @@ void main() {
           status: 'available',
         ),
         CarCardModel(
-          carID: '2',
+          carId: '2',
           carName: 'Audi A4',
           carModel: 'A4',
           price: '100', // 100,000 AED
@@ -29,7 +29,7 @@ void main() {
           status: 'available',
         ),
         CarCardModel(
-          carID: '3',
+          carId: '3',
           carName: 'Toyota Corolla',
           carModel: 'Corolla',
           price: '40', // 40,000 AED
@@ -65,8 +65,8 @@ void main() {
       );
 
       expect(result.length, 2);
-      expect(result.any((c) => c.carID == '1'), true);
-      expect(result.any((c) => c.carID == '3'), true);
+      expect(result.any((c) => c.carId == '1'), true);
+      expect(result.any((c) => c.carId == '3'), true);
     });
 
     test('should filter by mileage range', () {
@@ -81,7 +81,7 @@ void main() {
       );
 
       expect(result.length, 1);
-      expect(result.first.carID, '2');
+      expect(result.first.carId, '2');
     });
 
     test('should filter by year range', () {
@@ -96,20 +96,20 @@ void main() {
       );
 
       expect(result.length, 2);
-      expect(result.any((c) => c.carID == '1'), true);
-      expect(result.any((c) => c.carID == '2'), true);
+      expect(result.any((c) => c.carId == '1'), true);
+      expect(result.any((c) => c.carId == '2'), true);
     });
 
-    test('should exclude specific carID', () {
+    test('should exclude specific carId', () {
       final filter = FilterModel(priceRange: const RangeValues(0, 200000));
       final result = CarFilterHelper.filterCars(
         availableCars: testCars,
         filter: filter,
-        carID: '1',
+        carId: '1',
       );
 
       expect(result.length, 2);
-      expect(result.any((c) => c.carID == '1'), false);
+      expect(result.any((c) => c.carId == '1'), false);
     });
   });
 }

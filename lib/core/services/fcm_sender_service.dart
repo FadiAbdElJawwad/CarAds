@@ -4,9 +4,11 @@ import 'package:http/http.dart' as http;
 import '../app_logger.dart';
 
 class FcmSenderService {
-  FcmSenderService._();
+  FcmSenderService._internal();
+  static final FcmSenderService _instance = FcmSenderService._internal();
+  factory FcmSenderService() => _instance;
 
-  static Future<void> sendNotificationToUser({
+  Future<void> sendNotificationToUser({
     required String targetFcmToken,
     required String title,
     required String body,

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:car_ads/common/loading_overlay.dart';
 import 'package:car_ads/common/primary_app_bar.dart';
 import 'package:car_ads/common/primary_button.dart';
 import 'package:car_ads/common/show_snack_bar.dart';
@@ -8,7 +9,6 @@ import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/core/services/car_firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LicenseUploadScreen extends StatefulWidget {
   const LicenseUploadScreen({super.key});
@@ -78,8 +78,8 @@ class _LicenseUploadScreenState extends State<LicenseUploadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: _isLoading,
+    return LoadingOverlay(
+      isLoading: _isLoading,
       child: Scaffold(
         appBar: const PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight + 20),

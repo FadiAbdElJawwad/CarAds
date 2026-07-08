@@ -1,20 +1,23 @@
+import 'package:car_ads/common/loading_overlay.dart';
+import 'package:car_ads/common/primary_button.dart';
+import 'package:car_ads/common/primary_text_field.dart';
+import 'package:car_ads/common/show_snack_bar.dart';
+import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
+import 'package:car_ads/core/extension/string_validation.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
+import 'package:car_ads/core/routes/app_router.dart';
+import 'package:car_ads/core/routes/screen_name.dart';
+import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
+import 'package:car_ads/features/auth/view/widgets/role_selection_widget.dart';
+import 'package:car_ads/features/auth/view/widgets/showroom_fields_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
-import '../../../../common/primary_button.dart';
-import '../../../../common/primary_text_field.dart';
-import '../../../../core/constant/images_manager.dart';
-import '../../../../core/extension/string_validation.dart';
-import '../../../../core/routes/app_router.dart';
-import '../../../../core/routes/screen_name.dart';
-import '../../../../common/show_snack_bar.dart';
-import '../../logic/provider/auth_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   final String? role;
   const SignUpScreen({super.key, this.role});
+
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
@@ -42,14 +45,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> _handleSignUp() async {
     if (!_formState.currentState!.validate()) return;
 
+    final authProvider = context.read<AuthProvider>();
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final phone = _phoneController.text.trim();
     final password = _passwordController.text;
-    final role = widget.role ?? 'user';
-    final commercialLicense = role == 'showroom'
-        ? _commercialController.text.trim()
-        : null;
+    final role = authProvider.selectedRole;
+    final commercialLicense =
+        role == 'showroom' ? _commercialController.text.trim() : null;
     final address = role == 'showroom' ? _addressController.text.trim() : null;
 
     if (role == 'showroom') {
@@ -67,8 +70,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
       return;
     }
-
-    final authProvider = context.read<AuthProvider>();
 
     await authProvider.signUpUser(
       name: name,
@@ -93,9 +94,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
-        return ModalProgressHUD(
-          inAsyncCall: authProvider.state.isLoading,
+      builder: (context, authProvider, _) {
+        return LoadingOverlay(
+          isLoading: authProvider.state.isLoading,
           child: Scaffold(
             body: Form(
               key: _formState,
@@ -119,7 +120,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     textAlign: TextAlign.center,
                     style: context.bodyRegular,
                   ),
-                  context.addVerticalSpace(32),
+                  context.addVerticalSpace(24),
+                  RoleSelectionWidget(
+                    selectedRole: authProvider.selectedRole,
+                    onRoleChanged: (value) {
+                      if (value != null) authProvider.setRole(value);
+                    },
+                  ),
+                  context.addVerticalSpace(24),
                   PrimaryTextField(
                     controller: _nameController,
                     validator: (value) => value!.validateName(context),
@@ -140,25 +148,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     validator: (value) => value!.validateMobile(context),
                     keyboardType: TextInputType.phone,
                   ),
-                  if (widget.role == 'showroom') ...[
-                    context.addVerticalSpace(16),
-                    PrimaryTextField(
-                      controller: _commercialController,
-                      validator: (value) =>
-                          value!.isEmpty ? 'Please enter license number' : null,
-                      hint: 'Commercial License Number',
-                      keyboardType: TextInputType.number,
-                    ),
-                    context.addVerticalSpace(16),
-                    PrimaryTextField(
-                      controller: _addressController,
-                      validator: (value) =>
-                          value!.isEmpty ? 'Please enter address' : null,
-                      hint: 'Showroom Address',
-                      keyboardType: TextInputType.streetAddress,
-                    ),
-                  ],
                   context.addVerticalSpace(16),
+                  ShowroomFieldsWidget(
+                    selectedRole: authProvider.selectedRole,
+                    commercialController: _commercialController,
+                    addressController: _addressController,
+                  ),
                   PrimaryTextField(
                     controller: _passwordController,
                     validator: (value) => value!.validatePassword(context),
@@ -180,9 +175,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         style: context.bodyRegular.copyWith(color: Colors.grey),
                       ),
                       TextButton(
-                        onPressed: () {
-                          AppRouter.back();
-                        },
+                        onPressed: () => AppRouter.back(),
                         child: Text(
                           context.loc.login,
                           style: context.bodyRegular,

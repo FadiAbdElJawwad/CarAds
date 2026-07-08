@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
@@ -14,7 +15,7 @@ class ShowroomRequestCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => AppRouter.goTo(
-        screenName: ScreenName.requestScreen,
+        screenName: ScreenName.requestDetailsScreen,
         arguments: request,
       ),
       child: Container(
@@ -79,12 +80,12 @@ class ShowroomRequestCardWidget extends StatelessWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  context.addVerticalSpace(4),
                   Text(
                     'Request By : ${request.customerName}',
                     style: context.bodyRegular.copyWith(color: Colors.grey),
                   ),
-                  const SizedBox(height: 4),
+                  context.addVerticalSpace(4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

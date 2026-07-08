@@ -16,6 +16,7 @@ class CheckoutService {
       'carName': data['car_name'] ?? 'Unknown Car',
       'price': data['total_payment']?.toString() ?? '',
       'showroomId': data['showroomID'] ?? '',
+      'userId': data['userId'] ?? '',
       'customerName': customerName,
       'status': 'pending',
       'createdAt': FieldValue.serverTimestamp(),

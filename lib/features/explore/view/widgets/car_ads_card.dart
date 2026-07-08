@@ -18,7 +18,7 @@ class CarAdsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if (car.carID != null) {
+        if (car.carId != null) {
           AppRouter.goTo(screenName: ScreenName.carDetailsForm, arguments: car);
         }
       },

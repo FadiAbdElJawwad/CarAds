@@ -6,9 +6,12 @@ import 'package:http/http.dart' as http;
 import '../app_logger.dart';
 
 class StripePaymentService {
-  StripePaymentService._();
+  StripePaymentService._internal();
+  static final StripePaymentService _instance =
+      StripePaymentService._internal();
+  factory StripePaymentService() => _instance;
 
-  static Future<bool> makePayment({
+  Future<bool> makePayment({
     required int amountInDollars,
     String currency = 'usd',
   }) async {
@@ -56,10 +59,7 @@ class StripePaymentService {
     }
   }
 
-  static Future<String?> _fetchPaymentIntent(
-    int amount,
-    String currency,
-  ) async {
+  Future<String?> _fetchPaymentIntent(int amount, String currency) async {
     try {
       var response = await http.post(
         Uri.parse(ApiConstants.stripePaymentUrl),

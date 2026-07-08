@@ -1,3 +1,4 @@
+import 'package:car_ads/common/loading_overlay.dart';
 import 'package:car_ads/common/primary_text_field.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/string_validation.dart';
@@ -19,64 +20,58 @@ class ChangeEmailScreen extends StatelessWidget {
         preferredSize: Size.fromHeight(kToolbarHeight + 20),
         child: PrimaryAppBar(backIconVisible: true, text: 'Change Your Email'),
       ),
-      body: Stack(
-        children: [
-          Form(
-            key: provider.currentEmailFormKey,
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    children: [
-                      Text(
-                        'Your data is kept secure by us!',
-                        style: context.titleRegular18,
-                        textAlign: TextAlign.center,
-                      ),
-                      context.addVerticalSpace(8),
-                      Text(
-                        'Add your Current Email Address',
-                        style: context.bodyRegular,
-                        textAlign: TextAlign.center,
-                      ),
-                      context.addVerticalSpace(24),
-                      PrimaryTextField(
-                        hint: 'Current Email Address',
-                        controller: provider.currentEmailController,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (val) => val?.validateEmail(context),
-                      ),
-                      context.addVerticalSpace(16),
-                      PrimaryTextField(
-                        hint: 'Current Password',
-                        controller: provider.passwordController,
-                        obscureText: true,
-                        validator: (val) {
-                          if (val == null || val.isEmpty) {
-                            return 'Password is required';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ).padSymmetric(20),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(color: Colors.white),
-                  child: PrimaryButton(
-                    text: 'Continue',
-                    onPressed: provider.isLoading
-                        ? null
-                        : () => provider.proceedToNewEmail(context),
+      body: LoadingOverlay(
+        isLoading: provider.isLoading,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  Text(
+                    'Your data is kept secure by us!',
+                    style: context.titleRegular18,
+                    textAlign: TextAlign.center,
                   ),
-                ),
-              ],
+                  context.addVerticalSpace(8),
+                  Text(
+                    'Add your Current Email Address',
+                    style: context.bodyRegular,
+                    textAlign: TextAlign.center,
+                  ),
+                  context.addVerticalSpace(24),
+                  PrimaryTextField(
+                    hint: 'Current Email Address',
+                    controller: provider.currentEmailController,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (val) => val?.validateEmail(context),
+                  ),
+                  context.addVerticalSpace(16),
+                  PrimaryTextField(
+                    hint: 'Current Password',
+                    controller: provider.passwordController,
+                    obscureText: true,
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return 'Password is required';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ).padSymmetric(20),
             ),
-          ),
-          if (provider.isLoading)
-            const Center(child: CircularProgressIndicator()),
-        ],
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: const BoxDecoration(color: Colors.white),
+              child: PrimaryButton(
+                text: 'Continue',
+                onPressed: provider.isLoading
+                    ? null
+                    : () => provider.proceedToNewEmail(context),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

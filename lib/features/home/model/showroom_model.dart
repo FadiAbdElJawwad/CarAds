@@ -1,40 +1,44 @@
 class ShowroomModel {
-  final String? showroomID;
+  final String? showroomId;
   final String? showroomImage;
   final String? showroomName;
   final double? showroomRating;
   final String? showroomLocation;
   final String? showroomPhone;
   final String? showroomDescription;
-  final List<String>? carID;
+  final String? address;
+  final List<String>? carId;
 
   ShowroomModel({
-    this.showroomID,
+    this.showroomId,
     this.showroomImage,
     this.showroomName,
     this.showroomRating,
     this.showroomLocation,
     this.showroomPhone,
     this.showroomDescription,
-    this.carID,
+    this.address,
+    this.carId,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'showroomID': showroomID,
+      'showroomID': showroomId,
       'showroomImage': showroomImage,
       'showroomName': showroomName,
       'showroomRating': showroomRating,
       'showroomLocation': showroomLocation,
       'showroomPhone': showroomPhone,
       'showroomDescription': showroomDescription,
-      'carID': carID,
+      'address': address,
+      'carID': carId,
     };
   }
 
   factory ShowroomModel.fromMap(Map<String, dynamic> map) {
     return ShowroomModel(
-      showroomID: (map['showroomID'] ?? map['uid']) as String?,
+      showroomId:
+          (map['showroomID'] ?? map['uid'] ?? map['showroomId']) as String?,
       showroomImage:
           (map['showroomImage'] ??
                   map['profileImage'] ??
@@ -49,7 +53,10 @@ class ShowroomModel {
       showroomLocation: map['showroomLocation'] as String?,
       showroomPhone: (map['showroomPhone'] ?? map['phone']) as String?,
       showroomDescription: map['showroomDescription'] as String?,
-      carID: map['carID'] != null ? List<String>.from(map['carID']) : null,
+      address: map['address'] as String?,
+      carId: map['carID'] != null
+          ? List<String>.from(map['carID'])
+          : (map['carId'] != null ? List<String>.from(map['carId']) : null),
     );
   }
 }

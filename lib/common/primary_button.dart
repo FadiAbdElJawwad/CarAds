@@ -19,6 +19,7 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
+        elevation: WidgetStateProperty.all(0),
         fixedSize: WidgetStateProperty.all(const Size(double.maxFinite, 50)),
         backgroundColor: WidgetStateProperty.all(color ?? Colors.black),
       ),
