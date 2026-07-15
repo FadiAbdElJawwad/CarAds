@@ -147,8 +147,5 @@ class ShowroomProvider extends ChangeNotifier {
     }
 
 
-    Future<void> completeOrder(RentRequestModel request) async {
-      await updateRequestStatus(request, 'complete');
-    }
   }
 }

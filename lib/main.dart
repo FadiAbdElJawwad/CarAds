@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:car_ads/core/app_logger.dart';
-import 'package:car_ads/features/add_ads/logic/provider/add_ads_provider.dart';
 import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
 import 'package:car_ads/features/nav_button_bar/provider/nav_button_provider.dart';
 import 'package:car_ads/features/profile/logic/provider/change_email_provider.dart';
@@ -25,7 +24,7 @@ import 'features/history/logic/provider/history_provider.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'core/services/notification_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+   
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -62,7 +61,7 @@ class CarAds extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CarAdsProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => ChangeEmailProvider()),
-        ChangeNotifierProvider(create: (_) => AddAdsProvider()),
+        // ChangeNotifierProvider(create: (_) => AddAdsProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => ChangePhoneProvider()),
         ChangeNotifierProvider(create: (_) => ShowroomProvider()),

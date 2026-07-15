@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constant/images_manager.dart';
 import '../../../../generated/l10n.dart';
+import '../../../add_ads/logic/provider/add_ads_provider.dart';
 import '../../../add_ads/view/screens/add_ads_screen.dart';
 import '../../../history/view/screens/history_screen.dart';
 import '../../../explore/view/screens/car_ads_screen.dart';
@@ -48,7 +49,11 @@ class _NavButtonBarState extends State<NavButtonBar> {
           ? const ShowroomHomeScreen(key: PageStorageKey('ShowroomHomeScreen'))
           : const HomeScreen(key: PageStorageKey('HomeScreen')),
       const CarAdsScreen(key: PageStorageKey('CarAdsScreen')),
-      const AddAdsScreen(key: PageStorageKey('AddAdsScreen')),
+      ChangeNotifierProvider(
+        create: (_) => AddAdsProvider(),
+        child: const AddAdsScreen(key: PageStorageKey('AddAdsScreen')),
+      ),
+
       role == 'showroom'
           ? const RequestsScreen(key: PageStorageKey('RequestsScreen'))
           : const HistoryScreen(key: PageStorageKey('HistoryScreen')),

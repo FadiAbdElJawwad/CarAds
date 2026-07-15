@@ -4,6 +4,8 @@ import 'package:car_ads/features/profile/view/screens/update_profile_screen.dart
 import 'package:car_ads/features/profile/view/screens/change_phone_screen.dart';
 import 'package:car_ads/features/profile/view/screens/verify_phone_otp_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../features/add_ads/logic/provider/add_ads_provider.dart';
 import '../../features/add_ads/view/screens/add_ads_screen.dart';
 import '../../features/auth/view/screens/login_screen.dart';
 import '../../features/auth/view/screens/onbording_screen.dart';
@@ -100,7 +102,10 @@ class RouteGenerator {
       case ScreenName.addAdsScreen:
         final carToEdit = settings.arguments as CarCardModel?;
         return MaterialPageRoute(
-          builder: (_) => AddAdsScreen(editingCar: carToEdit),
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => AddAdsProvider(),
+            child: AddAdsScreen(editingCar: carToEdit),
+          ),
           settings: RouteSettings(name: settings.name),
         );
       case ScreenName.historyScreen:

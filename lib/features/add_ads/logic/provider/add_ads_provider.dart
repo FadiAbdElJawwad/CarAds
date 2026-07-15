@@ -12,20 +12,6 @@ class AddAdsProvider extends ChangeNotifier {
   final NotificationService _notificationService = NotificationService();
   final ImagePicker _picker = ImagePicker();
 
-  final TextEditingController brandController = TextEditingController();
-  final TextEditingController modelController = TextEditingController();
-  final TextEditingController yearController = TextEditingController();
-  final TextEditingController mileageController = TextEditingController();
-  final TextEditingController conditionController = TextEditingController();
-  final TextEditingController tankSizeController = TextEditingController();
-  final TextEditingController gearBoxController = TextEditingController();
-  final TextEditingController seatsController = TextEditingController();
-  final TextEditingController doorsController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-
   CarCardModel? _editingCar;
   CarCardModel? get editingCar => _editingCar;
 
@@ -50,33 +36,9 @@ class AddAdsProvider extends ChangeNotifier {
 
   void initEdit(CarCardModel car) {
     _editingCar = car;
-
-    brandController.text = car.carName ?? '';
-    modelController.text = car.carModel ?? '';
-    yearController.text = car.year ?? '';
-    mileageController.text = car.mileage ?? '';
-    seatsController.text = car.seats ?? '';
-    doorsController.text = car.doors ?? '';
-    descriptionController.text = car.description ?? '';
-    priceController.text = car.price ?? '';
-    nameController.text = car.contactName ?? '';
-    phoneController.text = car.contactPhone ?? '';
-
-    tankSizeController.text = car.fuel ?? '';
-
-    // Standardize dropdown values
-    conditionController.text = (car.condition == null || car.condition!.isEmpty)
-        ? 'New'
-        : _capitalizeFirstLetter(car.condition!);
-
-    gearBoxController.text = (car.gearType == null || car.gearType!.isEmpty)
-        ? 'Automatic'
-        : _capitalizeFirstLetter(car.gearType!);
-
     _advertisingType = (car.adType == null || car.adType!.isEmpty)
         ? 'Commercial'
         : _capitalizeFirstLetter(car.adType!);
-
     _selectedImage = null;
     notifyListeners();
   }
@@ -94,7 +56,10 @@ class AddAdsProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> postAdvertisement(BuildContext context) async {
+  Future<bool> postAdvertisement({
+    required BuildContext context,
+    required Map<String, String> carDetails,
+  }) async {
     if (_selectedImage == null && _editingCar == null) {
       throw Exception('Please select a vehicle image');
     }
@@ -117,22 +82,22 @@ class AddAdsProvider extends ChangeNotifier {
       }
 
       final carData = {
-        'carName': brandController.text.trim(),
-        'carModel': modelController.text.trim(),
-        'year': yearController.text.trim(),
-        'mileage': mileageController.text.trim(),
-        'condition': conditionController.text.trim(),
-        'tankSize': tankSizeController.text.trim(),
-        'gearType': gearBoxController.text.trim(),
-        'description': descriptionController.text.trim(),
-        'price': priceController.text.trim(),
-        'contactName': nameController.text.trim(),
-        'contactPhone': phoneController.text.trim(),
+        'carName': carDetails['brand'] ?? '',
+        'carModel': carDetails['model'] ?? '',
+        'year': carDetails['year'] ?? '',
+        'mileage': carDetails['mileage'] ?? '',
+        'condition': carDetails['condition'] ?? '',
+        'tankSize': carDetails['tankSize'] ?? '',
+        'gearType': carDetails['gearType'] ?? '',
+        'description': carDetails['description'] ?? '',
+        'price': carDetails['price'] ?? '',
+        'contactName': carDetails['name'] ?? '',
+        'contactPhone': carDetails['phone'] ?? '',
         'adType': _advertisingType,
         'carImage': driveImageUrl,
-        'fuel': tankSizeController.text.trim(),
-        'seats': seatsController.text.trim(),
-        'doors': doorsController.text.trim(),
+        'fuel': carDetails['tankSize'] ?? '',
+        'seats': carDetails['seats'] ?? '',
+        'doors': carDetails['doors'] ?? '',
         'showroomID': userId,
         'status': 'available',
       };
@@ -163,60 +128,22 @@ class AddAdsProvider extends ChangeNotifier {
                 ? 'Advertisement Updated'
                 : 'Advertisement Posted',
             body: _editingCar != null
-                ? 'Your car advertisement for ${brandController.text.trim()} has been successfully updated.'
-                : 'Your car advertisement for ${brandController.text.trim()} has been successfully posted.',
+                ? 'Your car advertisement for ${carDetails['brand']} has been successfully updated.'
+                : 'Your car advertisement for ${carDetails['brand']} has been successfully posted.',
           );
         }
       }
 
-      _clearForm();
+      _editingCar = null;
+      _selectedImage = null;
+      _advertisingType = 'Commercial';
+      notifyListeners();
+
       return true;
     } catch (e) {
       rethrow;
     } finally {
       _setLoading(false);
     }
-  }
-
-  void clearForm() {
-    _clearForm();
-  }
-
-  void _clearForm() {
-    _editingCar = null;
-    brandController.clear();
-    modelController.clear();
-    yearController.clear();
-    mileageController.clear();
-    conditionController.clear();
-    tankSizeController.clear();
-    gearBoxController.clear();
-    seatsController.clear();
-    doorsController.clear();
-    descriptionController.clear();
-    priceController.clear();
-    nameController.clear();
-    phoneController.clear();
-    _selectedImage = null;
-    _advertisingType = 'Commercial';
-    notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    brandController.dispose();
-    modelController.dispose();
-    yearController.dispose();
-    mileageController.dispose();
-    conditionController.dispose();
-    tankSizeController.dispose();
-    gearBoxController.dispose();
-    seatsController.dispose();
-    doorsController.dispose();
-    descriptionController.dispose();
-    priceController.dispose();
-    nameController.dispose();
-    phoneController.dispose();
-    super.dispose();
   }
 }
