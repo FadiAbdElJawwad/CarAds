@@ -50,8 +50,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   Widget build(BuildContext context) {
     final String status = widget.requestModel.status.toLowerCase();
     final bool isPending = status == 'pending';
-    final bool isAccepted = status == 'accepted';
-    final bool isActionable = isPending || isAccepted;
+    final bool isActionable = isPending;
 
     return Scaffold(
       appBar: const PreferredSize(
@@ -88,7 +87,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               style: context.titleBold18.copyWith(fontSize: 16),
                             ),
                             Text(
-                              ' AED/Day',
+                              widget.requestModel.isRent ? ' AED/Day' : ' AED',
                               style: context.titleRegular18.copyWith(
                                 fontSize: 14,
                               ),
@@ -172,7 +171,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               text: 'Accept Request',
                               onPressed: _isUpdating
                                   ? null
-                                  : () => _updateStatus('accepted'),
+                                  : () {
+                                      final String purpose = widget
+                                              .requestModel.purpose
+                                              ?.toLowerCase()
+                                              .trim() ??
+                                          '';
+                                      final String newStatus = (purpose ==
+                                                  'sale' ||
+                                              purpose == 'buy')
+                                          ? 'complete'
+                                          : 'active';
+                                      _updateStatus(newStatus);
+                                    },
                             ),
                           ),
                           context.addHorizontalSpace(16),
@@ -187,12 +198,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           ),
                         ],
                       )
-                    : PrimaryButton(
-                        text: 'Complete Order',
-                        onPressed: _isUpdating
-                            ? null
-                            : () => _updateStatus('complete'),
-                      ),
+                    : const SizedBox.shrink(),
               )
 
           ],
@@ -227,7 +233,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     switch (status.toLowerCase()) {
       case 'approved':
       case 'accepted':
-        return ColorManager.successColor;
+      case 'active':
+          return ColorManager.successColor;
       case 'pending':
         return ColorManager.alertColor;
       case 'rejected':

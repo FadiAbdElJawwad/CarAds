@@ -77,7 +77,7 @@ class RentRequestCard extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text: '/Day',
+                            text: booking.isRent ? '/Day' : '',
                             style: context.bodyRegular.copyWith(
                               color: Colors.black,
                               fontSize: 10,

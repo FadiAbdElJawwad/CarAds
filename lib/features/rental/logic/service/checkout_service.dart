@@ -24,6 +24,8 @@ class CheckoutService {
       'nationalId': data['id_number'] ?? '',
       'driverLicenseNo': data['license_number'] ?? '',
       'phoneNumber': data['phone_number'] ?? '',
+      'purpose': data['purpose'] ?? 'sale',
+      'rental_end': data['rental_end'],
     });
 
     return orderRef;

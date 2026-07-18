@@ -6,6 +6,8 @@ import 'package:car_ads/features/showroom/model/rent_request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/constant/color_manager.dart';
+
 class ShowroomRequestCardWidget extends StatelessWidget {
   final RentRequestModel request;
 
@@ -14,10 +16,11 @@ class ShowroomRequestCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => AppRouter.goTo(
-        screenName: ScreenName.requestDetailsScreen,
-        arguments: request,
-      ),
+      onTap: () =>
+          AppRouter.goTo(
+            screenName: ScreenName.requestDetailsScreen,
+            arguments: request,
+          ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(12),
@@ -41,12 +44,14 @@ class ShowroomRequestCardWidget extends StatelessWidget {
                 width: 80,
                 height: 80,
                 fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  width: 80,
-                  height: 80,
-                  color: Colors.grey[200],
-                  child: const Icon(Icons.directions_car, color: Colors.grey),
-                ),
+                errorBuilder: (context, error, stackTrace) =>
+                    Container(
+                      width: 80,
+                      height: 80,
+                      color: Colors.grey[200],
+                      child: const Icon(
+                          Icons.directions_car, color: Colors.grey),
+                    ),
               ),
             ),
             const SizedBox(width: 16),
@@ -69,7 +74,7 @@ class ShowroomRequestCardWidget extends StatelessWidget {
                                 ),
                               ),
                               TextSpan(
-                                text: '/Day',
+                                text: request.isRent ? '/Day' : '',
                                 style: context.bodyRegular.copyWith(
                                   color: Colors.grey,
                                   fontSize: 10,
@@ -90,7 +95,8 @@ class ShowroomRequestCardWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Date : ${DateFormat('dd MMM').format(request.createdAt)}',
+                        'Date : ${DateFormat('dd MMM').format(
+                            request.createdAt)}',
                         style: context.bodyRegular.copyWith(color: Colors.grey),
                       ),
                       Container(
@@ -128,11 +134,12 @@ class ShowroomRequestCardWidget extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'approved':
       case 'accepted':
-        return Colors.green;
+      case 'active':
+        return ColorManager.successColor;
       case 'pending':
-        return Colors.orange;
+        return ColorManager.alertColor;
       case 'rejected':
-        return Colors.red;
+        return ColorManager.warningColor;
       default:
         return Colors.grey;
     }

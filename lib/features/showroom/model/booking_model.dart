@@ -11,6 +11,7 @@ class BookingModel {
   final double pricePerDay;
   final DateTime requestDate;
   final String status;
+  final String? purpose;
 
   BookingModel({
     required this.id,
@@ -23,7 +24,10 @@ class BookingModel {
     required this.pricePerDay,
     required this.requestDate,
     required this.status,
+    this.purpose,
   });
+
+  bool get isRent => purpose == 'rent';
 
   factory BookingModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
@@ -38,6 +42,7 @@ class BookingModel {
       pricePerDay: (data['pricePerDay'] ?? 0).toDouble(),
       requestDate: (data['requestDate'] as Timestamp).toDate(),
       status: data['status'] ?? 'pending',
+      purpose: data['purpose'] as String?,
     );
   }
 
@@ -52,6 +57,7 @@ class BookingModel {
       'pricePerDay': pricePerDay,
       'requestDate': Timestamp.fromDate(requestDate),
       'status': status,
+      'purpose': purpose,
     };
   }
 }

@@ -81,7 +81,8 @@ class AddAdsProvider extends ChangeNotifier {
         throw Exception('Failed to upload image to Drive');
       }
 
-      final carData = {
+      // تعريف الخريطة كـ <String, dynamic> لتقبل القيم براحة
+      final Map<String, dynamic> carData = {
         'carName': carDetails['brand'] ?? '',
         'carModel': carDetails['model'] ?? '',
         'year': carDetails['year'] ?? '',
@@ -100,7 +101,17 @@ class AddAdsProvider extends ChangeNotifier {
         'doors': carDetails['doors'] ?? '',
         'showroomID': userId,
         'status': 'available',
+        // 🟢 إضافة نوع الإعلان (بيع أم تأجير)
+        'purpose': carDetails['purpose'] ?? 'sale',
       };
+
+      // 🟢 إضافة تواريخ التأجير فقط في حال كان الإعلان للإيجار
+      if (carDetails['purpose'] == 'rent') {
+        carData['startDate'] = carDetails['startDate'] ?? '';
+        carData['startTime'] = carDetails['startTime'] ?? '';
+        carData['endDate'] = carDetails['endDate'] ?? '';
+        carData['endTime'] = carDetails['endTime'] ?? '';
+      }
 
       if (authProvider.state.user?.role == 'showroom') {
         carData['showroomName'] =

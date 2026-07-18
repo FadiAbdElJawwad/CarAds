@@ -43,7 +43,7 @@ class CarAdsCard extends StatelessWidget {
             Row(
               children: [
                 Text('${car.price ?? 0} K', style: context.inputBold14),
-                Text(' AED', style: context.inputRegular14),
+                Text(car.purpose == 'rent' ? ' AED/Day' : ' AED', style: context.inputRegular14),
               ],
             ),
             context.addVerticalSpace(4),

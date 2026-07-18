@@ -19,6 +19,11 @@ class CarCardModel {
   final String? status;
   final String? adType;
   final String? condition;
+  final String? purpose;
+  final String? startDate;
+  final String? startTime;
+  final String? endDate;
+  final String? endTime;
 
   CarCardModel({
     this.carId,
@@ -41,6 +46,11 @@ class CarCardModel {
     this.status,
     this.adType,
     this.condition,
+    this.purpose,
+    this.startDate,
+    this.startTime,
+    this.endDate,
+    this.endTime,
   });
 
   Map<String, dynamic> toMap() {
@@ -65,6 +75,11 @@ class CarCardModel {
       'status': status,
       'adType': adType,
       'condition': condition,
+      'purpose': purpose,
+      'startDate': startDate,
+      'startTime': startTime,
+      'endDate': endDate,
+      'endTime': endTime,
     };
   }
 
@@ -90,6 +105,14 @@ class CarCardModel {
       status: map['status'] as String?,
       adType: map['adType'] as String?,
       condition: map['condition'] as String?,
+
+      // 🟢 القيمة الافتراضية 'sale' تحمي التطبيق من الانهيار مع الإعلانات القديمة
+      purpose: (map['purpose'] as String?) ?? 'sale',
+
+      startDate: map['startDate'] as String?,
+      startTime: map['startTime'] as String?,
+      endDate: map['endDate'] as String?,
+      endTime: map['endTime'] as String?,
     );
   }
 }

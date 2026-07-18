@@ -1,5 +1,6 @@
 import 'package:car_ads/common/skeleton.dart';
-import 'package:car_ads/common/primary_button.dart';
+import 'package:car_ads/common/sticky_bottom_button.dart';
+import 'package:car_ads/common/show_snack_bar.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
@@ -9,6 +10,7 @@ import 'package:car_ads/common/car_image_extractor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import '../../logic/helper/suggested_ads.dart';
 import 'package:car_ads/features/explore/model/car_card_model.dart';
 import '../widgets/car_features_card.dart';
@@ -23,19 +25,24 @@ class CarDetailsForm extends StatefulWidget {
 }
 
 class _CarDetailsFormState extends State<CarDetailsForm> {
+  bool _isTermsAccepted = false;
+
   @override
   Widget build(BuildContext context) {
+    final isRent = widget.car.purpose == 'rent';
     return Scaffold(
-      bottomNavigationBar: Card(
-        child: PrimaryButton(
-          text: 'Rental',
-          onPressed: () {
-            AppRouter.goTo(
-              screenName: ScreenName.checkout,
-              arguments: widget.car,
-            );
-          },
-        ).padSymmetric(20).padVerticalSymmetric(17),
+      bottomNavigationBar: StickyBottomButton(
+        text: isRent ? 'Rental' : 'Buy ',
+        onPressed: () {
+          if (isRent && !_isTermsAccepted) {
+            showSnackBar(context, 'You must agree to the rental terms to proceed.');
+            return;
+          }
+          AppRouter.goTo(
+            screenName: ScreenName.checkout,
+            arguments: widget.car,
+          );
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -70,7 +77,7 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                         '${widget.car.price ?? 0}K',
                         style: context.bodyBold,
                       ),
-                      Text('/AED', style: context.bodyRegular),
+                      Text(isRent ? ' AED/Day' : ' AED', style: context.bodyRegular),
                     ],
                   ),
                 ],
@@ -83,6 +90,19 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
               infoBulletPoint("Car Model", widget.car.carModel ?? 'N/A'),
               infoBulletPoint("Year", widget.car.year ?? 'N/A'),
               infoBulletPoint("Mileage", widget.car.mileage ?? 'N/A'),
+              if (isRent) ...[
+                context.addVerticalSpace(24),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Rental Information:', style: context.bodyBold),
+                    context.addVerticalSpace(8),
+                    infoBulletPoint("Available From", _formatDate(widget.car.startDate)),
+                    infoBulletPoint("Available Until", _formatDate(widget.car.endDate)),
+                    infoBulletPoint("Location", widget.car.showroomName ?? 'N/A'),
+                  ],
+                ),
+              ],
               context.addVerticalSpace(24),
               Text('Description', style: context.bodyBold),
               context.addVerticalSpace(4),
@@ -90,9 +110,38 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                 widget.car.description ?? 'No description available.',
                 style: context.bodyRegular,
               ),
+              if (isRent) ...[
+                context.addVerticalSpace(24),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Rental terms', style: context.bodyBold,),
+                    context.addVerticalSpace(4),
+                    Text(
+                      'Lorem ipsum dolor sit amet consectetur. Consectetur pharetra proin sed nisi vitae purus vivamus in. Ornare pellentesque vivamus elementum lorem velit eget mauris senectus fusce.',
+                      style: context.bodyRegular,),
+                    context.addVerticalSpace(8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Checkbox(
+                          value: _isTermsAccepted,
+                          onChanged: (value) {
+                            setState(() {
+                              _isTermsAccepted = value ?? false;
+                            });
+                          },
+                          activeColor: Colors.black,
+                          checkColor: Colors.white,
+                        ),
+                        Text('Do you agree to the rental terms',
+                          style: context.bodyRegular,),
+                      ],
+                    )
+                  ],
+                ),
+              ],
               context.addVerticalSpace(24),
-
-              // Dynamic Showroom/Seller Fetching
               if (widget.car.showroomId != null &&
                   widget.car.showroomId!.isNotEmpty)
                 FutureBuilder<DocumentSnapshot>(
@@ -116,7 +165,7 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                         !snapshot.data!.exists) {
                       return ShowroomContactCard(
                         showroomName:
-                            widget.car.showroomName ??
+                        widget.car.showroomName ??
                             widget.car.contactName ??
                             'Seller',
                         phoneNumber: widget.car.contactPhone ?? 'N/A',
@@ -126,7 +175,7 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                     final data = snapshot.data!.data() as Map<String, dynamic>;
                     return ShowroomContactCard(
                       showroomName:
-                          data['showroomName'] ?? data['name'] ?? 'Showroom',
+                      data['showroomName'] ?? data['name'] ?? 'Showroom',
                       phoneNumber: data['phone'] ?? 'N/A',
                       imageUrl: data['profileImage'] ?? data['licenseImageUrl'],
                       showroomID: widget.car.showroomId,
@@ -149,6 +198,16 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
         ),
       ),
     );
+  }
+
+  String _formatDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) return 'N/A';
+    try {
+      final date = DateTime.parse(dateString);
+      return DateFormat('d MMM').format(date);
+    } catch (e) {
+      return dateString;
+    }
   }
 
   Widget infoBulletPoint(String label, String value) {

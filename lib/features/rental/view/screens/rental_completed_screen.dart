@@ -1,9 +1,9 @@
+import 'package:car_ads/common/sticky_bottom_button.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../common/primary_button.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/routes/screen_name.dart';
 
@@ -13,13 +13,11 @@ class RentalCompletedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Card(
-        child: PrimaryButton(
-          text: 'Go to home',
-          onPressed: () {
-            AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
-          },
-        ).padSymmetric(20).padVerticalSymmetric(17),
+      bottomNavigationBar: StickyBottomButton(
+        text: 'Go to home',
+        onPressed: () {
+          AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
+        },
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

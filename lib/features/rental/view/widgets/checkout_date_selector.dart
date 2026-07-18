@@ -4,14 +4,14 @@ import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class CheckoutDateSelector extends StatefulWidget {
+class DateSelector extends StatefulWidget {
   final String label;
   final DateTime? currentDate;
   final TimeOfDay? currentTime;
   final VoidCallback onSelectDate;
   final VoidCallback onSelectTime;
 
-  const CheckoutDateSelector({
+  const DateSelector({
     super.key,
     required this.label,
     required this.currentDate,
@@ -21,10 +21,10 @@ class CheckoutDateSelector extends StatefulWidget {
   });
 
   @override
-  State<CheckoutDateSelector> createState() => _CheckoutDateSelectorState();
+  State<DateSelector> createState() => _DateSelectorState();
 }
 
-class _CheckoutDateSelectorState extends State<CheckoutDateSelector> {
+class _DateSelectorState extends State<DateSelector> {
   late TextEditingController _dateController;
   late TextEditingController _timeController;
 
@@ -33,6 +33,26 @@ class _CheckoutDateSelectorState extends State<CheckoutDateSelector> {
     super.initState();
     _dateController = TextEditingController();
     _timeController = TextEditingController();
+    _updateControllers();
+  }
+
+  @override
+  void didUpdateWidget(covariant DateSelector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.currentDate != oldWidget.currentDate ||
+        widget.currentTime != oldWidget.currentTime) {
+      _updateControllers();
+    }
+  }
+
+  void _updateControllers() {
+    final dateFormat = DateFormat('dd/MM/yyyy');
+    _dateController.text = widget.currentDate != null
+        ? dateFormat.format(widget.currentDate!)
+        : '';
+    _timeController.text = widget.currentTime != null
+        ? widget.currentTime!.format(context)
+        : '';
   }
 
   @override
@@ -44,15 +64,6 @@ class _CheckoutDateSelectorState extends State<CheckoutDateSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd/MM/yyyy');
-
-    _dateController.text = widget.currentDate != null
-        ? dateFormat.format(widget.currentDate!)
-        : '';
-    _timeController.text = widget.currentTime != null
-        ? widget.currentTime!.format(context)
-        : '';
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

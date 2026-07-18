@@ -1,6 +1,5 @@
-import 'package:car_ads/common/loading_overlay.dart';
 import 'package:car_ads/common/primary_app_bar.dart';
-import 'package:car_ads/common/primary_button.dart';
+import 'package:car_ads/common/sticky_bottom_button.dart';
 import 'package:car_ads/common/primary_text_field.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
@@ -8,6 +7,8 @@ import 'package:car_ads/features/profile/logic/provider/update_profile_provider.
 import 'package:car_ads/features/profile/view/widgets/update_profile_image_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../common/loading_overlay.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -91,24 +92,20 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ],
                       ).padSymmetric(20),
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          top: BorderSide(color: Color(0xFFE0E0E0), width: 0.5),
-                        ),
-                      ),
-                      child: PrimaryButton(
-                        text: 'Save Changes',
-                        onPressed: authProvider.state.isLoading
-                            ? null
-                            : () => updateProvider.handleUpdate(context),
-                      ),
-                    ),
                   ],
                 ),
               ),
+            );
+          },
+        ),
+        bottomNavigationBar: Consumer2<AuthProvider, UpdateProfileProvider>(
+          builder: (context, authProvider, updateProvider, _) {
+            return StickyBottomButton(
+              text: 'Save Changes',
+              onPressed: authProvider.state.isLoading
+                  ? null
+                  : () => updateProvider.handleUpdate(context),
+              isLoading: authProvider.state.isLoading,
             );
           },
         ),

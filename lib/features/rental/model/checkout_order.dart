@@ -18,6 +18,7 @@ class CheckoutOrder {
   final String? userId;
   final String? location;
   final String? showroomId;
+  final String? purpose;
 
   CheckoutOrder({
     required this.licenseNumber,
@@ -37,6 +38,7 @@ class CheckoutOrder {
     this.userId,
     this.location,
     this.showroomId,
+    this.purpose,
   });
 
   Map<String, dynamic> toMap() {
@@ -62,6 +64,7 @@ class CheckoutOrder {
       'userId': userId,
       'location': location,
       'showroomID': showroomId,
+      'purpose': purpose ?? 'sale',
     };
   }
 
@@ -88,6 +91,7 @@ class CheckoutOrder {
       userId: map['userId'] as String?,
       location: map['location'] as String?,
       showroomId: (map['showroomID'] ?? map['showroomId']) as String?,
+      purpose: map['purpose'] as String?,
     );
   }
 }

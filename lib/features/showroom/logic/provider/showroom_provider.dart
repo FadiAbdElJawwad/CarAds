@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:car_ads/core/app_logger.dart';
 import 'package:car_ads/core/services/notification_service.dart';
 import 'package:car_ads/features/showroom/model/booking_model.dart';
@@ -10,6 +11,8 @@ class ShowroomProvider extends ChangeNotifier {
   final NotificationService _notificationService = NotificationService();
 
   final List<BookingModel> _recentBookings = [];
+  List<RentRequestModel> _cachedRequests = [];
+  Timer? _expiryTimer;
   double _salesProfit = 0;
   double _rentProfit = 0;
   bool _isLoading = false;
@@ -35,11 +38,75 @@ class ShowroomProvider extends ChangeNotifier {
     }
 
     return query.snapshots().map(
-          (snapshot) =>
-          snapshot.docs
-              .map((doc) => RentRequestModel.fromFirestore(doc))
-              .toList(),
+      (snapshot) {
+        final requests = snapshot.docs
+            .map((doc) => RentRequestModel.fromFirestore(doc))
+            .toList();
+
+        // Update local cache for the periodic timer
+        _cachedRequests = requests;
+
+        // Ensure timer is running when data arrives
+        startExpiryTimer();
+
+        // Immediate Lazy Evaluation check
+        _autoCompleteExpiredRentals(requests);
+
+        return requests;
+      },
     );
+  }
+
+  void startExpiryTimer() {
+    // Cancel existing timer to prevent multiple instances
+    _expiryTimer?.cancel();
+
+    _expiryTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      if (_cachedRequests.isNotEmpty) {
+        _autoCompleteExpiredRentals(_cachedRequests);
+      }
+    });
+  }
+
+  Future<void> _autoCompleteExpiredRentals(
+    List<RentRequestModel> requests,
+  ) async {
+    final now = DateTime.now();
+
+    for (var request in requests) {
+      final String status = request.status.toLowerCase().trim();
+      final String purpose = request.purpose?.toLowerCase().trim() ?? '';
+
+      if (status == 'active' && purpose == 'rent' && request.rentalEnd != null) {
+        final DateTime expirationDate = request.rentalEnd!;
+
+
+        if (now.isAfter(expirationDate)) {
+          try {
+            await _firestore
+                .collection('rent_requests')
+                .doc(request.id)
+                .update({'status': 'complete'});
+
+            if (request.checkoutId.isNotEmpty) {
+              await _firestore
+                  .collection('checkout')
+                  .doc(request.checkoutId)
+                  .update({'status': 'complete'});
+            }
+
+            AppLogger.info(
+              "Auto-completed expired rental for ${request.carName} (ID: ${request.id})",
+            );
+          } catch (e) {
+            AppLogger.error(
+              "Lazy auto-completion failed for request ${request.id}",
+              e,
+            );
+          }
+        }
+      }
+    }
   }
 
   Future<RentRequestModel?> getRentRequestById(String requestId) async {
@@ -68,7 +135,7 @@ class ShowroomProvider extends ChangeNotifier {
       final querySnapshot = await _firestore
           .collection('checkout')
           .where('showroomID', isEqualTo: showroomId)
-          .where('status', isEqualTo: 'accepted')
+          .where('status', whereIn: ['accepted', 'active', 'complete'])
           .get();
 
       double sales = 0;
@@ -77,8 +144,6 @@ class ShowroomProvider extends ChangeNotifier {
       for (var doc in querySnapshot.docs) {
         final data = doc.data();
         final amount = (data['total_payment'] ?? 0).toDouble();
-        // Assuming adType is stored in checkout or we can derive it.
-        // For now, let's just categorize all as rent since the checkout flow is for rental.
         rent += amount;
       }
 
@@ -117,17 +182,17 @@ class ShowroomProvider extends ChangeNotifier {
 
       if (request.userId != null && request.userId!.isNotEmpty) {
         final String statusLower = newStatus.toLowerCase();
-        final bool isAccepted = statusLower == 'accepted';
+        final bool isAccepted = statusLower == 'accepted' || statusLower == 'active';
         final bool isCompleted = statusLower == 'complete';
 
         String title = "We apologize, the request was denied";
-        String body = "Car rental request ${request
-            .carName} rejected by the showroom.";
+        String body = "Car rental request ${request.carName} rejected by the showroom.";
 
         if (isAccepted) {
-          title = "The rental request has been accepted";
-          body = "The showroom has accepted a request to rent a car ${request
-              .carName}. You can review the details in the record.";
+          title = request.isRent ? "The rental request has been accepted" : "The purchase request has been accepted";
+          body = request.isRent 
+              ? "The showroom has accepted a request to rent a car ${request.carName}. You can review the details in the record."
+              : "The showroom has accepted your request to buy ${request.carName}. The transaction is now complete.";
         } else if (isCompleted) {
           title = "Order Completed";
           body = "Your rental for ${request
@@ -145,7 +210,11 @@ class ShowroomProvider extends ChangeNotifier {
       AppLogger.error("Error updating request status: $e");
       rethrow;
     }
+  }
 
-
+  @override
+  void dispose() {
+    _expiryTimer?.cancel();
+    super.dispose();
   }
 }

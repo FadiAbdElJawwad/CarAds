@@ -25,6 +25,7 @@ class HistoryCard extends StatelessWidget {
         break;
       case 'accepted':
       case 'approved':
+      case 'active':
         statusText = "Active";
         statusColor = ColorManager.successColor;
         break;

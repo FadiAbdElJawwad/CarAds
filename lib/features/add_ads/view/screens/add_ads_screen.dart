@@ -4,17 +4,20 @@ import 'package:car_ads/common/primary_text_field.dart';
 import 'package:car_ads/common/show_snack_bar.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/string_validation.dart';
-import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/features/add_ads/logic/provider/add_ads_provider.dart';
 import 'package:car_ads/features/add_ads/view/widgets/add_ads_ad_type_selection.dart';
 import 'package:car_ads/features/add_ads/view/widgets/add_ads_car_info.dart';
 import 'package:car_ads/features/add_ads/view/widgets/add_ads_contact_info.dart';
 import 'package:car_ads/features/add_ads/view/widgets/add_ads_description.dart';
 import 'package:car_ads/features/add_ads/view/widgets/add_ads_image_picker.dart';
-import 'package:car_ads/features/add_ads/view/widgets/add_ads_post_button.dart';
+import 'package:car_ads/common/sticky_bottom_button.dart';
+import 'package:car_ads/features/add_ads/view/widgets/add_ads_purpose_toggle.dart';
+import 'package:car_ads/features/add_ads/view/widgets/add_ads_rental_section.dart';
 import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../nav_button_bar/provider/nav_button_provider.dart';
+import '../../../nav_button_bar/view/screens/nav_button_bar.dart';
 
 class AddAdsScreen extends StatefulWidget {
   final CarCardModel? editingCar;
@@ -27,6 +30,13 @@ class AddAdsScreen extends StatefulWidget {
 class _AddAdsScreenState extends State<AddAdsScreen> {
   bool get isEditing => widget.editingCar != null;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  String adPurpose = 'sale';
+  String _rentalDurationType = 'days';
+  DateTime? startDate;
+  TimeOfDay? startTime;
+  DateTime? endDate;
+  TimeOfDay? endTime;
 
   late final TextEditingController brandController;
   late final TextEditingController modelController;
@@ -46,6 +56,16 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
   void initState() {
     super.initState();
     _initControllers();
+    if (isEditing && widget.editingCar != null) {
+      final car = widget.editingCar!;
+      adPurpose = car.purpose ?? 'sale';
+      if (adPurpose == 'rent') {
+        startDate = car.startDate != null ? DateTime.tryParse(car.startDate!) : null;
+        startTime = car.startTime != null ? _parseTime(car.startTime!) : null;
+        endDate = car.endDate != null ? DateTime.tryParse(car.endDate!) : null;
+        endTime = car.endTime != null ? _parseTime(car.endTime!) : null;
+      }
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = context.read<AddAdsProvider>();
       if (isEditing) {
@@ -86,6 +106,83 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
     return "${text[0].toUpperCase()}${text.substring(1)}";
   }
 
+  TimeOfDay? _parseTime(String timeStr) {
+    try {
+      final parts = timeStr.split(':');
+      if (parts.length == 2) {
+        return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+      }
+    } catch (e) {
+      // Handle parsing error if needed
+    }
+    return null;
+  }
+
+  void _autoSelectDuration() {
+    if (startDate != null && endDate != null) {
+      final int diff = endDate!.difference(startDate!).inDays;
+      if (diff < 7) {
+        _rentalDurationType = 'days';
+      } else if (diff < 30) {
+        _rentalDurationType = 'weeks';
+      } else {
+        _rentalDurationType = 'months';
+      }
+    }
+  }
+
+  Future<void> _pickStartDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: startDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      setState(() {
+        startDate = picked;
+        if (endDate != null) {
+          _autoSelectDuration();
+        }
+      });
+    }
+  }
+
+  Future<void> _pickStartTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: startTime ?? TimeOfDay.now(),
+    );
+    if (picked != null) {
+      setState(() => startTime = picked);
+    }
+  }
+
+  Future<void> _pickEndDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: endDate ?? (startDate ?? DateTime.now()),
+      firstDate: startDate ?? DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      setState(() {
+        endDate = picked;
+        _autoSelectDuration();
+      });
+    }
+  }
+
+  Future<void> _pickEndTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: endTime ?? TimeOfDay.now(),
+    );
+    if (picked != null) {
+      setState(() => endTime = picked);
+    }
+  }
+
   @override
   void dispose() {
     brandController.dispose();
@@ -122,21 +219,41 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
       'phone': phoneController.text.trim(),
       'seats': seatsController.text.trim(),
       'doors': doorsController.text.trim(),
+      'purpose': adPurpose,
     };
+
+    if (adPurpose == 'rent') {
+      if (startDate == null || startTime == null || endDate == null || endTime == null) {
+        showSnackBar(context, 'Please fill all rental dates and times');
+        return;
+      }
+      carDetails['startDate'] = startDate!.toIso8601String();
+      carDetails['startTime'] = "${startTime!.hour}:${startTime!.minute}";
+      carDetails['endDate'] = endDate!.toIso8601String();
+      carDetails['endTime'] = "${endTime!.hour}:${endTime!.minute}";
+    }
 
     try {
       final success = await provider.postAdvertisement(
         context: context,
         carDetails: carDetails,
       );
+
       if (success && mounted) {
-        showSnackBar(
-          context,
-          isEditing
-              ? 'Advertisement updated successfully!'
-              : 'Advertisement posted successfully!',
-        );
-        Navigator.pop(context);
+        if (isEditing) {
+          showSnackBar(context, 'Advertisement updated successfully!');
+          Navigator.pop(context);
+        } else {
+          showSnackBar(context, 'Advertisement posted successfully!');
+
+          context.read<NavButtonProvider>().onItemTapped(1);
+
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const NavButtonBar()),
+                (Route<dynamic> route) => false,
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -144,7 +261,6 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
       }
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<AddAdsProvider>(
@@ -169,9 +285,11 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
                     child: ListView(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       children: [
-                        Text(
-                          'You can only display your cars for sale',
-                          style: context.titleRegular18,
+                        AddAdsPurposeToggle(
+                          adPurpose: adPurpose,
+                          onChanged: (val) {
+                            if (val != null) setState(() => adPurpose = val);
+                          },
                         ),
                         context.addVerticalSpace(16),
                         AddAdsCarInfo(
@@ -184,6 +302,26 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
                           seatsController: seatsController,
                           doorsController: doorsController,
                           mileageController: mileageController,
+                        ),
+                        context.addVerticalSpace(24),
+                        AddAdsRentalSection(
+                          adPurpose: adPurpose,
+                          rentalDurationType: _rentalDurationType,
+                          startDate: startDate,
+                          startTime: startTime,
+                          endDate: endDate,
+                          endTime: endTime,
+                          onPickStartDate: _pickStartDate,
+                          onPickStartTime: _pickStartTime,
+                          onPickEndDate: _pickEndDate,
+                          onPickEndTime: _pickEndTime,
+                          onDurationChanged: (val) {
+                            if (val != null) {
+                              setState(() {
+                                _rentalDurationType = val;
+                              });
+                            }
+                          },
                         ),
                         context.addVerticalSpace(24),
                         AddAdsDescription(
@@ -210,14 +348,14 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
                       ],
                     ),
                   ),
-                  AddAdsPostButton(
-                    isLoading: provider.isLoading,
-                    isEditing: isEditing,
-                    onPressed: _submitAd,
-                  ),
                 ],
               ),
             ),
+          ),
+          bottomNavigationBar: StickyBottomButton(
+            text: isEditing ? 'SAVE CHANGES' : 'POST ADVERTISEMENT',
+            onPressed: _submitAd,
+            isLoading: provider.isLoading,
           ),
         );
       },

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/primary_app_bar.dart';
-import '../../../../common/primary_button.dart';
+import 'package:car_ads/common/sticky_bottom_button.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import '../../../../common/car_image_extractor.dart';
 import '../../logic/provider/confirm_rent_provider.dart';
@@ -42,15 +42,13 @@ class ConfirmRentScreen extends StatelessWidget {
             ),
             bottomNavigationBar: isViewMode
                 ? null
-                : Card(
-                    child: PrimaryButton(
-                      text: 'Confirm Rent',
-                      onPressed: () {
-                        AppRouter.goToAndRemove(
-                          screenName: ScreenName.rentalCompletedScreen,
-                        );
-                      },
-                    ).padSymmetric(20).padVerticalSymmetric(17),
+                : StickyBottomButton(
+                    text: 'Confirm Rent',
+                    onPressed: () {
+                      AppRouter.goToAndRemove(
+                        screenName: ScreenName.rentalCompletedScreen,
+                      );
+                    },
                   ),
             body: model.isLoading
                 ? const Center(child: CircularProgressIndicator())

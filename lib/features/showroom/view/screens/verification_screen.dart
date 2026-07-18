@@ -1,5 +1,4 @@
-import 'package:car_ads/common/primary_button.dart';
-import 'package:car_ads/common/show_snack_bar.dart';
+import 'package:car_ads/common/sticky_bottom_button.dart';
 import 'package:car_ads/core/constant/color_manager.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
@@ -11,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../common/primary_app_bar.dart';
+import '../../../../common/show_snack_bar.dart';
 
 class VerificationScreen extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -75,18 +75,14 @@ class _VerificationScreenState extends State<VerificationScreen> {
               }
             },
           ),
-          const Spacer(),
-          PrimaryButton(
-            text: isPhoneVerified && isLicenseVerified
-                ? 'Go to Home'
-                : 'Complete Verification',
-            onPressed: isPhoneVerified && isLicenseVerified
-                ? _handleFinalSignUp
-                : null,
-          ),
-          context.addVerticalSpace(20),
         ],
       ).padSymmetric(20),
+      bottomNavigationBar: StickyBottomButton(
+        text: isPhoneVerified && isLicenseVerified
+            ? 'Go to Home'
+            : 'Complete Verification',
+        onPressed: isPhoneVerified && isLicenseVerified ? _handleFinalSignUp : null,
+      ),
     );
   }
 

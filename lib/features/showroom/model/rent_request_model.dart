@@ -14,6 +14,8 @@ class RentRequestModel {
   final String? nationalId;
   final String? driverLicenseNo;
   final String? phoneNumber;
+  final String? purpose;
+  final DateTime? rentalEnd;
 
   RentRequestModel({
     required this.id,
@@ -29,7 +31,11 @@ class RentRequestModel {
     this.nationalId,
     this.driverLicenseNo,
     this.phoneNumber,
+    this.purpose,
+    this.rentalEnd,
   });
+
+  bool get isRent => purpose?.toLowerCase().trim() == 'rent';
 
   factory RentRequestModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
@@ -47,6 +53,8 @@ class RentRequestModel {
       nationalId: data['nationalId']?.toString(),
       driverLicenseNo: data['driverLicenseNo']?.toString(),
       phoneNumber: data['phoneNumber']?.toString(),
+      purpose: data['purpose'] as String?,
+      rentalEnd: (data['rental_end'] as Timestamp?)?.toDate(),
     );
   }
 
@@ -64,6 +72,8 @@ class RentRequestModel {
       'nationalId': nationalId,
       'driverLicenseNo': driverLicenseNo,
       'phoneNumber': phoneNumber,
+      'purpose': purpose,
+      'rental_end': rentalEnd != null ? Timestamp.fromDate(rentalEnd!) : null,
     };
   }
 }

@@ -1,10 +1,10 @@
+import 'package:car_ads/common/sticky_bottom_button.dart';
 import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/features/profile/logic/provider/language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/primary_app_bar.dart';
-import '../../../../common/primary_button.dart';
 
 class ChangeLanguageScreen extends StatefulWidget {
   const ChangeLanguageScreen({super.key});
@@ -58,27 +58,18 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
               ],
             ).padSymmetric(20),
           ),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(color: Color(0xFFE0E0E0), width: 0.5),
-              ),
-            ),
-            child: PrimaryButton(
-              text: 'Save Changes',
-              onPressed: () {
-                if (_selectedLanguage != null) {
-                  context.read<LanguageProvider>().changeLanguage(
-                    _selectedLanguage!,
-                  );
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ),
         ],
+      ),
+      bottomNavigationBar: StickyBottomButton(
+        text: 'Save Changes',
+        onPressed: () {
+          if (_selectedLanguage != null) {
+            context.read<LanguageProvider>().changeLanguage(
+              _selectedLanguage!,
+            );
+            Navigator.pop(context);
+          }
+        },
       ),
     );
   }

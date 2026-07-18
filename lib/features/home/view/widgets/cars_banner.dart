@@ -119,7 +119,7 @@ class _CarsBannerState extends State<CarsBanner> {
                             '${currentCar.price}K',
                             style: context.inputBold16,
                           ),
-                          Text('AED', style: context.inputRegular16),
+                          Text(currentCar.purpose == 'rent' ? ' AED/Day' : ' AED', style: context.inputRegular16),
                         ],
                       ),
                     ],

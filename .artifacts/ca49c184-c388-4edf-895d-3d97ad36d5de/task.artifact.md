@@ -1,0 +1,5 @@
+- [x] Add `_expiryTimer` and `_cachedRequests` to `ShowroomProvider`
+- [x] Implement `startExpiryTimer()` in `ShowroomProvider`
+- [x] Update `getRecentRentRequests` to sync cache and trigger timer
+- [x] Implement `dispose()` in `ShowroomProvider` to cancel timer
+- [x] Verify real-time functionality

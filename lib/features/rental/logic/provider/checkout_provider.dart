@@ -108,7 +108,12 @@ class CheckoutProvider with ChangeNotifier {
 
   Future<void> onContinue(BuildContext context) async {
     if (!(formKey.currentState?.validate() ?? false)) return;
-    if (rentalFromDate == null || rentalUntilDate == null) return;
+    
+    final isRent = car.purpose == 'rent';
+    if (isRent && (rentalFromDate == null || rentalUntilDate == null)) {
+      return;
+    }
+    
     if (shippingAddress == null) return;
 
     _isLoading = true;
@@ -135,14 +140,14 @@ class CheckoutProvider with ChangeNotifier {
         licenseNumber: licenseValue,
         idNumber: nationalIdValue,
         phoneNumber: phoneValue ?? '',
-        rentalStart: _checkoutService.combineDateAndTime(
+        rentalStart: isRent ? _checkoutService.combineDateAndTime(
           rentalFromDate!,
           rentalFromTime,
-        ),
-        rentalEnd: _checkoutService.combineDateAndTime(
+        ) : DateTime.now(),
+        rentalEnd: isRent ? _checkoutService.combineDateAndTime(
           rentalUntilDate!,
           rentalUntilTime,
-        ),
+        ) : DateTime.now(),
         totalPayment: totalPayment,
         currency: AppConstants.currency,
         shippingCost: AppConstants.shippingCost,
@@ -155,6 +160,7 @@ class CheckoutProvider with ChangeNotifier {
         userEmail: userEmail,
         location: shippingAddress,
         showroomId: car.showroomId,
+        purpose: car.purpose,
       );
 
       final int amountInDollars = totalPayment ~/ 1000;
