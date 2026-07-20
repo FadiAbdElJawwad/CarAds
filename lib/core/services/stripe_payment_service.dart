@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import '../app_logger.dart';
+import '../extension/app_sizes.dart';
 
 class StripePaymentService {
   StripePaymentService._internal();
@@ -12,9 +13,11 @@ class StripePaymentService {
   factory StripePaymentService() => _instance;
 
   Future<bool> makePayment({
+    required BuildContext context,
     required int amountInDollars,
     String currency = 'usd',
   }) async {
+    final loc = context.loc;
     try {
       int amountInCents = amountInDollars * 100;
 
@@ -33,7 +36,7 @@ class StripePaymentService {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
-          merchantDisplayName: 'CarAds Inc.',
+          merchantDisplayName: loc.merchantName,
           style: ThemeMode.light,
           appearance: const PaymentSheetAppearance(
             colors: PaymentSheetAppearanceColors(primary: Colors.black),

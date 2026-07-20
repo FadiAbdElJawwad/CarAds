@@ -14,29 +14,34 @@ class FAQScreenScreen extends StatefulWidget {
 class _FAQScreenScreenState extends State<FAQScreenScreen> {
   @override
   Widget build(BuildContext context) {
+    final faqs = faqList(context); // Using localized list
+
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight + 20),
-        child: PrimaryAppBar(backIconVisible: true, text: 'FAQ’S'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+        child: PrimaryAppBar(
+          backIconVisible: true,
+          text: context.loc.faqsTitle,
+        ),
       ),
       body: Column(
         children: [
           Text(
-            'Have Questions? We Have Answers!',
+            context.loc.faqHeader,
             style: context.titleRegular18,
           ),
           context.addVerticalSpace(8),
           Expanded(
             child: ListView.separated(
-              itemCount: faqData.length,
+              itemCount: faqs.length,
               separatorBuilder: (context, index) =>
                   const Divider(color: Colors.grey).padVerticalSymmetric(8),
               itemBuilder: (context, index) {
-                final faq = faqData[index];
+                final faq = faqs[index];
                 return ExpansionTile(
                   childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
                   shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.all(Radius.circular(16)),
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
                   collapsedShape: const RoundedRectangleBorder(
                     side: BorderSide.none,

@@ -1,4 +1,5 @@
 import 'package:car_ads/core/constant/color_manager.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/explore/model/car_card_model.dart';
@@ -54,7 +55,7 @@ class ShowroomAdActions extends StatelessWidget {
                     child: const Icon(Icons.delete, color: ColorManager.warningColor, size: 18),
                   ),
                   const SizedBox(width: 12),
-                  const Text('Delete Ads'),
+                  Text(context.loc.deleteAds),
                 ],
               ),
             ),
@@ -71,7 +72,7 @@ class ShowroomAdActions extends StatelessWidget {
                     child: const Icon(Icons.edit, color: Colors.black, size: 18),
                   ),
                   const SizedBox(width: 12),
-                  const Text('Edit Ads'),
+                  Text(context.loc.editAds),
                 ],
               ),
             ),

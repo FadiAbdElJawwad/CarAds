@@ -28,9 +28,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: PrimaryAppBar(text: 'Your Profile'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: PrimaryAppBar(text: context.loc.yourProfileTitle),
       ),
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return ListView(
             children: [
               ProfileHeaderCard(
-                name: user?.name ?? 'Loading...',
+                name: user?.name ?? context.loc.loading,
                 phone: user?.phone ?? user?.email ?? '',
                 profileImage: user?.profileImage,
               ),
@@ -48,10 +48,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      ProfileMenuItem(title: 'Payment Methods', onTap: () {}),
+                      ProfileMenuItem(
+                        title: context.loc.paymentMethods,
+                        onTap: () {},
+                      ),
                       const Divider(color: ColorManager.backgroundColor),
                       ProfileMenuItem(
-                        title: 'Change Your Email',
+                        title: context.loc.changeYourEmailMenu,
                         onTap: () {
                           AppRouter.goTo(
                             screenName: ScreenName.changeEmailScreen,
@@ -60,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(color: ColorManager.backgroundColor),
                       ProfileMenuItem(
-                        title: 'Change Your Phone Number',
+                        title: context.loc.changeYourPhoneMenu,
                         onTap: () {
                           AppRouter.goTo(
                             screenName: ScreenName.changePhoneScreen,
@@ -69,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(color: ColorManager.backgroundColor),
                       ProfileMenuItem(
-                        title: 'Change Your Password',
+                        title: context.loc.changeYourPasswordMenu,
                         onTap: () {
                           AppRouter.goTo(
                             screenName: ScreenName.changePasswordScreen,
@@ -78,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(color: ColorManager.backgroundColor),
                       ProfileMenuItem(
-                        title: 'Change Language',
+                        title: context.loc.changeLanguageTitle,
                         onTap: () {
                           AppRouter.goTo(
                             screenName: ScreenName.changeLanguageScreen,
@@ -87,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(color: ColorManager.backgroundColor),
                       ProfileMenuItem(
-                        title: 'FAQ’S',
+                        title: context.loc.faqsTitle,
                         onTap: () {
                           AppRouter.goTo(
                             screenName: ScreenName.faqScreenScreen,
@@ -96,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(color: ColorManager.backgroundColor),
                       ProfileMenuItem(
-                        title: 'Privacy Policy',
+                        title: context.loc.privacyPolicyTitle,
                         onTap: () {
                           AppRouter.goTo(
                             screenName: ScreenName.privacyPolicyScreen,
@@ -105,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(color: ColorManager.backgroundColor),
                       ProfileMenuItem(
-                        title: 'Terms & Conditions',
+                        title: context.loc.termsConditionsTitle,
                         onTap: () {
                           AppRouter.goTo(
                             screenName: ScreenName.termsConditionsScreen,
@@ -114,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(color: ColorManager.backgroundColor),
                       ProfileMenuItem(
-                        title: 'Logout',
+                        title: context.loc.logout,
                         onTap: () async {
                           await authProvider.logout();
                           if (context.mounted) {

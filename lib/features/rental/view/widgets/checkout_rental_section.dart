@@ -30,7 +30,7 @@ class CheckoutRentalSection extends StatelessWidget {
       children: [
         context.addVerticalSpace(24),
         DateSelector(
-          label: 'Rental From',
+          label: context.loc.rentalFrom,
           currentDate: userStartDate,
           currentTime: userStartTime,
           onSelectDate: onPickStartDate,
@@ -38,7 +38,7 @@ class CheckoutRentalSection extends StatelessWidget {
         ),
         context.addVerticalSpace(16),
         DateSelector(
-          label: 'Rental Until',
+          label: context.loc.rentalUntil,
           currentDate: userEndDate,
           currentTime: userEndTime,
           onSelectDate: onPickEndDate,

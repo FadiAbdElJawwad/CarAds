@@ -74,7 +74,7 @@ class ShowroomRequestCardWidget extends StatelessWidget {
                                 ),
                               ),
                               TextSpan(
-                                text: request.isRent ? '/Day' : '',
+                                text: request.isRent ? context.loc.perDay : '',
                                 style: context.bodyRegular.copyWith(
                                   color: Colors.grey,
                                   fontSize: 10,
@@ -87,7 +87,7 @@ class ShowroomRequestCardWidget extends StatelessWidget {
                   ),
                   context.addVerticalSpace(4),
                   Text(
-                    'Request By : ${request.customerName}',
+                    context.loc.requestBy(request.customerName),
                     style: context.bodyRegular.copyWith(color: Colors.grey),
                   ),
                   context.addVerticalSpace(4),
@@ -95,8 +95,7 @@ class ShowroomRequestCardWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Date : ${DateFormat('dd MMM').format(
-                            request.createdAt)}',
+                        context.loc.dateLabel(DateFormat('dd MMM').format(request.createdAt)),
                         style: context.bodyRegular.copyWith(color: Colors.grey),
                       ),
                       Container(
@@ -111,7 +110,7 @@ class ShowroomRequestCardWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          request.status.toUpperCase(),
+                          _getLocalizedStatus(context, request.status).toUpperCase(),
                           style: TextStyle(
                             color: _getStatusColor(request.status),
                             fontSize: 10,
@@ -130,6 +129,23 @@ class ShowroomRequestCardWidget extends StatelessWidget {
     );
   }
 
+  String _getLocalizedStatus(BuildContext context, String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return context.loc.statusPending;
+      case 'approved':
+      case 'accepted':
+      case 'active':
+        return context.loc.statusActive;
+      case 'rejected':
+        return context.loc.statusCanceled;
+      case 'complete':
+        return context.loc.statusEnded;
+      default:
+        return status;
+    }
+  }
+
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'approved':
@@ -140,6 +156,8 @@ class ShowroomRequestCardWidget extends StatelessWidget {
         return ColorManager.alertColor;
       case 'rejected':
         return ColorManager.warningColor;
+      case 'complete':
+        return Colors.black;
       default:
         return Colors.grey;
     }

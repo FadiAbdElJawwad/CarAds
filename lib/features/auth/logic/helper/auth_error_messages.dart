@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import '../../../../generated/l10n.dart';
+import '../../../../core/extension/app_sizes.dart';
 
 class AuthErrorMessages {
   static String getErrorMessage(BuildContext context, String code) {
-    final s = S.of(context);
     if (code == 'invalid-credential') {
-      return s.invalidCredential;
+      return context.loc.invalidCredential;
     } else if (code == 'weak-password') {
-      return s.weakPassword;
+      return context.loc.weakPassword;
     } else if (code == 'email-already-in-use') {
-      return s.usedEmail;
+      return context.loc.usedEmail;
     } else if (code == 'invalid-email') {
-      return s.invalidEmail;
+      return context.loc.invalidEmail;
     }
 
-    return s.authenticationError;
+    return context.loc.authenticationError;
   }
 }

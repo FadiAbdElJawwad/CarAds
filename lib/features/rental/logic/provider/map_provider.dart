@@ -1,67 +1,99 @@
 import 'package:car_ads/core/app_logger.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/features/home/model/map_selection_result.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../core/services/location_service.dart';
 
 class MapProvider with ChangeNotifier {
-  String _address = "Loading Location...";
+  String address = "";
+  bool isLoading = false;
   final LocationService _locationService = LocationService();
-  LatLng? _currentPosition;
+  Position? _currentPosition;
 
-  String get address => _address;
-  LatLng? get currentPosition => _currentPosition;
+  Position? get currentPosition => _currentPosition;
 
-  Future<void> fetchLocation() async {
-    _address = "Loading Location...";
+  Future<void> fetchLocation(BuildContext context) async {
+    isLoading = true;
     notifyListeners();
+
     try {
-      Position position = await _locationService.getCurrentPosition();
+      Position position = await _locationService.getCurrentPosition(context);
+      _currentPosition = position;
+
+      if (!context.mounted) return;
       String fetchedAddress = await _locationService.getAddressFromLatLng(
+        context,
         position.latitude,
         position.longitude,
       );
-      _address = fetchedAddress;
-      _currentPosition = LatLng(position.latitude, position.longitude);
+      address = fetchedAddress;
     } catch (e) {
-      AppLogger.error("Error fetching location", e);
-      _address = "Tap on the map to select a location.";
+      if (context.mounted) {
+        address = _currentPosition != null
+            ? "${_currentPosition!.latitude}, ${_currentPosition!.longitude}"
+            : context.loc.unknownLocation;
+      }
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  Future<void> onMapTapped(LatLng position) async {
-    _address = "Loading Location...";
+  Future<void> onMapTapped(BuildContext context, Position position) async {
+    isLoading = true;
     notifyListeners();
     try {
       String fetchedAddress = await _locationService.getAddressFromLatLng(
+        context,
         position.latitude,
         position.longitude,
       );
-      _address = fetchedAddress;
+      if (!context.mounted) return;
+      address = fetchedAddress;
       _currentPosition = position;
     } catch (e) {
       AppLogger.error("Error fetching address", e);
-      _address = "Could not determine address. Please try again.";
+      if (context.mounted) {
+        address = context.loc.couldNotDetermineAddress;
+      }
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  void onSetLocationPressed(BuildContext context) {
-    if (_address != "Loading Location..." &&
-        _address != "Unable to determine your location." &&
-        _address != "Tap on the map to select a location." &&
-        _address != "Could not determine address. Please try again.") {
-      final result = MapSelectionResult(
-        address: _address,
-        position: _currentPosition!,
+  Future<void> onSetLocationPressed(BuildContext context) async {
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      Position position = await _locationService.getCurrentPosition(context);
+      if (!context.mounted) return;
+
+      String fetchedAddress = await _locationService.getAddressFromLatLng(
+        context,
+        position.latitude,
+        position.longitude,
       );
-      Navigator.of(context).pop(result);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a location on the map')),
-      );
+
+      address = fetchedAddress;
+      _currentPosition = position;
+      notifyListeners();
+
+      await Future.delayed(const Duration(milliseconds: 600));
+      if (context.mounted) {
+        Navigator.of(context).pop(
+          MapSelectionResult(address: address, position: _currentPosition!),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        address = context.loc.unknownLocation;
+      }
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
   }
 }

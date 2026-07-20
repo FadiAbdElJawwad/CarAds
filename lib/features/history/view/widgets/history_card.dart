@@ -20,21 +20,21 @@ class HistoryCard extends StatelessWidget {
 
     switch (order.status.toLowerCase().trim()) {
       case 'pending':
-        statusText = "Pending";
+        statusText = context.loc.statusPending;
         statusColor = ColorManager.alertColor;
         break;
       case 'accepted':
       case 'approved':
       case 'active':
-        statusText = "Active";
+        statusText = context.loc.statusActive;
         statusColor = ColorManager.successColor;
         break;
       case 'rejected':
-        statusText = "Canceled";
+        statusText = context.loc.statusCanceled;
         statusColor = ColorManager.warningColor;
         break;
       case 'complete':
-        statusText = "Ended";
+        statusText = context.loc.statusEnded;
         statusColor = Colors.black;
         break;
       default:
@@ -54,7 +54,10 @@ class HistoryCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text(order.carName, style: context.titleBold18),
+              title: Text(
+                order.getLocalizedCarName(context),
+                style: context.titleBold18,
+              ),
               trailing: SizedBox(
                 width: 100,
                 height: 100,
@@ -67,7 +70,7 @@ class HistoryCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Order Date :',
+                  context.loc.orderDateLabel,
                   style: context.bodyRegular.copyWith(color: Colors.grey),
                 ),
                 Text(
@@ -79,7 +82,7 @@ class HistoryCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Status :',
+                  context.loc.statusLabel,
                   style: context.bodyRegular.copyWith(color: Colors.grey),
                 ),
                 Text(

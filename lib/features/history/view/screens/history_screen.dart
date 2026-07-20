@@ -47,9 +47,9 @@ class _HistoryScreenState extends State<HistoryScreen>
     final userId = context.watch<AuthProvider>().state.user?.uid;
 
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: PrimaryAppBar(text: 'History'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: PrimaryAppBar(text: context.loc.history),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -60,35 +60,35 @@ class _HistoryScreenState extends State<HistoryScreen>
               onConfirm: () => context.read<HistoryProvider>().clearHistory(),
             ),
             child: Text(
-              'Clear ALL',
+              context.loc.clearAll,
               style: context.bodyRegular.copyWith(color: Colors.grey),
             ),
           ),
           Expanded(
             child: userId == null
-                ? const Center(child: Text('Please log in first.'))
+                ? Center(child: Text(context.loc.loginRequired))
                 : Consumer<HistoryProvider>(
-                    builder: (context, model, child) {
-                      if (model.isLoading) {
-                        return ListView.builder(
-                          itemCount: 5,
-                          itemBuilder: (context, index) =>
-                              const HistoryCardSkeleton(),
-                        );
-                      }
+              builder: (context, model, child) {
+                if (model.isLoading) {
+                  return ListView.builder(
+                    itemCount: 5,
+                    itemBuilder: (context, index) =>
+                    const HistoryCardSkeleton(),
+                  );
+                }
 
-                      if (model.orders.isEmpty) {
-                        return const Center(child: Text('No history yet.'));
-                      }
+                if (model.orders.isEmpty) {
+                  return Center(child: Text(context.loc.noHistoryYet));
+                }
 
-                      return ListView.builder(
-                        itemCount: model.orders.length,
-                        itemBuilder: (context, index) {
-                          return HistoryCard(order: model.orders[index]);
-                        },
-                      );
-                    },
-                  ),
+                return ListView.builder(
+                  itemCount: model.orders.length,
+                  itemBuilder: (context, index) {
+                    return HistoryCard(order: model.orders[index]);
+                  },
+                );
+              },
+            ),
           ),
         ],
       ).padSymmetric(20),

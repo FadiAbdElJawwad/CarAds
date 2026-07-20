@@ -11,10 +11,10 @@ class HistoryService {
         .orderBy('created_at', descending: true)
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs
-              .map((doc) => HistoryOrder.fromFirestore(doc))
-              .toList();
-        });
+      return snapshot.docs
+          .map((doc) => HistoryOrder.fromFirestore(doc))
+          .toList();
+    });
   }
 
   Future<void> clearHistory(String userId) async {

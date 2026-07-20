@@ -41,7 +41,7 @@ class AddAdsRentalSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           context.addVerticalSpace(24),
-          Text('Rental Duration', style: context.inputRegular14),
+          Text(context.loc.rentalDuration, style: context.inputRegular14),
           context.addVerticalSpace(8),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -52,7 +52,7 @@ class AddAdsRentalSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   activeColor: Colors.black,
-                  title: Text('Days', style: context.inputRegular14),
+                  title: Text(context.loc.days, style: context.inputRegular14),
                   value: 'days',
                   groupValue: rentalDurationType,
                   onChanged: onDurationChanged,
@@ -66,7 +66,7 @@ class AddAdsRentalSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   activeColor: Colors.black,
-                  title: Text('Weeks', style: context.inputRegular14),
+                  title: Text(context.loc.weeks, style: context.inputRegular14),
                   value: 'weeks',
                   groupValue: rentalDurationType,
                   onChanged: onDurationChanged,
@@ -80,7 +80,7 @@ class AddAdsRentalSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   activeColor: Colors.black,
-                  title: Text('Months', style: context.inputRegular14),
+                  title: Text(context.loc.months, style: context.inputRegular14),
                   value: 'months',
                   groupValue: rentalDurationType,
                   onChanged: onDurationChanged,
@@ -92,7 +92,7 @@ class AddAdsRentalSection extends StatelessWidget {
           ),
           context.addVerticalSpace(16),
           DateSelector(
-            label: 'Available From',
+            label: context.loc.availableFrom,
             currentDate: startDate,
             currentTime: startTime,
             onSelectDate: onPickStartDate,
@@ -100,7 +100,7 @@ class AddAdsRentalSection extends StatelessWidget {
           ),
           context.addVerticalSpace(16),
           DateSelector(
-            label: 'Available Until',
+            label: context.loc.availableUntil,
             currentDate: endDate,
             currentTime: endTime,
             onSelectDate: onPickEndDate,

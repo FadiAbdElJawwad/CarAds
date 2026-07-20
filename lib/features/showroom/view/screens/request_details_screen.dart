@@ -28,16 +28,20 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     setState(() => _isUpdating = true);
     try {
       await context.read<ShowroomProvider>().updateRequestStatus(
+        context, // Added context as per ShowroomProvider refactoring
         widget.requestModel,
         status,
       );
       if (mounted) {
-        showSnackBar(context, 'Request ${status.toLowerCase()} successfully');
+        showSnackBar(
+          context,
+          context.loc.requestUpdatedSuccess(status.toLowerCase()),
+        );
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
-        showSnackBar(context, 'Failed to update request: $e');
+        showSnackBar(context, context.loc.requestUpdateError(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -53,9 +57,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     final bool isActionable = isPending;
 
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight + 20),
-        child: PrimaryAppBar(backIconVisible: true, text: 'Request Details'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+        child: PrimaryAppBar(
+          backIconVisible: true,
+          text: context.loc.requestDetailsTitle,
+        ),
       ),
       body: LoadingOverlay(
         isLoading: _isUpdating,
@@ -87,7 +94,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               style: context.titleBold18.copyWith(fontSize: 16),
                             ),
                             Text(
-                              widget.requestModel.isRent ? ' AED/Day' : ' AED',
+                              widget.requestModel.isRent
+                                  ? ' ${context.loc.aedPerDay}'
+                                  : ' ${context.loc.aed}',
                               style: context.titleRegular18.copyWith(
                                 fontSize: 14,
                               ),
@@ -102,13 +111,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         children: [
                           _buildDetailRow(
                             context,
-                            'Request By : ',
+                            context.loc.requestByLabel,
                             widget.requestModel.customerName,
                           ),
                           context.addVerticalSpace(16),
                           _buildDetailRow(
                             context,
-                            'The date of request : ',
+                            context.loc.requestDateLabel,
                             DateFormat(
                               'd MMM',
                             ).format(widget.requestModel.createdAt),
@@ -116,25 +125,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           context.addVerticalSpace(16),
                           _buildDetailRow(
                             context,
-                            'Driving License No : ',
-                            widget.requestModel.driverLicenseNo ?? 'N/A',
+                            context.loc.drivingLicenseLabel,
+                            widget.requestModel.driverLicenseNo ?? context.loc.notAvailable,
                           ),
                           context.addVerticalSpace(16),
                           _buildDetailRow(
                             context,
-                            'ID Number : ',
-                            widget.requestModel.nationalId ?? 'N/A',
+                            context.loc.idNumberLabel,
+                            widget.requestModel.nationalId ?? context.loc.notAvailable,
                           ),
                           context.addVerticalSpace(16),
                           _buildDetailRow(
                             context,
-                            'Phone Number : ',
-                            widget.requestModel.phoneNumber ?? 'N/A',
+                            context.loc.phoneNumberLabel,
+                            widget.requestModel.phoneNumber ?? context.loc.notAvailable,
                           ),
                           context.addVerticalSpace(16),
                           _buildDetailRow(
                             context,
-                            'Status : ',
+                            context.loc.statusLabel,
                             widget.requestModel.status.toUpperCase(),
                             valueColor: _getStatusColor(
                               widget.requestModel.status,
@@ -163,44 +172,43 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 ),
                 child: isPending
                     ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: PrimaryButton(
-                              color: ColorManager.successColor,
-                              text: 'Accept Request',
-                              onPressed: _isUpdating
-                                  ? null
-                                  : () {
-                                      final String purpose = widget
-                                              .requestModel.purpose
-                                              ?.toLowerCase()
-                                              .trim() ??
-                                          '';
-                                      final String newStatus = (purpose ==
-                                                  'sale' ||
-                                              purpose == 'buy')
-                                          ? 'complete'
-                                          : 'active';
-                                      _updateStatus(newStatus);
-                                    },
-                            ),
-                          ),
-                          context.addHorizontalSpace(16),
-                          Expanded(
-                            child: PrimaryButton(
-                              color: ColorManager.warningColor,
-                              text: 'Reject Request',
-                              onPressed: _isUpdating
-                                  ? null
-                                  : () => _updateStatus('rejected'),
-                            ),
-                          ),
-                        ],
-                      )
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: PrimaryButton(
+                        color: ColorManager.successColor,
+                        text: context.loc.acceptRequestButton,
+                        onPressed: _isUpdating
+                            ? null
+                            : () {
+                          final String purpose = widget
+                              .requestModel.purpose
+                              ?.toLowerCase()
+                              .trim() ??
+                              '';
+                          final String newStatus = (purpose ==
+                              'sale' ||
+                              purpose == 'buy')
+                              ? 'complete'
+                              : 'active';
+                          _updateStatus(newStatus);
+                        },
+                      ),
+                    ),
+                    context.addHorizontalSpace(16),
+                    Expanded(
+                      child: PrimaryButton(
+                        color: ColorManager.warningColor,
+                        text: context.loc.rejectRequestButton,
+                        onPressed: _isUpdating
+                            ? null
+                            : () => _updateStatus('rejected'),
+                      ),
+                    ),
+                  ],
+                )
                     : const SizedBox.shrink(),
               )
-
           ],
         ),
       ),
@@ -208,11 +216,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   Widget _buildDetailRow(
-    BuildContext context,
-    String label,
-    String value, {
-    Color? valueColor,
-  }) {
+      BuildContext context,
+      String label,
+      String value, {
+        Color? valueColor,
+      }) {
     return Row(
       children: [
         Text(label, style: context.bodyRegular.copyWith(color: Colors.grey)),
@@ -234,7 +242,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       case 'approved':
       case 'accepted':
       case 'active':
-          return ColorManager.successColor;
+        return ColorManager.successColor;
       case 'pending':
         return ColorManager.alertColor;
       case 'rejected':

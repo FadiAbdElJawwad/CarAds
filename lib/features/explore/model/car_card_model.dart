@@ -105,10 +105,7 @@ class CarCardModel {
       status: map['status'] as String?,
       adType: map['adType'] as String?,
       condition: map['condition'] as String?,
-
-      // 🟢 القيمة الافتراضية 'sale' تحمي التطبيق من الانهيار مع الإعلانات القديمة
       purpose: (map['purpose'] as String?) ?? 'sale',
-
       startDate: map['startDate'] as String?,
       startTime: map['startTime'] as String?,
       endDate: map['endDate'] as String?,

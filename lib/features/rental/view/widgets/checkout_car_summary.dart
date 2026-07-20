@@ -4,7 +4,6 @@ import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/features/explore/model/car_card_model.dart';
 import 'package:car_ads/core/constant/images_manager.dart';
-import 'package:car_ads/core/constant/app_constants.dart';
 import 'package:car_ads/core/utils/url_formatter.dart';
 
 class CheckoutCarSummary extends StatelessWidget {
@@ -20,7 +19,7 @@ class CheckoutCarSummary extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Car Summary', style: context.bodyBold),
+        Text(context.loc.carSummaryTitle, style: context.bodyBold),
         context.addVerticalSpace(8),
         Card(
           elevation: 0,
@@ -31,6 +30,7 @@ class CheckoutCarSummary extends StatelessWidget {
           child: ListTile(
             contentPadding: const EdgeInsets.all(12),
             leading: ClipRRect(
+
               borderRadius: BorderRadius.circular(8),
               child: _buildCarImage(),
             ),
@@ -43,7 +43,7 @@ class CheckoutCarSummary extends StatelessWidget {
               style: context.bodyRegular.copyWith(fontSize: 12),
             ),
             trailing: Text(
-              '${currencyFormat.format(carPrice)} ${AppConstants.currency}',
+              '${currencyFormat.format(carPrice)} ${context.loc.aed}',
               style: context.bodyBold.copyWith(color: Colors.black),
             ),
           ),
@@ -61,24 +61,24 @@ class CheckoutCarSummary extends StatelessWidget {
         ImagesManager.toyota,
         height: size,
         width: size,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
       );
     }
 
     return directUrl.startsWith('http')
         ? Image.network(
-            directUrl,
-            height: size,
-            width: size,
-            fit: BoxFit.cover,
-            errorBuilder: (_, _, _) =>
-                Image.asset(ImagesManager.toyota, height: size, width: size),
-          )
+      directUrl,
+      height: size,
+      width: size,
+      fit: BoxFit.contain,
+      errorBuilder: (_, _, _) =>
+          Image.asset(ImagesManager.toyota, height: size, width: size),
+    )
         : Image.asset(
-            directUrl,
-            height: size,
-            width: size,
-            fit: BoxFit.cover,
-          );
+      directUrl,
+      height: size,
+      width: size,
+      fit: BoxFit.cover,
+    );
   }
 }

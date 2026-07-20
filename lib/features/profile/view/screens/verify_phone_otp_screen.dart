@@ -17,9 +17,12 @@ class VerifyPhoneOtpScreen extends StatelessWidget {
     return Consumer<ChangePhoneProvider>(
       builder: (context, provider, _) {
         return Scaffold(
-          appBar: const PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: PrimaryAppBar(backIconVisible: true, text: 'Verify OTP'),
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: PrimaryAppBar(
+              backIconVisible: true,
+              text: context.loc.verifyOtpTitle,
+            ),
           ),
           body: LoadingOverlay(
             isLoading: provider.isLoading,
@@ -31,7 +34,7 @@ class VerifyPhoneOtpScreen extends StatelessWidget {
                     children: [
                       context.addVerticalSpace(20),
                       Text(
-                        'Enter the 6-digit code sent to ${provider.phoneController.text}',
+                        context.loc.enterOtpSentTo(provider.phoneController.text),
                         style: context.bodyRegular.copyWith(
                           color: Colors.grey[600],
                         ),
@@ -58,13 +61,15 @@ class VerifyPhoneOtpScreen extends StatelessWidget {
                     ),
                   ),
                   child: PrimaryButton(
-                    text: isRegistration ? 'Verify' : 'Verify & Update',
+                    text: isRegistration
+                        ? context.loc.verify
+                        : context.loc.verifyAndUpdate,
                     onPressed: provider.isLoading
                         ? null
                         : () => provider.verifyOtp(
-                            context,
-                            isRegistration: isRegistration,
-                          ),
+                      context,
+                      isRegistration: isRegistration,
+                    ),
                   ),
                 ),
               ],

@@ -33,24 +33,25 @@ class AddAdsCarInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Car Information', style: context.inputRegular14),
+        Text(context.loc.carInformation, style: context.inputRegular14),
         context.addVerticalSpace(16),
         Row(
           children: [
             Expanded(
               child: PrimaryTextField(
-
                 controller: brandController,
-                hint: 'Car Brand',
-                validator: (val) => val!.validateGeneric('Brand'),
+                hint: context.loc.carBrandHint,
+                validator: (val) =>
+                    val!.validateGeneric(context, context.loc.brandLabel),
               ),
             ),
             context.addHorizontalSpace(16),
             Expanded(
               child: PrimaryTextField(
                 controller: modelController,
-                hint: 'Car Model',
-                validator: (val) => val!.validateGeneric('Model'),
+                hint: context.loc.carModelHint,
+                validator: (val) =>
+                    val!.validateGeneric(context, context.loc.modelLabel),
               ),
             ),
           ],
@@ -61,17 +62,19 @@ class AddAdsCarInfo extends StatelessWidget {
             Expanded(
               child: PrimaryTextField(
                 controller: yearController,
-                hint: 'Year',
+                hint: context.loc.year,
                 keyboardType: TextInputType.number,
-                validator: (val) => val!.validateGeneric('Year'),
+                validator: (val) =>
+                    val!.validateGeneric(context, context.loc.year),
               ),
             ),
             context.addHorizontalSpace(16),
             Expanded(
               child: PrimaryTextField(
                 controller: conditionController,
-                hint: 'Condition',
-                validator: (val) => val!.validateGeneric('Condition'),
+                hint: context.loc.condition,
+                validator: (val) =>
+                    val!.validateGeneric(context, context.loc.condition),
               ),
             ),
           ],
@@ -82,16 +85,18 @@ class AddAdsCarInfo extends StatelessWidget {
             Expanded(
               child: PrimaryTextField(
                 controller: tankSizeController,
-                hint: 'Tank Size',
-                validator: (val) => val!.validateGeneric('Tank Size'),
+                hint: context.loc.tankSize,
+                validator: (val) =>
+                    val!.validateGeneric(context, context.loc.tankSize),
               ),
             ),
             context.addHorizontalSpace(16),
             Expanded(
               child: PrimaryTextField(
                 controller: gearBoxController,
-                hint: 'Gear box',
-                validator: (val) => val!.validateGeneric('Gear box'),
+                hint: context.loc.gearBox,
+                validator: (val) =>
+                    val!.validateGeneric(context, context.loc.gearBox),
               ),
             ),
           ],
@@ -102,18 +107,20 @@ class AddAdsCarInfo extends StatelessWidget {
             Expanded(
               child: PrimaryTextField(
                 controller: seatsController,
-                hint: 'Seats',
+                hint: context.loc.seats,
                 keyboardType: TextInputType.number,
-                validator: (val) => val!.validateGeneric('Seats'),
+                validator: (val) =>
+                    val!.validateGeneric(context, context.loc.seats),
               ),
             ),
             context.addHorizontalSpace(16),
             Expanded(
               child: PrimaryTextField(
                 controller: doorsController,
-                hint: 'Doors',
+                hint: context.loc.doors,
                 keyboardType: TextInputType.number,
-                validator: (val) => val!.validateGeneric('Doors'),
+                validator: (val) =>
+                    val!.validateGeneric(context, context.loc.doors),
               ),
             ),
           ],
@@ -121,9 +128,9 @@ class AddAdsCarInfo extends StatelessWidget {
         context.addVerticalSpace(8),
         PrimaryTextField(
           controller: mileageController,
-          hint: 'Mileage',
+          hint: context.loc.mileage,
           keyboardType: TextInputType.number,
-          validator: (val) => val!.validateGeneric('Mileage'),
+          validator: (val) => val!.validateGeneric(context, context.loc.mileage),
         ),
       ],
     );

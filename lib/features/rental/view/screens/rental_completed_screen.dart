@@ -14,7 +14,7 @@ class RentalCompletedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: StickyBottomButton(
-        text: 'Go to home',
+        text: context.loc.goToHome,
         onPressed: () {
           AppRouter.goToAndRemove(screenName: ScreenName.navButtonBar);
         },
@@ -25,10 +25,10 @@ class RentalCompletedScreen extends StatelessWidget {
         children: [
           Image.asset(ImagesManager.rentalCompletedImage, height: 200),
           context.addVerticalSpace(40),
-          Text('Rental Completed', style: context.h2Bold22),
+          Text(context.loc.rentalCompletedTitle, style: context.h2Bold22),
           context.addVerticalSpace(16),
           Text(
-            'Your car rental request has been received, and we will get back to you as soon as we can. Please keep an eye out for notifications to stay updated.',
+            context.loc.rentalCompletedMessage,
             style: context.bodyRegular,
             textAlign: TextAlign.center,
           ),

@@ -9,7 +9,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart'; // Added for BuildContext
 import '../app_logger.dart';
+import '../extension/app_sizes.dart'; // Import where context.loc is defined
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -25,16 +27,18 @@ class NotificationService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
 
-  static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Importance Notifications',
-    description: 'This channel is used for important notifications.',
-    importance: Importance.max,
-  );
+  // Removed static const _channel to allow for localization
 
-  Future<void> initialize() async {
+  Future<void> initialize(BuildContext context) async {
+    final AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel',
+      context.loc.notificationChannelName,
+      description: context.loc.notificationChannelDescription,
+      importance: Importance.max,
+    );
+
     NotificationSettings settings = await _fcm.requestPermission(
       alert: true,
       badge: true,
@@ -45,7 +49,7 @@ class NotificationService {
       AppLogger.info("Notification permissions granted.");
     }
 
-    await _setupLocalNotifications();
+    await _setupLocalNotifications(channel);
 
     _setupInteractedMessages();
 
@@ -80,11 +84,11 @@ class NotificationService {
           body: notification.body,
           notificationDetails: NotificationDetails(
             android: AndroidNotificationDetails(
-              _channel.id,
-              _channel.name,
-              channelDescription: _channel.description,
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
               icon: android.smallIcon ?? '@mipmap/ic_launcher',
-              importance: _channel.importance,
+              importance: channel.importance,
               priority: Priority.high,
             ),
             iOS: const DarwinNotificationDetails(
@@ -149,7 +153,7 @@ class NotificationService {
     }
   }
 
-  Future<void> _setupLocalNotifications() async {
+  Future<void> _setupLocalNotifications(AndroidNotificationChannel channel) async {
     const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
@@ -157,9 +161,9 @@ class NotificationService {
 
     await _localNotifications
         .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(_channel);
+        AndroidFlutterLocalNotificationsPlugin
+    >()
+        ?.createNotificationChannel(channel);
 
     await _localNotifications.initialize(
       settings: initializationSettings,
@@ -267,12 +271,12 @@ class NotificationService {
         .where('userId', isEqualTo: userId)
         .snapshots()
         .map((snapshot) {
-          final notifications = snapshot.docs
-              .map((doc) => NotificationModel.fromFirestore(doc))
-              .toList();
-          notifications.sort((a, b) => b.time.compareTo(a.time));
-          return notifications;
-        });
+      final notifications = snapshot.docs
+          .map((doc) => NotificationModel.fromFirestore(doc))
+          .toList();
+      notifications.sort((a, b) => b.time.compareTo(a.time));
+      return notifications;
+    });
   }
 
   Future<void> markAsRead(String notificationId) async {

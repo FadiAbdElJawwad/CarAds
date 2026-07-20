@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RentRequestModel {
-  final String id; // Document ID in rent_requests
-  final String checkoutId; // ID of the related checkout document
+  final String id;
+  final String checkoutId;
   final String carId;
   final String? userId;
   final String carName;

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:car_ads/core/constant/app_constants.dart';
 import 'package:car_ads/core/services/car_firestore_service.dart';
 import 'package:car_ads/features/explore/model/car_card_model.dart';
+import 'package:car_ads/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,8 +17,8 @@ class FilterModel {
   String searchQuery;
 
   FilterModel({
-    this.brand = 'All Cars',
-    this.condition = 'All',
+    String? brand,
+    String? condition,
     this.priceRange = const RangeValues(
       AppConstants.minPrice,
       AppConstants.maxPrice,
@@ -27,7 +28,8 @@ class FilterModel {
     this.startYear,
     this.endYear,
     this.searchQuery = '',
-  });
+  })  : brand = brand ?? S.current.allCars,
+        condition = condition ?? S.current.all;
 
   FilterModel copyWith({
     String? brand,
@@ -89,24 +91,24 @@ class CarAdsProvider with ChangeNotifier {
         .getCarsStream(onlyAvailable: true)
         .listen(
           (snapshot) {
-            _availableCars = snapshot.docs.map((doc) {
-              try {
-                return CarCardModel.fromMap(doc.data() as Map<String, dynamic>);
-              } catch (e) {
-                rethrow;
-              }
-            }).toList();
+        _availableCars = snapshot.docs.map((doc) {
+          try {
+            return CarCardModel.fromMap(doc.data() as Map<String, dynamic>);
+          } catch (e) {
+            rethrow;
+          }
+        }).toList();
 
-            _applyFilters();
-            _isLoading = false;
-            notifyListeners();
-          },
-          onError: (error) {
-            _errorMessage = "Failed to load cars: $error";
-            _isLoading = false;
-            notifyListeners();
-          },
-        );
+        _applyFilters();
+        _isLoading = false;
+        notifyListeners();
+      },
+      onError: (error) {
+        _errorMessage = S.current.loadCarsFailed(error.toString());
+        _isLoading = false;
+        notifyListeners();
+      },
+    );
   }
 
   void _applyFilters() {
@@ -116,11 +118,13 @@ class CarAdsProvider with ChangeNotifier {
 
     bool isDefaultTab =
         brandQuery.isEmpty ||
-        brandQuery == "all" ||
-        brandQuery == "الكل" ||
-        brandQuery == "all cars" ||
-        brandQuery == "all categories" ||
-        brandQuery == "brands";
+            brandQuery == "all" ||
+            brandQuery == "all cars" ||
+            brandQuery == "brands" ||
+            brandQuery == S.current.all.toLowerCase() ||
+            brandQuery == S.current.allCars.toLowerCase() ||
+            brandQuery == S.current.allCategories.toLowerCase() ||
+            brandQuery == S.current.brands.toLowerCase();
 
     if (!isDefaultTab) {
       temp = temp.where((car) {
@@ -143,7 +147,7 @@ class CarAdsProvider with ChangeNotifier {
             int.tryParse(
               car.mileage?.replaceAll(RegExp(r'[^0-9]'), '') ?? '0',
             ) ??
-            0;
+                0;
         bool match = true;
         if (filter.startMileage != null) {
           match &= (carMileage >= filter.startMileage!);
@@ -181,7 +185,12 @@ class CarAdsProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _recentSearches =
         prefs.getStringList(_recentSearchesKey) ??
-        ['Toyota', 'Audi', 'Hyundai', 'Mazda'];
+            [
+              S.current.toyota,
+              S.current.audi,
+              S.current.hyundai,
+              S.current.mazda,
+            ];
     notifyListeners();
   }
 
@@ -206,7 +215,7 @@ class CarAdsProvider with ChangeNotifier {
     if (trimmedQuery.isEmpty) return;
 
     _recentSearches.removeWhere(
-      (s) => s.toLowerCase() == trimmedQuery.toLowerCase(),
+          (s) => s.toLowerCase() == trimmedQuery.toLowerCase(),
     );
     _recentSearches.insert(0, trimmedQuery);
 

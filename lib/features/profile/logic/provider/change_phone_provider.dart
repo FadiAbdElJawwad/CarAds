@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:car_ads/common/show_snack_bar.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/auth/logic/helper/auth_service.dart';
@@ -37,6 +38,7 @@ class ChangePhoneProvider extends ChangeNotifier {
     BuildContext context, {
     bool isRegistration = false,
   }) async {
+    final loc = context.loc;
     if (!isRegistration && !phoneFormKey.currentState!.validate()) return;
 
     _setLoading(true);
@@ -57,7 +59,7 @@ class ChangePhoneProvider extends ChangeNotifier {
         verificationFailed: (e) {
           _setLoading(false);
           if (context.mounted) {
-            showSnackBar(context, e.message ?? 'Verification failed');
+            showSnackBar(context, e.message ?? loc.verificationFailed);
           }
           completer.complete(null);
         },
@@ -76,8 +78,11 @@ class ChangePhoneProvider extends ChangeNotifier {
     BuildContext context, {
     bool isRegistration = false,
   }) async {
+    final loc = context.loc;
     if (_otpCode.length != 6) {
-      showSnackBar(context, 'Please enter the 6-digit OTP code');
+      if (context.mounted) {
+        showSnackBar(context, loc.enterOtpError);
+      }
       return;
     }
     if (_verificationId == null) return;
@@ -114,16 +119,15 @@ class ChangePhoneProvider extends ChangeNotifier {
         if (userId != null) {
           await _notificationService.sendNotification(
             userId: userId,
-            title: 'Phone Number Updated',
-            body:
-                'Your phone number has been updated to $newPhone successfully.',
+            title: loc.phoneUpdatedTitle,
+            body: loc.phoneUpdatedBody(newPhone),
           );
         }
       }
 
       _setLoading(false);
       if (context.mounted) {
-        showSnackBar(context, 'Phone number updated successfully!');
+        showSnackBar(context, loc.phoneUpdatedSuccess);
         AppRouter.backTo(screenName: ScreenName.navButtonBar);
       }
     } catch (e) {

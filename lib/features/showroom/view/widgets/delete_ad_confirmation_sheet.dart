@@ -20,10 +20,10 @@ class DeleteAdConfirmationSheet extends StatelessWidget {
   });
 
   static Future<void> show(
-    BuildContext context, {
-    required CarCardModel car,
-    required String? userId,
-  }) {
+      BuildContext context, {
+        required CarCardModel car,
+        required String? userId,
+      }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -39,21 +39,20 @@ class DeleteAdConfirmationSheet extends StatelessWidget {
         await CarFirestoreService().deleteCar(carId);
 
         if (context.mounted) {
-          showSnackBar(context, 'Advertisement deleted successfully');
+          showSnackBar(context, context.loc.adDeletedSuccess);
 
           if (userId != null) {
             await NotificationService().sendNotification(
               userId: userId!,
-              title: 'Advertisement Deleted',
-              body:
-                  'Your car advertisement for ${car.carName} has been successfully deleted.',
+              title: context.loc.adDeletedTitle,
+              body: context.loc.adDeletedBody(car.carName ?? ''),
             );
           }
         }
       }
     } catch (e) {
       if (context.mounted) {
-        showSnackBar(context, 'Failed to delete: $e');
+        showSnackBar(context, context.loc.errorWithDetails(e.toString()));
       }
     } finally {
       if (context.mounted) {
@@ -87,7 +86,7 @@ class DeleteAdConfirmationSheet extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Delete Your Ads', style: context.titleBold18),
+                Text(context.loc.deleteAdsTitle, style: context.titleBold18),
                 Card(
                   elevation: 0,
                   child: IconButton(
@@ -99,19 +98,19 @@ class DeleteAdConfirmationSheet extends StatelessWidget {
             ),
             context.addVerticalSpace(24),
             Text(
-              'Are you sure you want to delete this advertisement?',
+              context.loc.deleteAdConfirmationPrompt,
               style: context.bodyBold,
               textAlign: TextAlign.center,
             ),
             context.addVerticalSpace(32),
             PrimaryButton(
-              text: 'YES, DELETE IT',
+              text: context.loc.confirmDeleteAd,
               color: ColorManager.warningColor,
               onPressed: () => _handleDelete(context),
             ),
             context.addVerticalSpace(16),
             PrimaryButton(
-              text: 'NO, KEEP IT',
+              text: context.loc.keepAd,
               color: Colors.transparent,
               textColor: ColorManager.warningColor,
               onPressed: () => AppRouter.back(),

@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class SectionHeaderWidget extends StatelessWidget {
         TextButton(
           onPressed: onSeeAll,
           child: Text(
-            'See All',
+            context.loc.seeAll,
             style: context.bodyRegular.copyWith(color: Colors.grey),
           ),
         ),

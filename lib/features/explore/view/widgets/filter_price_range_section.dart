@@ -1,4 +1,5 @@
 import 'package:car_ads/core/constant/app_constants.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/extension/text_style_extension.dart';
@@ -12,15 +13,20 @@ class FilterPriceRangeSection extends StatelessWidget {
     final provider = context.watch<CarAdsProvider>();
     final priceRange = provider.tempFilter.priceRange;
 
+    final String startPrice = (priceRange.start / 1000).round().toString();
+    final String endPrice = (priceRange.end / 1000).round().toString();
+    final String suffix = context.loc.thousandSuffix;
+    final String currency = context.loc.aed;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Price Range', style: context.titleBold18),
+            Text(context.loc.priceRange, style: context.titleBold18),
             Text(
-              '${priceRange.start.round() ~/ 1000}K AED - ${priceRange.end.round() ~/ 1000}K AED',
+              '$startPrice$suffix $currency - $endPrice$suffix $currency',
               style: context.bodyBold,
             ),
           ],

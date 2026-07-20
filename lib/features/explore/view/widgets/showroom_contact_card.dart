@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/home/model/showroom_model.dart';
@@ -98,7 +99,9 @@ class ShowroomContactCard extends StatelessWidget {
         Navigator.pop(context);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("Error fetching showroom: $e")));
+        ).showSnackBar(
+          SnackBar(content: Text(context.loc.errorFetchingShowroom(e.toString()))),
+        );
       }
     }
   }

@@ -3,6 +3,7 @@ import 'package:car_ads/core/app_logger.dart';
 import 'package:car_ads/core/services/notification_service.dart';
 import 'package:car_ads/features/showroom/model/booking_model.dart';
 import 'package:car_ads/features/showroom/model/rent_request_model.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -38,18 +39,13 @@ class ShowroomProvider extends ChangeNotifier {
     }
 
     return query.snapshots().map(
-      (snapshot) {
+          (snapshot) {
         final requests = snapshot.docs
             .map((doc) => RentRequestModel.fromFirestore(doc))
             .toList();
 
-        // Update local cache for the periodic timer
         _cachedRequests = requests;
-
-        // Ensure timer is running when data arrives
         startExpiryTimer();
-
-        // Immediate Lazy Evaluation check
         _autoCompleteExpiredRentals(requests);
 
         return requests;
@@ -58,7 +54,6 @@ class ShowroomProvider extends ChangeNotifier {
   }
 
   void startExpiryTimer() {
-    // Cancel existing timer to prevent multiple instances
     _expiryTimer?.cancel();
 
     _expiryTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
@@ -69,8 +64,8 @@ class ShowroomProvider extends ChangeNotifier {
   }
 
   Future<void> _autoCompleteExpiredRentals(
-    List<RentRequestModel> requests,
-  ) async {
+      List<RentRequestModel> requests,
+      ) async {
     final now = DateTime.now();
 
     for (var request in requests) {
@@ -79,7 +74,6 @@ class ShowroomProvider extends ChangeNotifier {
 
       if (status == 'active' && purpose == 'rent' && request.rentalEnd != null) {
         final DateTime expirationDate = request.rentalEnd!;
-
 
         if (now.isAfter(expirationDate)) {
           try {
@@ -161,8 +155,12 @@ class ShowroomProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateRequestStatus(RentRequestModel request,
-      String newStatus,) async {
+  Future<void> updateRequestStatus(
+    BuildContext context,
+    RentRequestModel request,
+    String newStatus,
+  ) async {
+    final loc = context.loc;
     try {
       final batch = _firestore.batch();
 
@@ -185,18 +183,19 @@ class ShowroomProvider extends ChangeNotifier {
         final bool isAccepted = statusLower == 'accepted' || statusLower == 'active';
         final bool isCompleted = statusLower == 'complete';
 
-        String title = "We apologize, the request was denied";
-        String body = "Car rental request ${request.carName} rejected by the showroom.";
+        String title = loc.requestDeniedTitle;
+        String body = loc.requestDeniedBody(request.carName);
 
         if (isAccepted) {
-          title = request.isRent ? "The rental request has been accepted" : "The purchase request has been accepted";
-          body = request.isRent 
-              ? "The showroom has accepted a request to rent a car ${request.carName}. You can review the details in the record."
-              : "The showroom has accepted your request to buy ${request.carName}. The transaction is now complete.";
+          title = request.isRent
+              ? loc.rentalAcceptedTitle
+              : loc.purchaseAcceptedTitle;
+          body = request.isRent
+              ? loc.rentalAcceptedBody(request.carName)
+              : loc.purchaseAcceptedBody(request.carName);
         } else if (isCompleted) {
-          title = "Order Completed";
-          body = "Your rental for ${request
-              .carName} has been marked as completed. Thank you for using our service!";
+          title = loc.orderCompletedTitle;
+          body = loc.orderCompletedBody(request.carName);
         }
 
         await _notificationService.sendNotification(

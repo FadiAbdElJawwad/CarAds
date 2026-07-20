@@ -42,9 +42,9 @@ class _ShowroomHomeScreenState extends State<ShowroomHomeScreen> {
         child: Consumer<AuthProvider>(
           builder: (context, authProvider, child) {
             final user = authProvider.state.user;
-            final String userName = user?.name ?? 'User';
+            final String userName = user?.name ?? context.loc.userPlaceholder;
             return PrimaryAppBar(
-              text: 'Welcome $userName',
+              text: context.loc.welcomeUser(userName),
               notificationVisible: true,
             );
           },
@@ -74,9 +74,9 @@ class _ShowroomHomeScreenState extends State<ShowroomHomeScreen> {
                   return Row(
                     children: [
                       ProfitCardWidget(
-                        title: 'Sales profit',
+                        title: context.loc.salesProfit,
                         amount:
-                            '\$${showroomProvider.salesProfit.toStringAsFixed(0)}',
+                        '\$${showroomProvider.salesProfit.toStringAsFixed(0)}',
                         percentage: '0.0',
                         isPositive: true,
                         backgroundColor: const Color(0xFF1A1D1E),
@@ -84,9 +84,9 @@ class _ShowroomHomeScreenState extends State<ShowroomHomeScreen> {
                       ),
                       const SizedBox(width: 16),
                       ProfitCardWidget(
-                        title: 'Rent profit',
+                        title: context.loc.rentProfit,
                         amount:
-                            '\$${showroomProvider.rentProfit.toStringAsFixed(0)}',
+                        '\$${showroomProvider.rentProfit.toStringAsFixed(0)}',
                         percentage: '0.0',
                         isPositive: true,
                         backgroundColor: Colors.white,
@@ -98,7 +98,7 @@ class _ShowroomHomeScreenState extends State<ShowroomHomeScreen> {
               ),
               context.addVerticalSpace(30),
               SectionHeaderWidget(
-                title: 'Last 5 Rent Request',
+                title: context.loc.last5RentRequests,
                 onSeeAll: () {
                   AppRouter.goTo(
                     screenName: ScreenName.requestsScreen,
@@ -111,8 +111,8 @@ class _ShowroomHomeScreenState extends State<ShowroomHomeScreen> {
                 builder: (context, authProvider, showroomProvider, child) {
                   final showroomId = authProvider.state.user?.uid;
                   if (showroomId == null) {
-                    return const Center(
-                      child: Text('Please log in as a showroom.'),
+                    return Center(
+                      child: Text(context.loc.loginAsShowroomError),
                     );
                   }
 
@@ -123,22 +123,24 @@ class _ShowroomHomeScreenState extends State<ShowroomHomeScreen> {
                         return Column(
                           children: List.generate(
                             3,
-                            (index) => const ShowroomRequestSkeleton(),
+                                (index) => const ShowroomRequestSkeleton(),
                           ),
                         );
                       }
 
                       if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
+                        return Center(
+                          child: Text(context.loc.errorWithDetails(snapshot.error.toString())),
+                        );
                       }
 
                       final requests = snapshot.data ?? [];
 
                       if (requests.isEmpty) {
-                        return const Center(
+                        return Center(
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Text('No rent requests yet.'),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Text(context.loc.noRentRequestsYet),
                           ),
                         );
                       }

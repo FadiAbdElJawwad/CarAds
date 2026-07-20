@@ -70,14 +70,14 @@ class RentRequestCard extends StatelessWidget {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: '${booking.pricePerDay.toInt()}AED',
+                            text: '${booking.pricePerDay.toInt()}${context.loc.aed}',
                             style: context.bodyBold.copyWith(
                               color: Colors.black,
                               fontSize: 14,
                             ),
                           ),
                           TextSpan(
-                            text: booking.isRent ? '/Day' : '',
+                            text: booking.isRent ? context.loc.perDay : '',
                             style: context.bodyRegular.copyWith(
                               color: Colors.black,
                               fontSize: 10,
@@ -91,7 +91,7 @@ class RentRequestCard extends StatelessWidget {
                 context.addVerticalSpace(4),
                 // Middle: Request By
                 Text(
-                  "Request By : ${booking.requestedByName}",
+                  context.loc.requestBy(booking.requestedByName),
                   style: context.bodyRegular.copyWith(
                     color: Colors.grey,
                     fontSize: 13,
@@ -100,7 +100,7 @@ class RentRequestCard extends StatelessWidget {
                 context.addVerticalSpace(4),
                 // Bottom: Date of request
                 Text(
-                  "The date of request : ${DateFormat('dd MMM').format(booking.requestDate)}",
+                  context.loc.requestDate(DateFormat('dd MMM').format(booking.requestDate)),
                   style: context.bodyRegular.copyWith(
                     color: Colors.grey,
                     fontSize: 13,

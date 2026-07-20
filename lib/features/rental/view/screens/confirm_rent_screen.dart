@@ -27,7 +27,7 @@ class ConfirmRentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ConfirmRentProvider(orderId),
+      create: (context) => ConfirmRentProvider(orderId, context),
       child: Consumer<ConfirmRentProvider>(
         builder: (context, model, child) {
           return Scaffold(
@@ -37,25 +37,33 @@ class ConfirmRentScreen extends StatelessWidget {
               ),
               child: PrimaryAppBar(
                 backIconVisible: true,
-                text: isViewMode ? 'Rental Receipt' : 'Confirm Rent',
+                text: isViewMode
+                    ? (model.order?.purpose == 'rent'
+                        ? context.loc.rentalReceiptTitle
+                        : context.loc.purchaseReceiptTitle)
+                    : (model.order?.purpose == 'rent'
+                        ? context.loc.confirmRentTitle
+                        : context.loc.confirmBuyTitle),
               ),
             ),
             bottomNavigationBar: isViewMode
                 ? null
                 : StickyBottomButton(
-                    text: 'Confirm Rent',
-                    onPressed: () {
-                      AppRouter.goToAndRemove(
-                        screenName: ScreenName.rentalCompletedScreen,
-                      );
-                    },
-                  ),
+              text: model.order?.purpose == 'rent'
+                  ? context.loc.confirmRentTitle
+                  : context.loc.confirmBuyTitle,
+              onPressed: () {
+                AppRouter.goToAndRemove(
+                  screenName: ScreenName.rentalCompletedScreen,
+                );
+              },
+            ),
             body: model.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : model.error != null
                 ? Center(child: Text(model.error!))
                 : model.order == null
-                ? const Center(child: Text('Order details not found.'))
+                ? Center(child: Text(context.loc.orderDetailsNotFound))
                 : _buildOrderDetails(context, model.order!),
           );
         },
@@ -68,20 +76,20 @@ class ConfirmRentScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        Text('Shipping Address', style: context.bodyBold),
+        Text(context.loc.shippingAddressLabel, style: context.bodyBold),
         context.addVerticalSpace(4),
         Card(
           child: ListTile(
             leading: Image.asset(ImagesManager.location),
-            title: Text('Your Location', style: context.bodyBold),
+            title: Text(context.loc.yourLocationLabel, style: context.bodyBold),
             subtitle: Text(
-              order.location ?? 'No address provided',
+              order.location ?? context.loc.noAddressProvided,
               style: context.bodyRegular,
             ),
           ),
         ),
         context.addVerticalSpace(24),
-        Text('Order', style: context.bodyBold),
+        Text(context.loc.orderLabel, style: context.bodyBold),
         context.addVerticalSpace(8),
         Card(
           child: ListTile(
@@ -90,9 +98,9 @@ class ConfirmRentScreen extends StatelessWidget {
               width: 50,
               child: CarImageExtractor.buildImage(order.carImage, height: 50),
             ),
-            title: Text(order.carName, style: context.bodyBold),
+            title: Text(order.getLocalizedCarName(context), style: context.bodyBold),
             trailing: Text(
-              '${currencyFormat.format(order.carPrice)} ${order.currency}',
+              '${currencyFormat.format(order.carPrice)}${context.loc.thousandSuffix} ${order.getLocalizedCurrency(context)}',
               style: context.bodyBold,
             ),
           ).padVerticalSymmetric(16),
@@ -105,7 +113,7 @@ class ConfirmRentScreen extends StatelessWidget {
           ),
           child: ListTile(
             title: Text(
-              'Driving License No',
+              context.loc.drivingLicenseNoHint,
               style: context.inputRegular14.copyWith(fontSize: 12),
             ),
             subtitle: Text(order.licenseNumber, style: context.inputRegular14),
@@ -119,7 +127,7 @@ class ConfirmRentScreen extends StatelessWidget {
           ),
           child: ListTile(
             title: Text(
-              'ID Number',
+              context.loc.idNumberHint,
               style: context.inputRegular14.copyWith(fontSize: 12),
             ),
             subtitle: Text(order.idNumber, style: context.inputRegular14),
@@ -133,7 +141,7 @@ class ConfirmRentScreen extends StatelessWidget {
           ),
           child: ListTile(
             title: Text(
-              'Phone Number',
+              context.loc.phoneNumberHint,
               style: context.inputRegular14.copyWith(fontSize: 12),
             ),
             subtitle: Text(order.phoneNumber, style: context.inputRegular14),
@@ -146,7 +154,7 @@ class ConfirmRentScreen extends StatelessWidget {
           taxCost: order.taxCost,
           totalPayment: order.totalPayment,
           currencyFormat: currencyFormat,
-          currency: order.currency,
+          currency: order.getLocalizedCurrency(context),
         ),
       ],
     );

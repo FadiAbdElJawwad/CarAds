@@ -33,7 +33,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     final carAdsProvider = context.watch<CarAdsProvider>();
     final currentBrand = carAdsProvider.tempFilter.brand;
     final selectedBrandIndex = carTypeList.indexWhere(
-      (type) => type.carType == currentBrand,
+          (type) => type.carType == currentBrand,
     );
 
     return Padding(
@@ -62,16 +62,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 ),
               ),
               context.addVerticalSpace(16),
-              Center(child: Text('Filter', style: context.h2Bold22)),
+              Center(
+                child: Text(
+                  context.loc.filterTitle,
+                  style: context.h2Bold22,
+                ),
+              ),
               const Divider(),
               context.addVerticalSpace(16),
-              Text('Car Brands', style: context.titleBold18),
+              Text(context.loc.carBrands, style: context.titleBold18),
               context.addVerticalSpace(12),
               CarTypeListView(
                 carTypeData: carTypeList,
-                selectedIndex: selectedBrandIndex == -1
-                    ? 0
-                    : selectedBrandIndex,
+                selectedIndex: selectedBrandIndex == -1 ? 0 : selectedBrandIndex,
                 onCarTypeSelected: (index) {
                   carAdsProvider.setBrand(carTypeList[index].carType);
                 },

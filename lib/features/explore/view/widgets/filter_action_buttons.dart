@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/primary_button.dart';
@@ -15,7 +16,7 @@ class FilterActionButtons extends StatelessWidget {
         Expanded(
           flex: 2,
           child: PrimaryButton(
-            text: 'Apply',
+            text: context.loc.apply,
             color: Colors.black,
             onPressed: () {
               provider.applyFilter();
@@ -26,7 +27,7 @@ class FilterActionButtons extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: PrimaryButton(
-            text: 'Reset',
+            text: context.loc.reset,
             color: Colors.grey.shade200,
             textColor: Colors.black,
             onPressed: () {

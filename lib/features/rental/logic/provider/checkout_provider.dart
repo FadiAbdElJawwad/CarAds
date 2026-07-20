@@ -1,5 +1,6 @@
 import 'package:car_ads/core/app_logger.dart';
 import 'package:car_ads/core/constant/app_constants.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
@@ -10,8 +11,9 @@ import 'package:car_ads/core/services/stripe_payment_service.dart';
 import 'package:car_ads/core/services/notification_service.dart';
 import 'package:car_ads/core/services/location_service.dart';
 import 'package:car_ads/features/home/model/map_selection_result.dart';
+import 'package:car_ads/core/extension/rental_date_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutProvider with ChangeNotifier {
@@ -30,7 +32,7 @@ class CheckoutProvider with ChangeNotifier {
   DateTime? rentalUntilDate;
   TimeOfDay? rentalUntilTime;
   String? shippingAddress;
-  LatLng? shippingPosition;
+  Position? shippingPosition;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -41,80 +43,145 @@ class CheckoutProvider with ChangeNotifier {
   bool _locationFetchFailed = false;
   bool get locationFetchFailed => _locationFetchFailed;
 
-  CheckoutProvider(this.car) {
-    fetchInitialLocation();
-  }
+  CheckoutProvider(this.car); 
 
-  Future<void> fetchInitialLocation() async {
+  Future<void> fetchInitialLocation(BuildContext context) async {
+    if (shippingPosition != null) return;
+
     _isLocationLoading = true;
     _locationFetchFailed = false;
     notifyListeners();
 
     try {
-      final position = await _locationService.getCurrentPosition();
-      final address = await _locationService.getAddressFromLatLng(
+      Position position = await _locationService.getCurrentPosition(context);
+
+      if (!context.mounted) return;
+
+      String address = await _locationService.getAddressFromLatLng(
+        context,
         position.latitude,
         position.longitude,
       );
+
+      shippingPosition = position;
       shippingAddress = address;
-      shippingPosition = LatLng(position.latitude, position.longitude);
     } catch (e) {
       AppLogger.error('Error fetching initial location', e);
       _locationFetchFailed = true;
+    } finally {
+      _isLocationLoading = false;
+      notifyListeners();
     }
-
-    _isLocationLoading = false;
-    notifyListeners();
   }
 
   void handleMapResult(MapSelectionResult result) {
-    shippingAddress = result.address;
     shippingPosition = result.position;
+    shippingAddress = result.address;
     _locationFetchFailed = false;
     notifyListeners();
   }
 
-  Future<void> pickDate(BuildContext context, bool isStart) async {
+  Future<void> pickStartDate(BuildContext context) async {
     final date = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      initialDate: car.showroomStartDate,
+      firstDate: car.showroomStartDate,
+      lastDate: car.showroomEndDate,
     );
-    if (date == null) return;
-
-    if (isStart) {
+    if (date != null) {
       rentalFromDate = date;
-    } else {
-      rentalUntilDate = date;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  Future<void> pickTime(BuildContext context, bool isStart) async {
-    final time = await showTimePicker(
+  Future<void> pickEndDate(BuildContext context) async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: rentalFromDate ?? car.showroomStartDate,
+      firstDate: rentalFromDate ?? car.showroomStartDate,
+      lastDate: car.showroomEndDate,
+    );
+    if (date != null) {
+      rentalUntilDate = date;
+      notifyListeners();
+    }
+  }
+
+  Future<void> pickStartTime(BuildContext context) async {
+    final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    if (time == null) return;
-
-    if (isStart) {
-      rentalFromTime = time;
-    } else {
-      rentalUntilTime = time;
+    if (pickedTime != null) {
+      if (rentalFromDate != null &&
+          DateUtils.isSameDay(rentalFromDate!, car.showroomStartDate)) {
+        final showroomStartTime = car.parseTime(car.startTime);
+        if (car.timeToMinutes(pickedTime) <
+            car.timeToMinutes(showroomStartTime)) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(context.loc.carAvailableFromError(
+                    showroomStartTime.format(context))),
+              ),
+            );
+          }
+          return;
+        }
+      }
+      rentalFromTime = pickedTime;
+      notifyListeners();
     }
-    notifyListeners();
+  }
+
+  Future<void> pickEndTime(BuildContext context) async {
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null) {
+      if (rentalUntilDate != null &&
+          DateUtils.isSameDay(rentalUntilDate!, car.showroomEndDate)) {
+        final showroomEndTime = car.parseTime(car.endTime);
+        if (car.timeToMinutes(pickedTime) >
+            car.timeToMinutes(showroomEndTime)) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(context.loc.carReturnByError(
+                    showroomEndTime.format(context))),
+              ),
+            );
+          }
+          return;
+        }
+      }
+      rentalUntilTime = pickedTime;
+      notifyListeners();
+    }
   }
 
   Future<void> onContinue(BuildContext context) async {
+    final loc = context.loc;
     if (!(formKey.currentState?.validate() ?? false)) return;
-    
+
     final isRent = car.purpose == 'rent';
     if (isRent && (rentalFromDate == null || rentalUntilDate == null)) {
       return;
     }
-    
-    if (shippingAddress == null) return;
+
+    if (shippingAddress == null || shippingAddress!.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "${context.loc.shippingAddressLabel} is required",
+            ),
+          ),
+        );
+      }
+      return;
+    }
 
     _isLoading = true;
     notifyListeners();
@@ -123,7 +190,7 @@ class CheckoutProvider with ChangeNotifier {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final userId = authProvider.state.user?.uid;
       final userEmail = authProvider.state.user?.email;
-      final userName = authProvider.state.user?.name ?? 'Unknown User';
+      final userName = authProvider.state.user?.name ?? loc.unknownUser;
       final profilePhone = authProvider.state.user?.phone;
 
       final carPrice = (int.tryParse(car.price ?? '0') ?? 0) * 1000;
@@ -152,13 +219,13 @@ class CheckoutProvider with ChangeNotifier {
         currency: AppConstants.currency,
         shippingCost: AppConstants.shippingCost,
         taxCost: AppConstants.taxCost,
-        carName: car.carName ?? 'Unknown',
+        carName: car.carName ?? loc.unknown,
         carId: car.carId ?? '',
         carImage: car.carImage ?? '',
         carPrice: carPrice,
         userId: userId,
         userEmail: userEmail,
-        location: shippingAddress,
+        location: shippingAddress ?? '',
         showroomId: car.showroomId,
         purpose: car.purpose,
       );
@@ -168,6 +235,7 @@ class CheckoutProvider with ChangeNotifier {
       AppLogger.info("Initiating Stripe payment for $amountInDollars USD");
 
       bool isPaymentSuccessful = await StripePaymentService().makePayment(
+        context: context,
         amountInDollars: amountInDollars,
         currency: AppConstants.currency.toLowerCase(),
       );
@@ -175,10 +243,8 @@ class CheckoutProvider with ChangeNotifier {
       if (!isPaymentSuccessful) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Payment failed or was cancelled. Please try again.',
-              ),
+            SnackBar(
+              content: Text(loc.paymentFailedError),
             ),
           );
         }
@@ -190,39 +256,38 @@ class CheckoutProvider with ChangeNotifier {
         customerName: userName,
       );
 
-      // 2. Dual Action Notification (Firestore + FCM)
       if (userId != null) {
-        // Notify the User
         await _notificationService.sendNotification(
           userId: userId,
-          title: 'Rental Request Received',
-          body:
-              'Your rental request for ${car.carName} has been successfully submitted.',
+          title: loc.rentalRequestReceivedTitle,
+          body: loc.rentalRequestReceivedBody(car.carName ?? loc.unknown),
           extraData: {'bookingId': orderRef.id, 'type': 'receipt'},
         );
 
-        // Notify the Showroom Owner (Fetch showroom owner ID from car model)
         if (car.showroomId != null) {
           await _notificationService.sendNotification(
             userId: car.showroomId!,
-            title: 'New Rental Request!',
-            body:
-                'A user has requested to rent ${car.carName}. Check your orders.',
+            title: loc.newRentalRequestTitle,
+            body: loc.newRentalRequestShowroomBody(car.carName ?? loc.unknown),
             extraData: {'bookingId': orderRef.id, 'type': 'new_request'},
           );
         }
       }
 
-      AppRouter.goTo(
-        screenName: ScreenName.confirmRentScreen,
-        arguments: orderRef.id,
-      );
+      if (context.mounted) {
+        AppRouter.goTo(
+          screenName: ScreenName.confirmRentScreen,
+          arguments: orderRef.id,
+        );
+      }
     } catch (e) {
       AppLogger.error("Checkout process failed", e);
       if (context.mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('An error occurred: $e')));
+        ).showSnackBar(
+          SnackBar(content: Text(loc.errorWithDetails(e.toString()))),
+        );
       }
     } finally {
       _isLoading = false;

@@ -24,7 +24,7 @@ import 'features/history/logic/provider/history_provider.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'core/services/notification_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-   
+
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -40,7 +40,7 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  await NotificationService().initialize();
+
 
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
 
@@ -61,7 +61,6 @@ class CarAds extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CarAdsProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => ChangeEmailProvider()),
-        // ChangeNotifierProvider(create: (_) => AddAdsProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => ChangePhoneProvider()),
         ChangeNotifierProvider(create: (_) => ShowroomProvider()),
@@ -107,8 +106,14 @@ class _InitializerWidgetState extends State<InitializerWidget> {
     super.initState();
     getToken();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeServices(); // Call initialization here
       _determineInitialRoute();
     });
+  }
+
+  // New method to handle context-dependent initializations
+  void _initializeServices() async {
+    await NotificationService().initialize(context);
   }
 
   void _determineInitialRoute() async {

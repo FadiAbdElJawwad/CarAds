@@ -18,13 +18,13 @@ class AddAdsPurposeToggle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Please select the advertising purpose',
+          context.loc.selectAdPurposePrompt,
           style: context.inputRegular14,
         ),
         context.addVerticalSpace(8),
         RadioListTile<String>(
           activeColor: Colors.black,
-          title: Text('Car for sale', style: context.bodyRegular),
+          title: Text(context.loc.carForSale, style: context.bodyRegular),
           value: 'sale',
           groupValue: adPurpose,
           onChanged: onChanged,
@@ -33,7 +33,7 @@ class AddAdsPurposeToggle extends StatelessWidget {
         ),
         RadioListTile<String>(
           activeColor: Colors.black,
-          title: Text('Car for rent', style: context.bodyRegular),
+          title: Text(context.loc.carForRent, style: context.bodyRegular),
           value: 'rent',
           groupValue: adPurpose,
           onChanged: onChanged,

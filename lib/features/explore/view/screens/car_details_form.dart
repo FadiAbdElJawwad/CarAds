@@ -32,10 +32,10 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
     final isRent = widget.car.purpose == 'rent';
     return Scaffold(
       bottomNavigationBar: StickyBottomButton(
-        text: isRent ? 'Rental' : 'Buy ',
+        text: isRent ? context.loc.rentalButton : context.loc.buyButton,
         onPressed: () {
           if (isRent && !_isTermsAccepted) {
-            showSnackBar(context, 'You must agree to the rental terms to proceed.');
+            showSnackBar(context, context.loc.agreeTermsError);
             return;
           }
           AppRouter.goTo(
@@ -54,7 +54,9 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                   onPressed: () {
                     AppRouter.back();
                   },
-                  icon: SvgPicture.asset(ImagesManager.arrowLeft),
+                  icon: SvgPicture.asset(
+                      ImagesManager.arrowLeft,
+                  matchTextDirection: true,),
                 ),
               ),
               context.addVerticalSpace(16),
@@ -68,16 +70,19 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.car.carName ?? 'No Name',
+                    widget.car.carName ?? context.loc.noName,
                     style: context.bodyBold,
                   ),
                   Row(
                     children: [
                       Text(
-                        '${widget.car.price ?? 0}K',
+                        '${widget.car.price ?? 0}${context.loc.thousandSuffix}',
                         style: context.bodyBold,
                       ),
-                      Text(isRent ? ' AED/Day' : ' AED', style: context.bodyRegular),
+                      Text(
+                        isRent ? ' ${context.loc.aedPerDay}' : ' ${context.loc.aed}',
+                        style: context.bodyRegular,
+                      ),
                     ],
                   ),
                 ],
@@ -85,29 +90,29 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
               context.addVerticalSpace(24),
               CarFeaturesCard(car: widget.car),
               context.addVerticalSpace(24),
-              Text('Car Information:', style: context.bodyBold),
+              Text(context.loc.carInformation, style: context.bodyBold),
               context.addVerticalSpace(8),
-              infoBulletPoint("Car Model", widget.car.carModel ?? 'N/A'),
-              infoBulletPoint("Year", widget.car.year ?? 'N/A'),
-              infoBulletPoint("Mileage", widget.car.mileage ?? 'N/A'),
+              infoBulletPoint(context.loc.modelLabel, widget.car.carModel ?? context.loc.notAvailable),
+              infoBulletPoint(context.loc.year, widget.car.year ?? context.loc.notAvailable),
+              infoBulletPoint(context.loc.mileage, widget.car.mileage ?? context.loc.notAvailable),
               if (isRent) ...[
                 context.addVerticalSpace(24),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Rental Information:', style: context.bodyBold),
+                    Text(context.loc.rentalInformation, style: context.bodyBold),
                     context.addVerticalSpace(8),
-                    infoBulletPoint("Available From", _formatDate(widget.car.startDate)),
-                    infoBulletPoint("Available Until", _formatDate(widget.car.endDate)),
-                    infoBulletPoint("Location", widget.car.showroomName ?? 'N/A'),
+                    infoBulletPoint(context.loc.availableFrom, _formatDate(widget.car.startDate)),
+                    infoBulletPoint(context.loc.availableUntil, _formatDate(widget.car.endDate)),
+                    infoBulletPoint(context.loc.location, widget.car.showroomName ?? context.loc.notAvailable),
                   ],
                 ),
               ],
               context.addVerticalSpace(24),
-              Text('Description', style: context.bodyBold),
+              Text(context.loc.description, style: context.bodyBold),
               context.addVerticalSpace(4),
               Text(
-                widget.car.description ?? 'No description available.',
+                widget.car.description ?? context.loc.noDescription,
                 style: context.bodyRegular,
               ),
               if (isRent) ...[
@@ -115,11 +120,12 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Rental terms', style: context.bodyBold,),
+                    Text(context.loc.rentalTerms, style: context.bodyBold),
                     context.addVerticalSpace(4),
                     Text(
-                      'Lorem ipsum dolor sit amet consectetur. Consectetur pharetra proin sed nisi vitae purus vivamus in. Ornare pellentesque vivamus elementum lorem velit eget mauris senectus fusce.',
-                      style: context.bodyRegular,),
+                      context.loc.dummyTermsText,
+                      style: context.bodyRegular,
+                    ),
                     context.addVerticalSpace(8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -134,8 +140,10 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                           activeColor: Colors.black,
                           checkColor: Colors.white,
                         ),
-                        Text('Do you agree to the rental terms',
-                          style: context.bodyRegular,),
+                        Text(
+                          context.loc.agreeRentalTermsPrompt,
+                          style: context.bodyRegular,
+                        ),
                       ],
                     )
                   ],
@@ -167,16 +175,16 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                         showroomName:
                         widget.car.showroomName ??
                             widget.car.contactName ??
-                            'Seller',
-                        phoneNumber: widget.car.contactPhone ?? 'N/A',
+                            context.loc.seller,
+                        phoneNumber: widget.car.contactPhone ?? context.loc.notAvailable,
                       );
                     }
 
                     final data = snapshot.data!.data() as Map<String, dynamic>;
                     return ShowroomContactCard(
                       showroomName:
-                      data['showroomName'] ?? data['name'] ?? 'Showroom',
-                      phoneNumber: data['phone'] ?? 'N/A',
+                      data['showroomName'] ?? data['name'] ?? context.loc.showroomDefaultName,
+                      phoneNumber: data['phone'] ?? context.loc.notAvailable,
                       imageUrl: data['profileImage'] ?? data['licenseImageUrl'],
                       showroomID: widget.car.showroomId,
                     );
@@ -184,13 +192,13 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
                 )
               else
                 ShowroomContactCard(
-                  showroomName: widget.car.contactName ?? 'Individual Seller',
-                  phoneNumber: widget.car.contactPhone ?? 'N/A',
+                  showroomName: widget.car.contactName ?? context.loc.individualSellerLabel,
+                  phoneNumber: widget.car.contactPhone ?? context.loc.notAvailable,
                   showroomID: widget.car.showroomId,
                 ),
 
               context.addVerticalSpace(24),
-              Text('Suggested Ads', style: context.bodyBold),
+              Text(context.loc.suggestedAds, style: context.bodyBold),
               context.addVerticalSpace(8),
               SuggestedAds(car: widget.car),
             ],
@@ -201,7 +209,7 @@ class _CarDetailsFormState extends State<CarDetailsForm> {
   }
 
   String _formatDate(String? dateString) {
-    if (dateString == null || dateString.isEmpty) return 'N/A';
+    if (dateString == null || dateString.isEmpty) return context.loc.notAvailable;
     try {
       final date = DateTime.parse(dateString);
       return DateFormat('d MMM').format(date);

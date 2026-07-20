@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
 import '../../model/car_card_model.dart';
 import '../../view/widgets/car_ads_list.dart';
@@ -17,6 +18,6 @@ class SuggestedAds extends StatelessWidget {
       );
     }
 
-    return const Text("No suggested ads available for this car.");
+    return Text(context.loc.noSuggestedAds);
   }
 }

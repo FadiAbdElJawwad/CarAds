@@ -1,4 +1,6 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -35,11 +37,13 @@ class AuthService {
   }
 
   Future<void> updatePassword({
+    required BuildContext context,
     required String currentPassword,
     required String newPassword,
   }) async {
+    final loc = context.loc;
     User? user = _auth.currentUser;
-    if (user?.email == null) throw Exception("User not authenticated");
+    if (user?.email == null) throw Exception(loc.userNotAuthenticated);
 
     AuthCredential credential = EmailAuthProvider.credential(
       email: user!.email!,
@@ -50,14 +54,16 @@ class AuthService {
   }
 
   Future<void> updateEmail({
+    required BuildContext context,
     required String currentPassword,
     required String newEmail,
   }) async {
+    final loc = context.loc;
     User? user = _auth.currentUser;
     if (user == null || user.email == null) {
       throw FirebaseAuthException(
         code: 'user-not-found',
-        message: 'User  must be logged in to update email.',
+        message: loc.updateEmailLoginRequired,
       );
     }
 
@@ -71,7 +77,7 @@ class AuthService {
       await user.verifyBeforeUpdateEmail(newEmail);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'wrong-password') {
-        throw 'The current password you entered is incorrect.';
+        throw loc.incorrectCurrentPassword;
       }
       rethrow;
     }

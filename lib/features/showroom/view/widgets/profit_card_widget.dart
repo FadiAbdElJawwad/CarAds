@@ -64,7 +64,10 @@ class ProfitCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  '${isPositive ? '+' : '-'}$percentage%',
+                  context.loc.percentageDisplay(
+                    isPositive ? '+' : '-',
+                    percentage,
+                  ),
                   style: context.bodyBold.copyWith(
                     color: isPositive ? Colors.green : Colors.red,
                     fontSize: 12,

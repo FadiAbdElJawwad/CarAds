@@ -17,13 +17,13 @@ class AddAdsDescription extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Description', style: context.inputRegular14),
+        Text(context.loc.description, style: context.inputRegular14),
         context.addVerticalSpace(8),
         PrimaryTextField(
           controller: descriptionController,
-          hint: 'Provide a brief description of your car',
+          hint: context.loc.descriptionHint,
           maxLines: 8,
-          validator: (val) => val!.validateGeneric('Description'),
+          validator: (val) => val!.validateGeneric(context, context.loc.description),
         ),
       ],
     );

@@ -14,7 +14,7 @@ class AddAdsImagePicker extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Upload Photos', style: context.inputRegular14),
+        Text(context.loc.uploadPhotos, style: context.inputRegular14),
         context.addVerticalSpace(8),
         InkWell(
           onTap: () => provider.pickImage(),
@@ -27,57 +27,58 @@ class AddAdsImagePicker extends StatelessWidget {
               border: Border.all(color: const Color(0xFFE0E0E0)),
             ),
             child:
-                (provider.selectedImage == null &&
-                    provider.editingCar?.carImage == null)
+            (provider.selectedImage == null &&
+                provider.editingCar?.carImage == null)
                 ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.add_a_photo_outlined,
-                        color: Colors.grey,
-                        size: 40,
-                      ),
-                      context.addVerticalSpace(8),
-                      Text(
-                        'Add high-quality photos to showcase your car',
-                        style: context.bodyRegular.copyWith(color: Colors.grey),
-                      ),
-                    ],
-                  )
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.add_a_photo_outlined,
+                  color: Colors.grey,
+                  size: 40,
+                ),
+                context.addVerticalSpace(8),
+                Text(
+                  context.loc.uploadPhotosDescription,
+                  style: context.bodyRegular.copyWith(color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            )
                 : ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Stack(
-                      children: [
-                        if (provider.selectedImage != null)
-                          Image.file(
-                            provider.selectedImage!,
-                            fit: BoxFit.contain,
-                            width: double.infinity,
-                            height: double.infinity,
-                          )
-                        else
-                          CarImageExtractor.buildImage(
-                            provider.editingCar!.carImage,
-                            fit: BoxFit.contain,
-                          ).center(),
-                        Positioned(
-                          right: 8,
-                          top: 8,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.black54,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              onPressed: () => provider.pickImage(),
-                            ),
-                          ),
+              borderRadius: BorderRadius.circular(12),
+              child: Stack(
+                children: [
+                  if (provider.selectedImage != null)
+                    Image.file(
+                      provider.selectedImage!,
+                      fit: BoxFit.contain,
+                      width: double.infinity,
+                      height: double.infinity,
+                    )
+                  else
+                    CarImageExtractor.buildImage(
+                      provider.editingCar!.carImage,
+                      fit: BoxFit.contain,
+                    ).center(),
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black54,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                          size: 20,
                         ),
-                      ],
+                        onPressed: () => provider.pickImage(),
+                      ),
                     ),
                   ),
+                ],
+              ),
+            ),
           ),
         ),
       ],

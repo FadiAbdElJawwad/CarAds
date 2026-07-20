@@ -27,19 +27,22 @@ class _VerificationScreenState extends State<VerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight + 20),
-        child: PrimaryAppBar(backIconVisible: true, text: 'verification'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+        child: PrimaryAppBar(
+          backIconVisible: true,
+          text: context.loc.verification,
+        ),
       ),
       body: Column(
         children: [
           Text(
-            'To use our services , we need to verify :',
+            context.loc.verificationPrompt,
             style: context.titleRegular18,
           ),
           context.addVerticalSpace(16),
           _buildVerificationCard(
-            title: 'Phone Number *',
+            title: context.loc.phoneNumberRequired,
             subtitle: widget.userData['phone'],
             isVerified: isPhoneVerified,
             onVerify: () async {
@@ -59,8 +62,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
           ),
           context.addVerticalSpace(24),
           _buildVerificationCard(
-            title: 'Commercial license*',
-            subtitle: widget.userData['commercialLicenseNumber'] ?? 'N/A',
+            title: context.loc.commercialLicenseRequired,
+            subtitle: widget.userData['commercialLicenseNumber'] ?? context.loc.notAvailable,
             isVerified: isLicenseVerified,
             onVerify: () async {
               final String? uploadedUrl = await AppRouter.goTo<String>(
@@ -79,8 +82,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
       ).padSymmetric(20),
       bottomNavigationBar: StickyBottomButton(
         text: isPhoneVerified && isLicenseVerified
-            ? 'Go to Home'
-            : 'Complete Verification',
+            ? context.loc.goToHome
+            : context.loc.completeVerification,
         onPressed: isPhoneVerified && isLicenseVerified ? _handleFinalSignUp : null,
       ),
     );
@@ -108,7 +111,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
           child: TextButton(
             onPressed: isVerified ? null : onVerify,
             child: Text(
-              isVerified ? 'Verified' : 'Verify',
+              isVerified ? context.loc.verified : context.loc.verify,
               style: context.titleRegular18.copyWith(
                 fontSize: 16,
                 color: isVerified ? Colors.white : Colors.black,
@@ -124,6 +127,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
     final authProvider = context.read<AuthProvider>();
 
     await authProvider.signUpUser(
+      context: context, // Added context as per AuthProvider refactoring
       name: widget.userData['name'],
       email: widget.userData['email'],
       password: widget.userData['password'],
@@ -141,7 +145,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
     } else if (authProvider.state.isFailure) {
       showSnackBar(
         context,
-        authProvider.state.fallbackMessage ?? 'Something went wrong',
+        authProvider.state.fallbackMessage ?? context.loc.somethingWentWrong,
       );
     }
   }

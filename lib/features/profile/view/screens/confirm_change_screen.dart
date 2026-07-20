@@ -18,19 +18,18 @@ class ConfirmChangeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Well Done', style: context.h2Bold22),
+            Text(context.loc.wellDoneTitle, style: context.h2Bold22),
             const SizedBox(height: 20),
             Image.asset(ImagesManager.wellDoneImage),
             const SizedBox(height: 20),
             Text(
-              message ??
-                  'Congratulations! Your changes have been saved successfully!',
+              message ?? context.loc.changesSavedSuccess,
               style: context.bodyRegular,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
             PrimaryButton(
-              text: 'Back To Profile',
+              text: context.loc.backToProfileButton,
               onPressed: () {
                 AppRouter.backTo(screenName: ScreenName.navButtonBar);
               },

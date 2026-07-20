@@ -22,7 +22,6 @@ class CarAdsCard extends StatelessWidget {
           AppRouter.goTo(screenName: ScreenName.carDetailsForm, arguments: car);
         }
       },
-
       child: Card(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +33,7 @@ class CarAdsCard extends StatelessWidget {
             ),
             context.addVerticalSpace(16),
             Text(
-              car.carName ?? 'No Name',
+              car.carName ?? context.loc.noName,
               style: context.inputBold14,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -42,8 +41,14 @@ class CarAdsCard extends StatelessWidget {
             context.addVerticalSpace(4),
             Row(
               children: [
-                Text('${car.price ?? 0} K', style: context.inputBold14),
-                Text(car.purpose == 'rent' ? ' AED/Day' : ' AED', style: context.inputRegular14),
+                Text(
+                  '${car.price ?? 0} ${context.loc.thousandSuffix}',
+                  style: context.inputBold14,
+                ),
+                Text(
+                  ' ${car.purpose == 'rent' ? context.loc.aedPerDay : context.loc.aed}',
+                  style: context.inputRegular14,
+                ),
               ],
             ),
             context.addVerticalSpace(4),

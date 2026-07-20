@@ -61,13 +61,13 @@ class CarAdList extends StatelessWidget {
         }
 
         if (carsToDisplay.isEmpty) {
-          return const CarsAdsErrorMessage(
-            message: "No ads matching your filters",
+          return CarsAdsErrorMessage(
+            message: context.loc.noAdsMatchingFilters,
           );
         }
 
         final displayCount =
-            listLength != null && listLength! < carsToDisplay.length
+        listLength != null && listLength! < carsToDisplay.length
             ? listLength!
             : carsToDisplay.length;
 
@@ -102,9 +102,12 @@ class _ResultsHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Results for "$query"', style: context.titleBold18),
           Text(
-            '$count founds',
+            context.loc.resultsFor(query),
+            style: context.titleBold18,
+          ),
+          Text(
+            context.loc.itemsFound(count),
             style: context.bodyRegular.copyWith(color: Colors.grey),
           ),
         ],
@@ -129,7 +132,7 @@ class _CarGrid extends StatelessWidget {
         childAspectRatio: 0.6,
       ),
       delegate: SliverChildBuilderDelegate(
-        (context, i) => CarAdsCard(car: cars[i]),
+            (context, i) => CarAdsCard(car: cars[i]),
         childCount: count,
       ),
     );

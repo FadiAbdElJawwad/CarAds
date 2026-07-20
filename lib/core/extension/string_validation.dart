@@ -1,56 +1,56 @@
 import 'package:flutter/material.dart';
-import '../../generated/l10n.dart';
+import 'app_sizes.dart';
 
 extension StringValidation on String {
-  String? validateGeneric(String fieldName) {
+  String? validateGeneric(BuildContext context, String fieldName) {
     if (trim().isEmpty) {
-      return '$fieldName cannot be empty';
+      return context.loc.fieldCannotBeEmpty(fieldName);
     }
     return null;
   }
 
-  String? validateLicenseNumber() {
+  String? validateLicenseNumber(BuildContext context) {
     if (trim().isEmpty) {
-      return 'Driving License No cannot be empty';
+      return context.loc.drivingLicenseEmpty;
     }
     if (int.tryParse(this) == null) {
-      return 'Driving License No must be a number';
+      return context.loc.drivingLicenseMustBeNumber;
     }
     if (length >= 10) {
-      return 'Driving License No must be less than 10 digits';
+      return context.loc.drivingLicenseTooLong;
     }
     return null;
   }
 
-  String? validateIdNumber() {
+  String? validateIdNumber(BuildContext context) {
     if (trim().isEmpty) {
-      return 'ID Number cannot be empty';
+      return context.loc.idNumberEmpty;
     }
     if (int.tryParse(this) == null) {
-      return 'ID Number must be a number';
+      return context.loc.idNumberMustBeNumber;
     }
     if (length >= 9) {
-      return 'ID Number must be less than 9 digits';
+      return context.loc.idNumberTooLong;
     }
     return null;
   }
 
   String? validateName(BuildContext context) {
     if (isEmpty) {
-      return S.of(context).emptyName;
+      return context.loc.emptyName;
     }
     return null;
   }
 
   String? validateMobile(BuildContext context) {
     if (trim().isEmpty) {
-      return S.of(context).emptyMobile;
+      return context.loc.emptyMobile;
     }
     if (!trim().startsWith('+')) {
-      return 'Phone number must start with a country code (e.g. +971)';
+      return context.loc.mobileStartWithCountryCode;
     }
     if (length < 10) {
-      return 'Please enter a valid phone number';
+      return context.loc.invalidMobile;
     }
     return null;
   }
@@ -60,18 +60,18 @@ extension StringValidation on String {
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
     );
     if (isEmpty) {
-      return S.of(context).emptyEmail;
+      return context.loc.emptyEmail;
     } else if (!emailRegExp.hasMatch(this)) {
-      return S.of(context).incorrectEmail;
+      return context.loc.incorrectEmail;
     }
     return null;
   }
 
   String? validatePassword(BuildContext context) {
     if (isEmpty) {
-      return S.of(context).emptyPassword;
+      return context.loc.emptyPassword;
     } else if (length < 6) {
-      return S.of(context).incorrectPassword;
+      return context.loc.incorrectPassword;
     }
     return null;
   }
@@ -80,7 +80,7 @@ extension StringValidation on String {
     final baseError = validatePassword(context);
     if (baseError != null) return baseError;
     if (this == currentPassword) {
-      return 'New password cannot be the same as current';
+      return context.loc.passwordSameAsCurrent;
     }
     return null;
   }
@@ -89,7 +89,7 @@ extension StringValidation on String {
     final baseError = validatePassword(context);
     if (baseError != null) return baseError;
     if (this != newPassword) {
-      return 'Passwords do not match';
+      return context.loc.passwordsDoNotMatch;
     }
     return null;
   }

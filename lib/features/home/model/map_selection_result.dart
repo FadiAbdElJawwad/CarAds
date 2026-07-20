@@ -1,8 +1,8 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MapSelectionResult {
   final String address;
-  final LatLng position;
+  final Position position;
 
   MapSelectionResult({required this.address, required this.position});
 }

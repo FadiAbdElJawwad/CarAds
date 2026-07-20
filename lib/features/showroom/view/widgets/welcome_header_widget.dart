@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -14,11 +15,11 @@ class WelcomeHeaderWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Welcome $userName',
+              context.loc.welcomeUser(userName),
               style: context.h2Bold22.copyWith(color: Colors.black),
             ),
             Text(
-              'Manage your showroom today',
+              context.loc.manageShowroomToday,
               style: context.bodyRegular.copyWith(color: Colors.grey),
             ),
           ],
@@ -37,7 +38,7 @@ class WelcomeHeaderWidget extends StatelessWidget {
             ],
           ),
           child: const Badge(
-            label: Text('3'),
+            label: Text('3'), // Likely a dynamic value, left as is
             child: Icon(Icons.notifications_none_rounded, color: Colors.black),
           ),
         ),

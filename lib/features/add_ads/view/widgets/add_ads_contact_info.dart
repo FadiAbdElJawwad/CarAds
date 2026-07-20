@@ -19,17 +19,17 @@ class AddAdsContactInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Contact Information:', style: context.inputRegular14),
+        Text(context.loc.contactInformation, style: context.inputRegular14),
         context.addVerticalSpace(8),
         PrimaryTextField(
           controller: nameController,
-          hint: 'Name',
+          hint: context.loc.nameHint,
           validator: (val) => val!.validateName(context),
         ),
         context.addVerticalSpace(16),
         PrimaryTextField(
           controller: phoneController,
-          hint: 'Phone Number',
+          hint: context.loc.phoneNumberHint,
           keyboardType: TextInputType.phone,
           validator: (val) => val!.validateMobile(context),
         ),

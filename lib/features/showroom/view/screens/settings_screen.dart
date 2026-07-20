@@ -19,19 +19,25 @@ class SettingsScreen extends StatelessWidget {
         return LoadingOverlay(
           isLoading: authProvider.state.isLoading,
           child: Scaffold(
-            appBar: const PreferredSize(
-              preferredSize: Size.fromHeight(kToolbarHeight),
-              child: PrimaryAppBar(text: 'Settings', backIconVisible: true),
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: PrimaryAppBar(
+                text: context.loc.settingsTitle,
+                backIconVisible: true,
+              ),
             ),
             body: Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    ProfileMenuItem(title: 'Payment Methods', onTap: () {}),
+                    ProfileMenuItem(
+                      title: context.loc.paymentMethods,
+                      onTap: () {},
+                    ),
                     const Divider(color: ColorManager.backgroundColor),
                     ProfileMenuItem(
-                      title: 'Change Your Email',
+                      title: context.loc.changeYourEmailMenu,
                       onTap: () {
                         AppRouter.goTo(
                           screenName: ScreenName.changeEmailScreen,
@@ -40,7 +46,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const Divider(color: ColorManager.backgroundColor),
                     ProfileMenuItem(
-                      title: 'Change Your Phone Number',
+                      title: context.loc.changeYourPhoneMenu,
                       onTap: () {
                         AppRouter.goTo(
                           screenName: ScreenName.changePhoneScreen,
@@ -49,7 +55,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const Divider(color: ColorManager.backgroundColor),
                     ProfileMenuItem(
-                      title: 'Change Your Password',
+                      title: context.loc.changeYourPasswordMenu,
                       onTap: () {
                         AppRouter.goTo(
                           screenName: ScreenName.changePasswordScreen,
@@ -58,7 +64,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const Divider(color: ColorManager.backgroundColor),
                     ProfileMenuItem(
-                      title: 'Change Language',
+                      title: context.loc.changeLanguageTitle,
                       onTap: () {
                         AppRouter.goTo(
                           screenName: ScreenName.changeLanguageScreen,
@@ -67,14 +73,14 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const Divider(color: ColorManager.backgroundColor),
                     ProfileMenuItem(
-                      title: 'FAQ’S',
+                      title: context.loc.faqsTitle,
                       onTap: () {
                         AppRouter.goTo(screenName: ScreenName.faqScreenScreen);
                       },
                     ),
                     const Divider(color: ColorManager.backgroundColor),
                     ProfileMenuItem(
-                      title: 'Privacy Policy',
+                      title: context.loc.privacyPolicyTitle,
                       onTap: () {
                         AppRouter.goTo(
                           screenName: ScreenName.privacyPolicyScreen,
@@ -83,7 +89,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const Divider(color: ColorManager.backgroundColor),
                     ProfileMenuItem(
-                      title: 'Terms & Conditions',
+                      title: context.loc.termsConditionsTitle,
                       onTap: () {
                         AppRouter.goTo(
                           screenName: ScreenName.termsConditionsScreen,
@@ -92,7 +98,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const Divider(color: ColorManager.backgroundColor),
                     ProfileMenuItem(
-                      title: 'Logout',
+                      title: context.loc.logout,
                       onTap: () async {
                         await authProvider.logout();
                         if (context.mounted) {

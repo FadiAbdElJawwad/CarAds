@@ -40,10 +40,10 @@ class _FilterMileageSectionState extends State<FilterMileageSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Mileage', style: context.titleBold18),
+        Text(context.loc.mileageTitle, style: context.titleBold18),
         context.addVerticalSpace(8),
         Text(
-          'Select Mileage Range:',
+          context.loc.selectMileageRange,
           style: context.bodyRegular.copyWith(color: Colors.grey),
         ),
         context.addVerticalSpace(12),
@@ -52,7 +52,7 @@ class _FilterMileageSectionState extends State<FilterMileageSection> {
             Expanded(
               child: PrimaryTextField(
                 controller: _startController,
-                hint: 'Start Mileage',
+                hint: context.loc.startMileageHint,
                 keyboardType: TextInputType.number,
                 onChanged: (val) {
                   provider.setMileage(
@@ -67,7 +67,7 @@ class _FilterMileageSectionState extends State<FilterMileageSection> {
             Expanded(
               child: PrimaryTextField(
                 controller: _endController,
-                hint: 'End Mileage',
+                hint: context.loc.endMileageHint,
                 keyboardType: TextInputType.number,
                 onChanged: (val) {
                   provider.setMileage(

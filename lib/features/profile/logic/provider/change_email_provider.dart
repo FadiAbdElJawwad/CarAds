@@ -1,4 +1,5 @@
 import 'package:car_ads/common/show_snack_bar.dart';
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/auth/logic/helper/auth_service.dart';
@@ -32,11 +33,13 @@ class ChangeEmailProvider extends ChangeNotifier {
   }
 
   Future<void> updateEmail(BuildContext context) async {
+    final loc = context.loc;
     if (!newEmailFormKey.currentState!.validate()) return;
 
     _setLoading(true);
     try {
       await _authService.updateEmail(
+        context: context,
         currentPassword: passwordController.text,
         newEmail: newEmailController.text.trim(),
       );
@@ -44,7 +47,7 @@ class ChangeEmailProvider extends ChangeNotifier {
       if (!context.mounted) return;
       showSnackBar(
         context,
-        'A verification link has been sent to your new email. Please verify it and log in again.',
+        loc.emailVerificationSent,
       );
 
       final newEmail = newEmailController.text.trim();
@@ -55,9 +58,8 @@ class ChangeEmailProvider extends ChangeNotifier {
       if (userId != null) {
         await _notificationService.sendNotification(
           userId: userId,
-          title: 'Email Change Requested',
-          body:
-              'A request to change your email to $newEmail has been initiated.',
+          title: loc.emailChangeRequestedTitle,
+          body: loc.emailChangeRequestedBody(newEmail),
         );
       }
 
@@ -71,7 +73,7 @@ class ChangeEmailProvider extends ChangeNotifier {
       AppRouter.goToAndRemove(screenName: ScreenName.login);
     } catch (e) {
       if (context.mounted) {
-        String errorMessage = _handleAuthError(e);
+        String errorMessage = _handleAuthError(context, e);
         showSnackBar(context, errorMessage);
       }
     } finally {
@@ -79,22 +81,23 @@ class ChangeEmailProvider extends ChangeNotifier {
     }
   }
 
-  String _handleAuthError(dynamic e) {
+  String _handleAuthError(BuildContext context, dynamic e) {
+    final loc = context.loc;
     if (e is String) return e;
 
     final message = e.toString().toLowerCase();
     if (message.contains('email-already-in-use')) {
-      return 'This email is already in use by another account.';
+      return loc.emailAlreadyInUse;
     } else if (message.contains('invalid-email')) {
-      return 'The email address is badly formatted.';
+      return loc.invalidEmailFormat;
     } else if (message.contains('wrong-password')) {
-      return 'The current password you entered is incorrect.';
+      return loc.incorrectCurrentPassword;
     } else if (message.contains('user-not-found')) {
-      return 'User session not found. Please log in again.';
+      return loc.sessionExpired;
     } else if (message.contains('requires-recent-login')) {
-      return 'For security reasons, please log in again before changing your email.';
+      return loc.recentLoginRequired;
     }
-    return 'An error occurred while updating your email. Please try again.';
+    return loc.updateEmailError;
   }
 
   @override

@@ -55,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     await authProvider.loginUser(
+      context: context, // Added context to access localized notifications
       email: emailController.text,
       password: passwordController.text,
     );
@@ -129,13 +130,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                   context.addVerticalSpace(24),
-
                   PrimaryButton(
                     text: context.loc.login,
                     onPressed: _handleLogin,
                   ),
                   context.addVerticalSpace(32),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -143,7 +142,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         context.loc.dontHaveAccount,
                         style: context.bodyRegular.copyWith(color: Colors.grey),
                       ),
-
                       TextButton(
                         onPressed: () {
                           AppRouter.goTo(

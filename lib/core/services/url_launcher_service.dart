@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -12,7 +13,7 @@ class UrlLauncherService {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } catch (e) {
       scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Could not launch app. Is it installed?')),
+        SnackBar(content: Text(context.loc.urlLaunchError)),
       );
     }
   }

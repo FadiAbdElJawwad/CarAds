@@ -39,14 +39,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     return ChangeNotifierProvider.value(
       value: _updateProfileProvider,
       child: Scaffold(
-        appBar: const PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
           child: PrimaryAppBar(
             backIconVisible: true,
-            text: 'Update Your Profile',
+            text: context.loc.updateProfileTitle,
           ),
         ),
-
         body: Consumer2<AuthProvider, UpdateProfileProvider>(
           builder: (context, authProvider, updateProvider, _) {
             return LoadingOverlay(
@@ -61,7 +60,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           UpdateProfileImageSection(
                             imageFile: updateProvider.imageFile,
                             profileImageUrl:
-                                authProvider.state.user?.profileImage,
+                            authProvider.state.user?.profileImage,
                             onPickImage: () {
                               updateProvider.pickImage();
                             },
@@ -80,12 +79,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               ),
                             ),
                             child: PrimaryTextField(
-                              label: 'Full Name',
+                              label: context.loc.fullNameLabel,
                               isBorderVisible: false,
                               controller: updateProvider.nameController,
-                              hint: 'Enter your name',
+                              hint: context.loc.enterNameHint,
                               validator: (val) => val?.isEmpty ?? true
-                                  ? 'Please enter your name'
+                                  ? context.loc.enterNameError
                                   : null,
                             ),
                           ),
@@ -101,7 +100,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         bottomNavigationBar: Consumer2<AuthProvider, UpdateProfileProvider>(
           builder: (context, authProvider, updateProvider, _) {
             return StickyBottomButton(
-              text: 'Save Changes',
+              text: context.loc.saveChanges,
               onPressed: authProvider.state.isLoading
                   ? null
                   : () => updateProvider.handleUpdate(context),

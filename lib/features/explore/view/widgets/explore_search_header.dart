@@ -36,7 +36,7 @@ class ExploreSearchHeader extends StatelessWidget {
               controller: controller,
               focusNode: focusNode,
               icon: const Icon(Icons.search),
-              hint: 'Start your search ...',
+              hint: context.loc.startSearchHint,
               onChanged: (value) => provider.setSearchQuery(value),
               onSubmitted: (value) {
                 provider.addRecentSearch(value);
@@ -44,12 +44,12 @@ class ExploreSearchHeader extends StatelessWidget {
               },
               suffixIcon: controller.text.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.cancel, color: Colors.grey),
-                      onPressed: () {
-                        controller.clear();
-                        provider.setSearchQuery('');
-                      },
-                    )
+                icon: const Icon(Icons.cancel, color: Colors.grey),
+                onPressed: () {
+                  controller.clear();
+                  provider.setSearchQuery('');
+                },
+              )
                   : null,
             ),
           ),

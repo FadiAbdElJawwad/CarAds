@@ -22,11 +22,11 @@ class CheckoutPriceDetails extends StatelessWidget {
   });
 
   Widget _buildPriceRow(
-    BuildContext context,
-    String label,
-    int amount, {
-    bool isTotal = false,
-  }) {
+      BuildContext context,
+      String label,
+      int amount, {
+        bool isTotal = false,
+      }) {
     final color = isTotal ? null : Colors.grey;
     return ListTile(
       title: Text(label, style: context.bodyRegular),
@@ -42,19 +42,19 @@ class CheckoutPriceDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Price Details', style: context.bodyBold),
+        Text(context.loc.priceDetailsTitle, style: context.bodyBold),
         context.addVerticalSpace(8),
         Card(
           elevation: 2,
           child: Column(
             children: [
-              _buildPriceRow(context, 'Amount', carPrice),
-              _buildPriceRow(context, 'Shipping', shippingCost),
-              _buildPriceRow(context, 'Tax', taxCost),
+              _buildPriceRow(context, context.loc.amountLabel, carPrice),
+              _buildPriceRow(context, context.loc.shippingLabel, shippingCost),
+              _buildPriceRow(context, context.loc.taxLabel, taxCost),
               const Divider(color: Colors.grey).padSymmetric(20),
               _buildPriceRow(
                 context,
-                'Total payment',
+                context.loc.totalPaymentLabel,
                 totalPayment,
                 isTotal: true,
               ),

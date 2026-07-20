@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -14,14 +15,13 @@ class RoleSelectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
             child: RadioListTile<String>(
               activeColor: Colors.black,
-              title: Text('User', style: context.bodyRegular),
+              title: Text(context.loc.userRole, style: context.bodyRegular),
               value: 'user',
               groupValue: selectedRole,
               onChanged: onRoleChanged,
@@ -32,7 +32,7 @@ class RoleSelectionWidget extends StatelessWidget {
           Expanded(
             child: RadioListTile<String>(
               activeColor: Colors.black,
-              title: Text('Showroom', style: context.bodyRegular),
+              title: Text(context.loc.showroomRole, style: context.bodyRegular),
               value: 'showroom',
               groupValue: selectedRole,
               onChanged: onRoleChanged,

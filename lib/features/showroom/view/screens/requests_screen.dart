@@ -17,7 +17,10 @@ class RequestsScreen extends StatelessWidget {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight + 20),
-        child: PrimaryAppBar(backIconVisible: showBackIcon, text: 'Requests'),
+        child: PrimaryAppBar(
+          backIconVisible: showBackIcon,
+          text: context.loc.requests,
+        ),
       ),
       body: ListView(
         children: [
@@ -25,8 +28,8 @@ class RequestsScreen extends StatelessWidget {
             builder: (context, authProvider, showroomProvider, child) {
               final showroomId = authProvider.state.user?.uid;
               if (showroomId == null) {
-                return const Center(
-                  child: Text('Please log in as a showroom.'),
+                return Center(
+                  child: Text(context.loc.loginAsShowroomError),
                 );
               }
 
@@ -40,22 +43,24 @@ class RequestsScreen extends StatelessWidget {
                     return Column(
                       children: List.generate(
                         5,
-                        (index) => const ShowroomRequestSkeleton(),
+                            (index) => const ShowroomRequestSkeleton(),
                       ),
                     );
                   }
 
                   if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    return Center(
+                      child: Text(context.loc.errorWithDetails(snapshot.error.toString())),
+                    );
                   }
 
                   final requests = snapshot.data ?? [];
 
                   if (requests.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Text('No rent requests yet.'),
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Text(context.loc.noRentRequestsYet),
                       ),
                     );
                   }

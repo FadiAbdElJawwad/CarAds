@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/routes/app_router.dart';
 import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/auth/logic/helper/auth_service.dart';
@@ -11,10 +12,10 @@ import '../../../../common/show_snack_bar.dart';
 class ChangePasswordProvider extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController currentPasswordController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
 
   final NotificationService _notificationService = NotificationService();
 
@@ -41,6 +42,7 @@ class ChangePasswordProvider extends ChangeNotifier {
     _setLoading(true);
     try {
       await AuthService().updatePassword(
+        context: context, // Added context as per AuthService refactoring
         currentPassword: currentPasswordController.text,
         newPassword: newPasswordController.text,
       );
@@ -52,8 +54,8 @@ class ChangePasswordProvider extends ChangeNotifier {
         if (userId != null) {
           await _notificationService.sendNotification(
             userId: userId,
-            title: 'Password Changed',
-            body: 'Your account password has been changed successfully.',
+            title: context.loc.passwordChangedTitle,
+            body: context.loc.passwordChangedBody,
           );
         }
         AppRouter.goTo(screenName: ScreenName.confirmChangeScreen);
@@ -61,15 +63,15 @@ class ChangePasswordProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
         if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
-          _setCurrentPasswordError('Incorrect current password');
+          _setCurrentPasswordError(context.loc.incorrectCurrentPassword);
           formKey.currentState!.validate();
         } else if (e.code == 'too-many-requests') {
           showSnackBar(
             context,
-            'Too many attempts. Please try again later or reset your password.',
+            context.loc.tooManyAttempts,
           );
         } else {
-          showSnackBar(context, e.message ?? 'An error occurred');
+          showSnackBar(context, e.message ?? context.loc.anErrorOccurred);
         }
       }
     } catch (e) {

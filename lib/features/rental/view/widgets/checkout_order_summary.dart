@@ -35,19 +35,19 @@ class CheckoutOrderSummary extends StatelessWidget {
 
     return directUrl.startsWith('http')
         ? Image.network(
-            directUrl,
-            height: size,
-            width: size,
-            fit: BoxFit.contain,
-            errorBuilder: (_, _, _) =>
-                Image.asset(ImagesManager.toyota, height: size, width: size),
-          )
+      directUrl,
+      height: size,
+      width: size,
+      fit: BoxFit.contain,
+      errorBuilder: (_, _, _) =>
+          Image.asset(ImagesManager.toyota, height: size, width: size),
+    )
         : Image.asset(
-            directUrl,
-            height: size,
-            width: size,
-            fit: BoxFit.contain,
-          );
+      directUrl,
+      height: size,
+      width: size,
+      fit: BoxFit.contain,
+    );
   }
 
   @override
@@ -55,13 +55,16 @@ class CheckoutOrderSummary extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Order', style: context.bodyBold),
+        Text(context.loc.orderLabel, style: context.bodyBold),
         context.addVerticalSpace(8),
         Card(
           elevation: 2,
           child: ListTile(
             leading: _buildCarImage(),
-            title: Text(car.carName ?? 'Unknown Name', style: context.bodyBold),
+            title: Text(
+              car.carName ?? context.loc.noName,
+              style: context.bodyBold,
+            ),
             trailing: Text(
               '${currencyFormat.format(carPrice)} $currency',
               style: context.bodyBold,

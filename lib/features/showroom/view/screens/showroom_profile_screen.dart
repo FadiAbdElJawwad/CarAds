@@ -33,9 +33,12 @@ class _ShowroomProfileScreenState extends State<ShowroomProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: PrimaryAppBar(text: 'Your Profile', settingsVisible: true),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: PrimaryAppBar(
+          text: context.loc.yourProfileTitle,
+          settingsVisible: true,
+        ),
       ),
       body: Consumer2<AuthProvider, CarAdsProvider>(
         builder: (context, authProvider, carAdsProvider, child) {
@@ -48,13 +51,13 @@ class _ShowroomProfileScreenState extends State<ShowroomProfileScreen> {
             shrinkWrap: true,
             children: [
               ProfileHeaderCard(
-                name: user?.name ?? 'Loading...',
+                name: user?.name ?? context.loc.loading,
                 phone: user?.phone ?? user?.email ?? '',
                 profileImage: user?.profileImage,
               ),
 
               context.addVerticalSpace(16),
-              Text('Manage your Ads!', style: context.bodyRegular),
+              Text(context.loc.manageYourAds, style: context.bodyRegular),
               context.addVerticalSpace(8),
               if (carAdsProvider.isLoading)
                 ListView.separated(
@@ -93,7 +96,7 @@ class _ShowroomProfileScreenState extends State<ShowroomProfileScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Text(
-                      'No ads posted yet.',
+                      context.loc.noAdsPostedYet,
                       style: context.bodyRegular.copyWith(color: Colors.grey),
                     ),
                   ),
@@ -127,20 +130,20 @@ class _ShowroomProfileScreenState extends State<ShowroomProfileScreen> {
                                 context.addVerticalSpace(10),
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      car.carName ?? 'N/A',
+                                      car.carName ?? context.loc.notAvailable,
                                       style: context.titleBold18,
                                     ),
                                     Row(
                                       children: [
                                         Text(
-                                          '${car.price != null ? (int.tryParse(car.price!) ?? 0) : 0} K',
+                                          '${car.price != null ? (int.tryParse(car.price!) ?? 0) : 0} ${context.loc.thousandSuffix}',
                                           style: context.inputBold16,
                                         ),
                                         Text(
-                                          ' AED',
+                                          ' ${context.loc.aed}',
                                           style: context.inputRegular16,
                                         ),
                                       ],
@@ -151,11 +154,11 @@ class _ShowroomProfileScreenState extends State<ShowroomProfileScreen> {
                                 IntrinsicHeight(
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       SvgPicture.asset(ImagesManager.gear),
                                       Text(
-                                        car.gearType ?? 'N/A',
+                                        car.gearType ?? context.loc.notAvailable,
                                         style: context.inputRegular14.copyWith(
                                           color: Colors.grey,
                                         ),
@@ -166,7 +169,7 @@ class _ShowroomProfileScreenState extends State<ShowroomProfileScreen> {
                                       ),
                                       SvgPicture.asset(ImagesManager.seats),
                                       Text(
-                                        '${car.seats ?? 'N/A'} seats',
+                                        context.loc.seatsCount(car.seats ?? context.loc.notAvailable),
                                         style: context.inputRegular14.copyWith(
                                           color: Colors.grey,
                                         ),
@@ -177,7 +180,7 @@ class _ShowroomProfileScreenState extends State<ShowroomProfileScreen> {
                                       ),
                                       SvgPicture.asset(ImagesManager.fuel),
                                       Text(
-                                        car.fuel ?? 'N/A',
+                                        car.fuel ?? context.loc.notAvailable,
                                         style: context.inputRegular14.copyWith(
                                           color: Colors.grey,
                                         ),

@@ -36,7 +36,7 @@ class _LicenseUploadScreenState extends State<LicenseUploadScreen> {
       }
     } catch (e) {
       if (mounted) {
-        showSnackBar(context, 'Failed to pick image: $e');
+        showSnackBar(context, context.loc.pickImageError(e.toString()));
       }
     }
   }
@@ -44,7 +44,7 @@ class _LicenseUploadScreenState extends State<LicenseUploadScreen> {
   Future<void> _handleSubmit() async {
     if (_selectedImage == null) {
       if (mounted) {
-        showSnackBar(context, 'Please select an image first');
+        showSnackBar(context, context.loc.selectImageFirstError);
       }
       return;
     }
@@ -62,12 +62,12 @@ class _LicenseUploadScreenState extends State<LicenseUploadScreen> {
         }
       } else {
         if (mounted) {
-          showSnackBar(context, 'Upload failed. Please try again.');
+          showSnackBar(context, context.loc.uploadFailedError);
         }
       }
     } catch (e) {
       if (mounted) {
-        showSnackBar(context, 'An error occurred: $e');
+        showSnackBar(context, context.loc.errorWithDetails(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -91,20 +91,25 @@ class _LicenseUploadScreenState extends State<LicenseUploadScreen> {
             context.addVerticalSpace(20),
             Image.asset(ImagesManager.licenseVerification),
             context.addVerticalSpace(16),
-            Text('Verify Your Commercial License', style: context.titleBold18),
+            Text(
+              context.loc.verifyCommercialLicenseTitle,
+              style: context.titleBold18,
+            ),
             context.addVerticalSpace(16),
             Text(
-              'To ensure the authenticity of your business, please verify your commercial license.',
+              context.loc.verifyCommercialLicenseDescription,
               style: context.bodyRegular,
               textAlign: TextAlign.center,
             ),
             context.addVerticalSpace(32),
             Row(
               children: [
-                Text(
-                  'Upload an Image of Your Commercial License',
-                  style: context.inputRegular14,
-                  textAlign: TextAlign.start,
+                Expanded(
+                  child: Text(
+                    context.loc.uploadLicenseImageLabel,
+                    style: context.inputRegular14,
+                    textAlign: TextAlign.start,
+                  ),
                 ),
               ],
             ),
@@ -124,26 +129,29 @@ class _LicenseUploadScreenState extends State<LicenseUploadScreen> {
                 ),
                 child: _selectedImage != null
                     ? ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.file(_selectedImage!, fit: BoxFit.cover),
-                      )
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(_selectedImage!, fit: BoxFit.cover),
+                )
                     : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.cloud_upload_outlined,
-                            size: 30,
-                            color: Colors.grey[600],
-                          ),
-                          context.addHorizontalSpace(12),
-                          Text('Upload a File', style: context.inputRegular14),
-                        ],
-                      ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.cloud_upload_outlined,
+                      size: 30,
+                      color: Colors.grey[600],
+                    ),
+                    context.addHorizontalSpace(12),
+                    Text(
+                      context.loc.uploadFileLabel,
+                      style: context.inputRegular14,
+                    ),
+                  ],
+                ),
               ),
             ),
             const Spacer(),
             PrimaryButton(
-              text: 'verification',
+              text: context.loc.verification,
               onPressed: _selectedImage != null ? _handleSubmit : null,
             ),
             context.addVerticalSpace(20),
@@ -162,7 +170,7 @@ class _LicenseUploadScreenState extends State<LicenseUploadScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.photo_library),
-              title: const Text('Gallery'),
+              title: Text(context.loc.gallery),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.gallery);
@@ -170,7 +178,7 @@ class _LicenseUploadScreenState extends State<LicenseUploadScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text('Camera'),
+              title: Text(context.loc.camera),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.camera);

@@ -26,7 +26,7 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
         ),
         child: PrimaryAppBar(
           backIconVisible: true,
-          text: widget.showroom.showroomName ?? 'Showroom Details',
+          text: widget.showroom.showroomName ?? context.loc.showroomDetails,
         ),
       ),
       body: SingleChildScrollView(
@@ -37,7 +37,6 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
               widget.showroom.showroomImage,
               height: context.screenHeight(200),
             ),
-
             context.addVerticalSpace(10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -57,11 +56,13 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
               children: [
                 Image.asset(ImagesManager.locationIcon),
                 context.addHorizontalSpace(4),
-                Text(
-                  widget.showroom.showroomLocation ??
-                      widget.showroom.address ??
-                      'Address not available',
-                  style: context.bodyRegular,
+                Expanded(
+                  child: Text(
+                    widget.showroom.showroomLocation ??
+                        widget.showroom.address ??
+                        context.loc.addressNotAvailable,
+                    style: context.bodyRegular,
+                  ),
                 ),
               ],
             ),
@@ -77,7 +78,7 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
               ],
             ),
             context.addVerticalSpace(24),
-            Text('About showroom', style: context.bodyBold),
+            Text(context.loc.aboutShowroom, style: context.bodyBold),
             context.addVerticalSpace(4),
             Text(
               widget.showroom.showroomDescription ?? '',
@@ -85,7 +86,7 @@ class _ShowroomDetailsFormState extends State<ShowroomDetailsForm> {
             ),
             context.addVerticalSpace(24),
             Text(
-              '${widget.showroom.showroomName ?? ''} Ads',
+              context.loc.showroomAds(widget.showroom.showroomName ?? ''),
               style: context.bodyBold,
             ),
             context.addVerticalSpace(8),

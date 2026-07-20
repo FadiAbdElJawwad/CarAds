@@ -38,10 +38,10 @@ class _CarsBannerState extends State<CarsBanner> {
     super.dispose();
   }
 
-  List<CarCardModel> _filterOnePerType(List<CarCardModel> allCars) {
+  List<CarCardModel> _filterOnePerType(BuildContext context, List<CarCardModel> allCars) {
     final Map<String, CarCardModel> uniqueCars = {};
     for (var car in allCars) {
-      final type = car.carName ?? 'Unknown';
+      final type = car.carName ?? context.loc.unknown;
       if (!uniqueCars.containsKey(type)) {
         uniqueCars[type] = car;
       }
@@ -69,7 +69,7 @@ class _CarsBannerState extends State<CarsBanner> {
             return const SizedBox();
           }
 
-          final cars = _filterOnePerType(allCars);
+          final cars = _filterOnePerType(context, allCars);
           cars.sort((a, b) => (a.carName ?? '').compareTo(b.carName ?? ''));
 
           if (cars.isEmpty) return const SizedBox();
@@ -110,16 +110,19 @@ class _CarsBannerState extends State<CarsBanner> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        currentCar.carName ?? 'N/A',
+                        currentCar.carName ?? context.loc.notAvailable,
                         style: context.titleBold18,
                       ),
                       Row(
                         children: [
                           Text(
-                            '${currentCar.price}K',
+                            '${currentCar.price}${context.loc.thousandSuffix}',
                             style: context.inputBold16,
                           ),
-                          Text(currentCar.purpose == 'rent' ? ' AED/Day' : ' AED', style: context.inputRegular16),
+                          Text(
+                            currentCar.purpose == 'rent' ? ' ${context.loc.aedPerDay}' : ' ${context.loc.aed}',
+                            style: context.inputRegular16,
+                          ),
                         ],
                       ),
                     ],
@@ -131,7 +134,7 @@ class _CarsBannerState extends State<CarsBanner> {
                       children: [
                         SvgPicture.asset(ImagesManager.gear),
                         Text(
-                          currentCar.gearType ?? 'N/A',
+                          currentCar.gearType ?? context.loc.notAvailable,
                           style: context.inputRegular14.copyWith(
                             color: Colors.grey,
                           ),
@@ -139,7 +142,7 @@ class _CarsBannerState extends State<CarsBanner> {
                         const VerticalDivider(color: Colors.grey, thickness: 1),
                         SvgPicture.asset(ImagesManager.seats),
                         Text(
-                          '${currentCar.seats ?? '0'} seats',
+                          context.loc.seatsCount(currentCar.seats ?? '0'),
                           style: context.inputRegular14.copyWith(
                             color: Colors.grey,
                           ),
@@ -147,7 +150,7 @@ class _CarsBannerState extends State<CarsBanner> {
                         const VerticalDivider(color: Colors.grey, thickness: 1),
                         SvgPicture.asset(ImagesManager.fuel),
                         Text(
-                          currentCar.fuel ?? 'N/A',
+                          currentCar.fuel ?? context.loc.notAvailable,
                           style: context.inputRegular14.copyWith(
                             color: Colors.grey,
                           ),

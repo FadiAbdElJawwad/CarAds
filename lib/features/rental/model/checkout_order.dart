@@ -1,4 +1,6 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class CheckoutOrder {
   final String licenseNumber;
@@ -41,6 +43,14 @@ class CheckoutOrder {
     this.purpose,
   });
 
+  String getLocalizedCarName(BuildContext context) {
+    return carName == 'unknownCar' ? context.loc.unknownCar : carName;
+  }
+
+  String getLocalizedCurrency(BuildContext context) {
+    return currency == 'aed' ? context.loc.aed : currency;
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'license_number': licenseNumber,
@@ -80,10 +90,10 @@ class CheckoutOrder {
           ? (map['rental_end'] as Timestamp).toDate()
           : DateTime.now(),
       totalPayment: map['total_payment'] as int? ?? 0,
-      currency: map['payment_currency'] as String? ?? 'AED',
+      currency: map['payment_currency'] as String? ?? 'aed',
       shippingCost: map['shipping_cost'] as int? ?? 0,
       taxCost: map['tax_cost'] as int? ?? 0,
-      carName: map['car_name'] as String? ?? 'Unknown Car',
+      carName: map['car_name'] as String? ?? 'unknownCar',
       carId: (map['carID'] ?? map['carId']) as String? ?? '',
       carImage: map['car_image'] as String? ?? '',
       carPrice: map['car_price'] as int? ?? 0,

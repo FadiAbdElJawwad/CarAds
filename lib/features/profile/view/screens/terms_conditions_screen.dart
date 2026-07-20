@@ -14,25 +14,30 @@ class TermsConditionsScreen extends StatefulWidget {
 class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
   @override
   Widget build(BuildContext context) {
+    final termsData = privacyPolicyList(context); // Use localized data list
+
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight + 20),
-        child: PrimaryAppBar(backIconVisible: true, text: 'Terms & Conditions'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+        child: PrimaryAppBar(
+          backIconVisible: true,
+          text: context.loc.termsConditionsTitle,
+        ),
       ),
       body: Column(
         children: [
           Text(
-            'At Car Ads, we are committed to safeguarding your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and protect your data when you use our mobile application.',
+            context.loc.privacyPolicyIntro,
             style: context.titleRegular18,
           ),
           context.addVerticalSpace(16),
           Expanded(
             child: ListView.separated(
-              itemCount: privacyPolicyData.length,
+              itemCount: termsData.length,
               separatorBuilder: (context, index) =>
                   context.addVerticalSpace(16),
               itemBuilder: (context, index) {
-                final item = privacyPolicyData[index];
+                final item = termsData[index];
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

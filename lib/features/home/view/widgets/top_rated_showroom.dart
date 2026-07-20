@@ -32,11 +32,11 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
         }
 
         if (snapshot.hasError) {
-          return const Center(child: Text('Something went wrong'));
+          return Center(child: Text(context.loc.somethingWentWrong));
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('No showrooms found'));
+          return Center(child: Text(context.loc.noShowroomsFound));
         }
 
         final showroomDocs = snapshot.data!.docs;
@@ -44,7 +44,7 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Top rated Showroom ', style: context.titleRegular18),
+            Text(context.loc.topRatedShowroom, style: context.titleRegular18),
             context.addVerticalSpace(8),
             GridView.builder(
               shrinkWrap: true,
@@ -58,7 +58,7 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
               ),
               itemBuilder: (context, i) {
                 final showroomData =
-                    showroomDocs[i].data() as Map<String, dynamic>;
+                showroomDocs[i].data() as Map<String, dynamic>;
                 final showroom = ShowroomModel.fromMap(showroomData);
 
                 return InkWell(
@@ -108,7 +108,8 @@ class _TopRatedShowroomState extends State<TopRatedShowroom> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                showroom.showroomRating?.toString() ?? 'N/A',
+                                showroom.showroomRating?.toString() ??
+                                    context.loc.notAvailable,
                               ),
                               const Icon(
                                 Icons.star,

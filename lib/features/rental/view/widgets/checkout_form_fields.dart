@@ -21,21 +21,21 @@ class CheckoutFormFields extends StatelessWidget {
       children: [
         PrimaryTextField(
           controller: licenseController,
-          hint: 'Driving License No',
+          hint: context.loc.drivingLicenseNoHint,
           keyboardType: TextInputType.number,
-          validator: (value) => value!.validateLicenseNumber(),
+          validator: (value) => value!.validateLicenseNumber(context),
         ),
         context.addVerticalSpace(24),
         PrimaryTextField(
           controller: idController,
-          hint: 'ID Number',
+          hint: context.loc.idNumberHint,
           keyboardType: TextInputType.number,
-          validator: (value) => value!.validateIdNumber(),
+          validator: (value) => value!.validateIdNumber(context),
         ),
         context.addVerticalSpace(24),
         PrimaryTextField(
           controller: phoneController,
-          hint: 'Phone Number',
+          hint: context.loc.phoneNumberHint,
           keyboardType: TextInputType.phone,
           validator: (value) => value!.validateMobile(context),
         ),

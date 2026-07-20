@@ -3,6 +3,7 @@ import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
 import 'package:car_ads/core/services/car_firestore_service.dart';
 import 'package:car_ads/core/services/notification_service.dart';
 import 'package:car_ads/features/explore/model/car_card_model.dart';
+import 'package:car_ads/core/extension/app_sizes.dart'; // Import for context.loc
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -34,10 +35,10 @@ class AddAdsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void initEdit(CarCardModel car) {
+  void initEdit(BuildContext context, CarCardModel car) {
     _editingCar = car;
     _advertisingType = (car.adType == null || car.adType!.isEmpty)
-        ? 'Commercial'
+        ? context.loc.commercial
         : _capitalizeFirstLetter(car.adType!);
     _selectedImage = null;
     notifyListeners();
@@ -61,7 +62,7 @@ class AddAdsProvider extends ChangeNotifier {
     required Map<String, String> carDetails,
   }) async {
     if (_selectedImage == null && _editingCar == null) {
-      throw Exception('Please select a vehicle image');
+      throw Exception(context.loc.selectVehicleImageError);
     }
 
     _setLoading(true);
@@ -78,10 +79,9 @@ class AddAdsProvider extends ChangeNotifier {
       }
 
       if (driveImageUrl == null) {
-        throw Exception('Failed to upload image to Drive');
+        throw Exception(context.loc.uploadImageError);
       }
 
-      // تعريف الخريطة كـ <String, dynamic> لتقبل القيم براحة
       final Map<String, dynamic> carData = {
         'carName': carDetails['brand'] ?? '',
         'carModel': carDetails['model'] ?? '',
@@ -101,11 +101,9 @@ class AddAdsProvider extends ChangeNotifier {
         'doors': carDetails['doors'] ?? '',
         'showroomID': userId,
         'status': 'available',
-        // 🟢 إضافة نوع الإعلان (بيع أم تأجير)
         'purpose': carDetails['purpose'] ?? 'sale',
       };
 
-      // 🟢 إضافة تواريخ التأجير فقط في حال كان الإعلان للإيجار
       if (carDetails['purpose'] == 'rent') {
         carData['startDate'] = carDetails['startDate'] ?? '';
         carData['startTime'] = carDetails['startTime'] ?? '';
@@ -115,9 +113,9 @@ class AddAdsProvider extends ChangeNotifier {
 
       if (authProvider.state.user?.role == 'showroom') {
         carData['showroomName'] =
-            authProvider.state.user?.showroomName ?? 'Showroom';
+            authProvider.state.user?.showroomName ?? context.loc.showroomDefaultName;
       } else {
-        carData['showroomName'] = 'Individual Seller';
+        carData['showroomName'] = context.loc.individualSellerLabel;
       }
 
       if (_editingCar != null) {
@@ -136,18 +134,18 @@ class AddAdsProvider extends ChangeNotifier {
           await _notificationService.sendNotification(
             userId: userIdMounted,
             title: _editingCar != null
-                ? 'Advertisement Updated'
-                : 'Advertisement Posted',
+                ? context.loc.adUpdatedTitle
+                : context.loc.adPostedTitle,
             body: _editingCar != null
-                ? 'Your car advertisement for ${carDetails['brand']} has been successfully updated.'
-                : 'Your car advertisement for ${carDetails['brand']} has been successfully posted.',
+                ? context.loc.adUpdatedBody(carDetails['brand'] ?? '')
+                : context.loc.adPostedBody(carDetails['brand'] ?? ''),
           );
         }
       }
 
       _editingCar = null;
       _selectedImage = null;
-      _advertisingType = 'Commercial';
+      _advertisingType = context.loc.commercial;
       notifyListeners();
 
       return true;

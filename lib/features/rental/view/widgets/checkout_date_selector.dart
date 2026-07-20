@@ -77,7 +77,7 @@ class _DateSelectorState extends State<DateSelector> {
                 child: AbsorbPointer(
                   child: PrimaryTextField(
                     controller: _dateController,
-                    hint: 'Select Date',
+                    hint: context.loc.selectDateHint,
                   ),
                 ),
               ),
@@ -89,7 +89,7 @@ class _DateSelectorState extends State<DateSelector> {
                 child: AbsorbPointer(
                   child: PrimaryTextField(
                     controller: _timeController,
-                    hint: 'Select Time',
+                    hint: context.loc.selectTimeHint,
                   ),
                 ),
               ),

@@ -10,12 +10,19 @@ class FilterConditionSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<CarAdsProvider>();
-    final conditions = ['All', 'New', 'Used'];
+
+    // Using localized strings for logic as well,
+    // to match CarAdsProvider's filtering behavior.
+    final conditions = [
+      context.loc.all,
+      context.loc.newCondition,
+      context.loc.usedCondition,
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Car Condition', style: context.titleBold18),
+        Text(context.loc.carCondition, style: context.titleBold18),
         context.addVerticalSpace(12),
         SizedBox(
           height: context.screenHeight(40),

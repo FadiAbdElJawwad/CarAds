@@ -29,7 +29,7 @@ class UpdateProfileImageSection extends StatelessWidget {
             TextButton(
               onPressed: onPickImage,
               child: Text(
-                'Upload New Picture',
+                context.loc.uploadNewPicture,
                 style: context.bodyRegular.copyWith(
                   color: ColorManager.infoColor,
                 ),

@@ -39,7 +39,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     if (state.isSuccess || state.isFailure) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (state.isSuccess) {
-          showSnackBar(context, 'Password reset email sent successfully!');
+          showSnackBar(context, context.loc.passwordResetEmailSent);
           AppRouter.goTo(screenName: ScreenName.login);
         } else if (state.isFailure) {
           final errorMessage = AuthErrorMessages.getErrorMessage(
@@ -112,7 +112,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                     context.addVerticalSpace(24),
                     PrimaryButton(
-                      text: 'Send',
+                      text: context.loc.send,
                       onPressed: _handleResetPassword,
                     ),
                   ],

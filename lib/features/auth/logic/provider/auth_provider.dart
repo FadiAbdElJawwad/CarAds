@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:car_ads/core/app_logger.dart';
 import 'package:car_ads/core/constant/app_constants.dart';
 import 'package:car_ads/core/services/notification_service.dart';
@@ -6,10 +5,12 @@ import 'package:car_ads/features/auth/model/auth_state.dart';
 import 'package:car_ads/features/auth/model/user_model.dart';
 import 'package:car_ads/features/auth/logic/helper/auth_service.dart';
 import 'package:car_ads/core/services/car_firestore_service.dart';
+import 'package:car_ads/core/extension/app_sizes.dart'; 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:io';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService;
@@ -25,10 +26,10 @@ class AuthProvider extends ChangeNotifier {
     CarFirestoreService? firestoreService,
     NotificationService? notificationService,
   }) : _authService = authService ?? AuthService(),
-       _firestore = firestore ?? FirebaseFirestore.instance,
-       _storage = storage ?? const FlutterSecureStorage(),
-       _firestoreService = firestoreService ?? CarFirestoreService(),
-       _notificationService = notificationService ?? NotificationService();
+        _firestore = firestore ?? FirebaseFirestore.instance,
+        _storage = storage ?? const FlutterSecureStorage(),
+        _firestoreService = firestoreService ?? CarFirestoreService(),
+        _notificationService = notificationService ?? NotificationService();
 
   AuthState _state = const AuthState();
   String _selectedRole = 'user';
@@ -86,6 +87,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> signUpUser({
+    required BuildContext context,
     required String name,
     required String email,
     required String password,
@@ -95,6 +97,7 @@ class AuthProvider extends ChangeNotifier {
     String? licenseImageUrl,
     String? address,
   }) async {
+    final loc = context.loc;
     await _handleAuthOperation(() async {
       final userCredential = await _authService.signUpUser(
         name: name,
@@ -128,17 +131,19 @@ class AuthProvider extends ChangeNotifier {
         await fetchUserData();
         await _notificationService.sendNotification(
           userId: user.uid,
-          title: 'Welcome !',
-          body: 'You have create account successfully.',
+          title: loc.welcomeTitle,
+          body: loc.accountCreatedSuccess,
         );
       }
     });
   }
 
   Future<void> loginUser({
+    required BuildContext context,
     required String email,
     required String password,
   }) async {
+    final loc = context.loc;
     await _handleAuthOperation(() async {
       final userCredential = await _authService.loginUser(
         email: email,
@@ -157,8 +162,8 @@ class AuthProvider extends ChangeNotifier {
         await fetchUserData();
         await _notificationService.sendNotification(
           userId: user.uid,
-          title: 'Welcome Back!',
-          body: 'You have logged in successfully.',
+          title: loc.welcomeBackTitle,
+          body: loc.loggedInSuccess,
         );
       }
     });
@@ -217,7 +222,7 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
-  Future<String?> uploadProfileImage(File imageFile) async {
+  Future<String?> uploadProfileImage(BuildContext context, File imageFile) async {
     String? driveImageUrl;
     await _handleAuthOperation(() async {
       final uid = await _storage.read(key: AppConstants.storageKeyUid);

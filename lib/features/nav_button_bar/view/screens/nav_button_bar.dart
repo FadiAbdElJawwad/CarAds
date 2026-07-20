@@ -1,9 +1,9 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/features/auth/logic/provider/auth_provider.dart';
 import 'package:car_ads/features/showroom/view/screens/showroom_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constant/images_manager.dart';
-import '../../../../generated/l10n.dart';
 import '../../../add_ads/logic/provider/add_ads_provider.dart';
 import '../../../add_ads/view/screens/add_ads_screen.dart';
 import '../../../history/view/screens/history_screen.dart';
@@ -53,14 +53,13 @@ class _NavButtonBarState extends State<NavButtonBar> {
         create: (_) => AddAdsProvider(),
         child: const AddAdsScreen(key: PageStorageKey('AddAdsScreen')),
       ),
-
       role == 'showroom'
           ? const RequestsScreen(key: PageStorageKey('RequestsScreen'))
           : const HistoryScreen(key: PageStorageKey('HistoryScreen')),
       role == 'showroom'
           ? const ShowroomProfileScreen(
-              key: PageStorageKey('ShowroomProfileScreen'),
-            )
+        key: PageStorageKey('ShowroomProfileScreen'),
+      )
           : const ProfileScreen(key: PageStorageKey('ProfileScreen')),
     ];
 
@@ -86,7 +85,7 @@ class _NavButtonBarState extends State<NavButtonBar> {
                   onPressed: () => model.onItemTapped(0),
                   selectedIcon: ImagesManager.selectedHome,
                   unselectedIcon: ImagesManager.home,
-                  label: S.of(context).home,
+                  label: context.loc.home,
                 ),
                 NavButtonItem(
                   itemIndex: 1,
@@ -94,7 +93,7 @@ class _NavButtonBarState extends State<NavButtonBar> {
                   onPressed: () => model.onItemTapped(1),
                   selectedIcon: ImagesManager.selectedExplore,
                   unselectedIcon: ImagesManager.explore,
-                  label: S.of(context).explore,
+                  label: context.loc.explore,
                 ),
                 NavButtonItem(
                   itemIndex: 2,
@@ -102,7 +101,7 @@ class _NavButtonBarState extends State<NavButtonBar> {
                   onPressed: () => model.onItemTapped(2),
                   selectedIcon: ImagesManager.selectedAdd,
                   unselectedIcon: ImagesManager.add,
-                  label: S.of(context).add,
+                  label: context.loc.add,
                 ),
                 NavButtonItem(
                   itemIndex: 3,
@@ -114,7 +113,7 @@ class _NavButtonBarState extends State<NavButtonBar> {
                   unselectedIcon: role == 'showroom'
                       ? ImagesManager.request
                       : ImagesManager.history,
-                  label: role == 'showroom' ? 'Request' : S.of(context).history,
+                  label: role == 'showroom' ? context.loc.requests : context.loc.history,
                 ),
                 NavButtonItem(
                   itemIndex: 4,
@@ -122,7 +121,7 @@ class _NavButtonBarState extends State<NavButtonBar> {
                   onPressed: () => model.onItemTapped(4),
                   selectedIcon: ImagesManager.selectedProfile,
                   unselectedIcon: ImagesManager.profile,
-                  label: S.of(context).profile,
+                  label: context.loc.profile,
                 ),
               ],
             ),

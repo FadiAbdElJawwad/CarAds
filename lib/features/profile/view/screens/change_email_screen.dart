@@ -16,9 +16,12 @@ class ChangeEmailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<ChangeEmailProvider>();
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight + 20),
-        child: PrimaryAppBar(backIconVisible: true, text: 'Change Your Email'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+        child: PrimaryAppBar(
+          backIconVisible: true,
+          text: context.loc.changeEmailTitle,
+        ),
       ),
       body: LoadingOverlay(
         isLoading: provider.isLoading,
@@ -28,31 +31,31 @@ class ChangeEmailScreen extends StatelessWidget {
               child: ListView(
                 children: [
                   Text(
-                    'Your data is kept secure by us!',
+                    context.loc.dataSecurityMessage,
                     style: context.titleRegular18,
                     textAlign: TextAlign.center,
                   ),
                   context.addVerticalSpace(8),
                   Text(
-                    'Add your Current Email Address',
+                    context.loc.addCurrentEmailPrompt,
                     style: context.bodyRegular,
                     textAlign: TextAlign.center,
                   ),
                   context.addVerticalSpace(24),
                   PrimaryTextField(
-                    hint: 'Current Email Address',
+                    hint: context.loc.currentEmailHint,
                     controller: provider.currentEmailController,
                     keyboardType: TextInputType.emailAddress,
                     validator: (val) => val?.validateEmail(context),
                   ),
                   context.addVerticalSpace(16),
                   PrimaryTextField(
-                    hint: 'Current Password',
+                    hint: context.loc.currentPasswordHint,
                     controller: provider.passwordController,
                     obscureText: true,
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return 'Password is required';
+                        return context.loc.passwordRequiredError;
                       }
                       return null;
                     },
@@ -64,7 +67,7 @@ class ChangeEmailScreen extends StatelessWidget {
               padding: const EdgeInsets.all(24),
               decoration: const BoxDecoration(color: Colors.white),
               child: PrimaryButton(
-                text: 'Continue',
+                text: context.loc.continueButton,
                 onPressed: provider.isLoading
                     ? null
                     : () => provider.proceedToNewEmail(context),

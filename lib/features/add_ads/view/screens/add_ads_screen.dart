@@ -67,9 +67,11 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
       }
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = context.read<AddAdsProvider>();
-      if (isEditing) {
-        provider.initEdit(widget.editingCar!);
+      if (mounted) {
+        final provider = context.read<AddAdsProvider>();
+        if (isEditing) {
+          provider.initEdit(context, widget.editingCar!);
+        }
       }
     });
   }
@@ -224,7 +226,7 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
 
     if (adPurpose == 'rent') {
       if (startDate == null || startTime == null || endDate == null || endTime == null) {
-        showSnackBar(context, 'Please fill all rental dates and times');
+        showSnackBar(context, context.loc.fillRentalDatesError);
         return;
       }
       carDetails['startDate'] = startDate!.toIso8601String();
@@ -241,10 +243,10 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
 
       if (success && mounted) {
         if (isEditing) {
-          showSnackBar(context, 'Advertisement updated successfully!');
+          showSnackBar(context, context.loc.adUpdatedSuccess);
           Navigator.pop(context);
         } else {
-          showSnackBar(context, 'Advertisement posted successfully!');
+          showSnackBar(context, context.loc.adPostedSuccess);
 
           context.read<NavButtonProvider>().onItemTapped(1);
 
@@ -261,6 +263,7 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AddAdsProvider>(
@@ -270,8 +273,8 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
             preferredSize: const Size.fromHeight(kToolbarHeight + 16),
             child: PrimaryAppBar(
               text: isEditing
-                  ? 'Edit Your Advertisement'
-                  : 'Post Your Advertisement',
+                  ? context.loc.editAdTitle
+                  : context.loc.postAdTitle,
               backIconVisible: isEditing,
             ),
           ),
@@ -332,11 +335,11 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
                         context.addVerticalSpace(24),
                         PrimaryTextField(
                           controller: priceController,
-                          hint: 'Add Price',
+                          hint: context.loc.addPriceHint,
                           keyboardType: TextInputType.number,
                           validator: (val) => val == null || val.isEmpty
-                              ? 'Price cannot be empty'
-                              : val.validateGeneric('Price'),
+                              ? context.loc.priceEmptyError
+                              : val.validateGeneric(context, context.loc.price),
                         ),
                         context.addVerticalSpace(24),
                         AddAdsContactInfo(
@@ -353,7 +356,7 @@ class _AddAdsScreenState extends State<AddAdsScreen> {
             ),
           ),
           bottomNavigationBar: StickyBottomButton(
-            text: isEditing ? 'SAVE CHANGES' : 'POST ADVERTISEMENT',
+            text: isEditing ? context.loc.saveChanges : context.loc.postAd,
             onPressed: _submitAd,
             isLoading: provider.isLoading,
           ),

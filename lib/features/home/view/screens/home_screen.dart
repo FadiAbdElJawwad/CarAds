@@ -32,9 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Consumer<AuthProvider>(
           builder: (context, authProvider, child) {
             final user = authProvider.state.user;
-            final String userName = user?.name ?? 'User';
+            final String userName = user?.name ?? context.loc.userPlaceholder;
             return PrimaryAppBar(
-              text: 'Welcome $userName',
+              text: context.loc.welcomeUser(userName),
               notificationVisible: true,
             );
           },

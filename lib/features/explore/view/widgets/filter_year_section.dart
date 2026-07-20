@@ -40,10 +40,10 @@ class _FilterYearSectionState extends State<FilterYearSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Year', style: context.titleBold18),
+        Text(context.loc.yearTitle, style: context.titleBold18),
         context.addVerticalSpace(8),
         Text(
-          'Select Year Range:',
+          context.loc.selectYearRange,
           style: context.bodyRegular.copyWith(color: Colors.grey),
         ),
         context.addVerticalSpace(12),
@@ -52,7 +52,7 @@ class _FilterYearSectionState extends State<FilterYearSection> {
             Expanded(
               child: PrimaryTextField(
                 controller: _startController,
-                hint: 'Start Year',
+                hint: context.loc.startYearHint,
                 keyboardType: TextInputType.number,
                 onChanged: (val) {
                   provider.setYear(
@@ -67,7 +67,7 @@ class _FilterYearSectionState extends State<FilterYearSection> {
             Expanded(
               child: PrimaryTextField(
                 controller: _endController,
-                hint: 'End Year',
+                hint: context.loc.endYearHint,
                 keyboardType: TextInputType.number,
                 onChanged: (val) {
                   provider.setYear(

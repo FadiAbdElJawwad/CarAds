@@ -16,9 +16,12 @@ class NewEmailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<ChangeEmailProvider>();
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight + 20),
-        child: PrimaryAppBar(backIconVisible: true, text: 'Change Your Email'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+        child: PrimaryAppBar(
+          backIconVisible: true,
+          text: context.loc.changeEmailTitle,
+        ),
       ),
       body: LoadingOverlay(
         isLoading: provider.isLoading,
@@ -30,19 +33,19 @@ class NewEmailScreen extends StatelessWidget {
                 child: ListView(
                   children: [
                     Text(
-                      'All Done !',
+                      context.loc.allDone,
                       style: context.titleRegular18,
                       textAlign: TextAlign.center,
                     ),
                     context.addVerticalSpace(8),
                     Text(
-                      'Add your New Email Address',
+                      context.loc.addNewEmailPrompt,
                       style: context.bodyRegular,
                       textAlign: TextAlign.center,
                     ),
                     context.addVerticalSpace(24),
                     PrimaryTextField(
-                      hint: 'New Email Address',
+                      hint: context.loc.newEmailHint,
                       controller: provider.newEmailController,
                       keyboardType: TextInputType.emailAddress,
                       validator: (val) => val?.validateEmail(context),
@@ -54,7 +57,7 @@ class NewEmailScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
                 decoration: const BoxDecoration(color: Colors.white),
                 child: PrimaryButton(
-                  text: 'Reset Your Email',
+                  text: context.loc.resetEmailButton,
                   onPressed: provider.isLoading
                       ? null
                       : () => provider.updateEmail(context),

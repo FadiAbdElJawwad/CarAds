@@ -26,9 +26,12 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight + 20),
-        child: PrimaryAppBar(backIconVisible: true, text: 'Change Language'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+        child: PrimaryAppBar(
+          backIconVisible: true,
+          text: context.loc.changeLanguageTitle,
+        ),
       ),
       body: Column(
         children: [
@@ -38,7 +41,7 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
               children: [
                 context.addVerticalSpace(20),
                 Text(
-                  'Select your comfortable language!',
+                  context.loc.selectLanguageComfortable,
                   style: context.bodyRegular.copyWith(color: Colors.grey[600]),
                 ),
                 RadioGroup<String>(
@@ -48,9 +51,15 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
                   },
                   child: Column(
                     children: [
-                      _buildLanguageOption(title: 'English', value: 'en'),
+                      _buildLanguageOption(
+                        title: context.loc.english,
+                        value: 'en',
+                      ),
                       const Divider(color: Colors.grey),
-                      _buildLanguageOption(title: 'Arabic', value: 'ar'),
+                      _buildLanguageOption(
+                        title: context.loc.arabic,
+                        value: 'ar',
+                      ),
                       const Divider(color: Colors.grey),
                     ],
                   ),
@@ -61,7 +70,7 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
         ],
       ),
       bottomNavigationBar: StickyBottomButton(
-        text: 'Save Changes',
+        text: context.loc.saveChanges,
         onPressed: () {
           if (_selectedLanguage != null) {
             context.read<LanguageProvider>().changeLanguage(

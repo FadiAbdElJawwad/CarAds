@@ -29,6 +29,7 @@ class PrimaryAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.transparent,
       title: Text(text, style: context.h1Bold28),
       leading: backIconVisible
           ? Card(
@@ -36,7 +37,10 @@ class PrimaryAppBar extends StatelessWidget {
                 onPressed: () {
                   AppRouter.back();
                 },
-                icon: SvgPicture.asset(ImagesManager.arrowLeft),
+                icon: SvgPicture.asset(
+                    ImagesManager.arrowLeft,
+                  matchTextDirection: true,
+                ),
               ),
             )
           : null,

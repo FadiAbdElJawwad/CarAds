@@ -14,7 +14,7 @@ class AddAdsAdTypeSelection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Please select the advertising type',
+          context.loc.selectAdTypePrompt,
           style: context.inputRegular14,
         ),
         context.addVerticalSpace(8),
@@ -24,14 +24,22 @@ class AddAdsAdTypeSelection extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildRadioOption(context, 'Commercial', 'Commercial ad'),
-              _buildRadioOption(context, 'Featured', 'Featured ad'),
+              _buildRadioOption(
+                context,
+                context.loc.commercial,
+                context.loc.commercialAdLabel,
+              ),
+              _buildRadioOption(
+                context,
+                context.loc.featured,
+                context.loc.featuredAdLabel,
+              ),
             ],
           ),
         ),
         context.addVerticalSpace(8),
         Text(
-          'Featured advertising enables you to connect with the widest range of users.',
+          context.loc.featuredAdDescription,
           style: context.bodyRegular,
         ),
         context.addVerticalSpace(8),

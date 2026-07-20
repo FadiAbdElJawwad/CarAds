@@ -39,11 +39,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return ChangeNotifierProvider.value(
       value: _changePasswordProvider,
       child: Scaffold(
-        appBar: const PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight + 20),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight + 20),
           child: PrimaryAppBar(
             backIconVisible: true,
-            text: 'Reset Your Password ',
+            text: context.loc.resetYourPasswordTitle,
           ),
         ),
         body: Consumer<ChangePasswordProvider>(
@@ -60,7 +60,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           context.addVerticalSpace(20),
                           _buildPasswordField(
                             controller: provider.currentPasswordController,
-                            hint: 'Current password',
+                            hint: context.loc.currentPasswordHint,
                             validator: (value) {
                               if (provider.currentPasswordError != null) {
                                 return provider.currentPasswordError;
@@ -73,7 +73,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           context.addVerticalSpace(24),
                           _buildPasswordField(
                             controller: provider.newPasswordController,
-                            hint: 'New Password',
+                            hint: context.loc.newPasswordHint,
                             validator: (value) => value!.validateNewPassword(
                               context,
                               provider.currentPasswordController.text,
@@ -82,7 +82,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           context.addVerticalSpace(24),
                           _buildPasswordField(
                             controller: provider.confirmPasswordController,
-                            hint: 'Confirm Password',
+                            hint: context.loc.confirmPasswordHint,
                             validator: (value) =>
                                 value!.validateConfirmPassword(
                                   context,
@@ -96,7 +96,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       padding: const EdgeInsets.all(24),
                       decoration: const BoxDecoration(color: Colors.white),
                       child: PrimaryButton(
-                        text: 'Reset Your Password',
+                        text: context.loc.resetPasswordButton,
                         onPressed: provider.isLoading
                             ? null
                             : () => provider.handleChangePassword(context),

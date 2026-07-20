@@ -4,7 +4,7 @@ import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:flutter/material.dart';
 import '../../../../common/primary_button.dart';
 
-class LocationDetailsCard extends StatelessWidget {
+  class LocationDetailsCard extends StatefulWidget {
   final String address;
   final VoidCallback onSetLocationPressed;
 
@@ -15,6 +15,11 @@ class LocationDetailsCard extends StatelessWidget {
   });
 
   @override
+  State<LocationDetailsCard> createState() => _LocationDetailsCardState();
+}
+
+class _LocationDetailsCardState extends State<LocationDetailsCard> {
+  @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
@@ -22,18 +27,26 @@ class LocationDetailsCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Your Location',
+            context.loc.yourLocationLabel,
             style: context.bodyRegular.copyWith(color: Colors.grey),
           ),
           context.addVerticalSpace(8),
           Row(
             children: [
               Image.asset(ImagesManager.locationIcon).padEnd(4),
-              Expanded(child: Text(address, style: context.bodyRegular)),
+              Expanded(
+                child: Text(
+                  widget.address.isEmpty ? context.loc.loadingLocation : widget.address,
+                  style: context.bodyRegular.copyWith(color: Colors.black),
+                ),
+              ),
             ],
           ),
           context.addVerticalSpace(18),
-          PrimaryButton(text: 'Set Location', onPressed: onSetLocationPressed),
+          PrimaryButton(
+            text: context.loc.setLocationButton,
+            onPressed: widget.onSetLocationPressed,
+          ),
         ],
       ).padSymmetric(20).padVerticalSymmetric(24),
     );

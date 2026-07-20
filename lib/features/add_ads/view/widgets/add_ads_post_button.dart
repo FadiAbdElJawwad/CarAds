@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:flutter/material.dart';
 import '../../../../common/primary_button.dart';
 
@@ -22,7 +23,7 @@ class AddAdsPostButton extends StatelessWidget {
         border: Border(top: BorderSide(color: Color(0xFFE0E0E0), width: 0.5)),
       ),
       child: PrimaryButton(
-        text: isEditing ? 'SAVE CHANGES' : 'POST ADVERTISEMENT',
+        text: isEditing ? context.loc.saveChanges : context.loc.postAd,
         onPressed: isLoading ? null : onPressed,
       ),
     );

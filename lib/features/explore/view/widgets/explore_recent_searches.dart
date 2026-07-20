@@ -1,3 +1,4 @@
+import 'package:car_ads/core/extension/app_sizes.dart';
 import 'package:car_ads/core/extension/text_style_extension.dart';
 import 'package:car_ads/features/explore/logic/provider/car_ads_provider.dart';
 import 'package:flutter/material.dart';
@@ -26,19 +27,22 @@ class ExploreRecentSearches extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Recent', style: context.titleBold18.copyWith(fontSize: 16)),
+              Text(
+                context.loc.recentSearchesTitle,
+                style: context.titleBold18.copyWith(fontSize: 16),
+              ),
               TextButton(
                 onPressed: () => provider.clearRecentSearches(),
-                child: const Text(
-                  'Clear All',
-                  style: TextStyle(color: Colors.black),
+                child: Text(
+                  context.loc.clearAll,
+                  style: const TextStyle(color: Colors.black),
                 ),
               ),
             ],
           ),
         ),
         ...provider.recentSearches.map(
-          (query) => ListTile(
+              (query) => ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 20),
             title: Text(query, style: const TextStyle(color: Colors.grey)),
             trailing: IconButton(

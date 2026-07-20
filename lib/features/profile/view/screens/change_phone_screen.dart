@@ -16,9 +16,12 @@ class ChangePhoneScreen extends StatelessWidget {
     return Consumer<ChangePhoneProvider>(
       builder: (context, provider, _) {
         return Scaffold(
-          appBar: const PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: PrimaryAppBar(backIconVisible: true, text: 'Change Phone'),
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: PrimaryAppBar(
+              backIconVisible: true,
+              text: context.loc.changePhoneTitle,
+            ),
           ),
           body: LoadingOverlay(
             isLoading: provider.isLoading,
@@ -32,23 +35,23 @@ class ChangePhoneScreen extends StatelessWidget {
                       children: [
                         context.addVerticalSpace(20),
                         Text(
-                          'Enter your new mobile number to receive an OTP code.',
+                          context.loc.enterNewMobilePrompt,
                           style: context.bodyRegular.copyWith(
                             color: Colors.grey[600],
                           ),
                         ),
                         context.addVerticalSpace(24),
                         PrimaryTextField(
-                          label: 'Mobile Number',
+                          label: context.loc.mobileNumberLabel,
                           controller: provider.phoneController,
-                          hint: '+970 XXXXXXXXX',
+                          hint: context.loc.phoneHint,
                           keyboardType: TextInputType.phone,
                           validator: (val) {
                             if (val == null || val.isEmpty) {
-                              return 'Please enter your phone number';
+                              return context.loc.enterPhoneError;
                             }
                             if (!val.startsWith('+')) {
-                              return 'Please include country code (e.g., +971)';
+                              return context.loc.includeCountryCodeError;
                             }
                             return null;
                           },
@@ -65,7 +68,7 @@ class ChangePhoneScreen extends StatelessWidget {
                       ),
                     ),
                     child: PrimaryButton(
-                      text: 'Send OTP',
+                      text: context.loc.sendOtpButton,
                       onPressed: provider.isLoading
                           ? null
                           : () => provider.sendOtp(context),

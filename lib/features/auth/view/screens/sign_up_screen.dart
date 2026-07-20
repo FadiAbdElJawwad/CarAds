@@ -52,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final password = _passwordController.text;
     final role = authProvider.selectedRole;
     final commercialLicense =
-        role == 'showroom' ? _commercialController.text.trim() : null;
+    role == 'showroom' ? _commercialController.text.trim() : null;
     final address = role == 'showroom' ? _addressController.text.trim() : null;
 
     if (role == 'showroom') {
@@ -72,6 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
 
     await authProvider.signUpUser(
+      context: context, // Added context to access localized notifications
       name: name,
       email: email,
       password: password,
@@ -86,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } else if (authProvider.state.isFailure) {
       showSnackBar(
         context,
-        authProvider.state.fallbackMessage ?? 'Something went wrong',
+        authProvider.state.fallbackMessage ?? context.loc.somethingWentWrong,
       );
     }
   }
@@ -143,7 +144,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   context.addVerticalSpace(16),
                   PrimaryTextField(
-                    hint: 'Phone Number',
+                    hint: context.loc.phoneNumber,
                     controller: _phoneController,
                     validator: (value) => value!.validateMobile(context),
                     keyboardType: TextInputType.phone,

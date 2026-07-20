@@ -4,60 +4,50 @@ import 'package:car_ads/core/routes/screen_name.dart';
 import 'package:car_ads/features/rental/logic/provider/checkout_provider.dart';
 import 'package:car_ads/features/home/model/map_selection_result.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class LocationWidget extends StatelessWidget {
+import '../../../../core/extension/app_sizes.dart';
+
+class LocationWidget extends StatefulWidget {
   final CheckoutProvider model;
 
   const LocationWidget({super.key, required this.model});
 
   @override
+  State<LocationWidget> createState() => _LocationWidgetState();
+}
+
+class _LocationWidgetState extends State<LocationWidget> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.model.fetchInitialLocation(context);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (model.isLocationLoading) {
+    if (widget.model.isLocationLoading) {
       return const Skeleton(height: 150, width: double.infinity);
     }
 
-    if (model.locationFetchFailed || model.shippingPosition == null) {
-      return InkWell(
-        onTap: () async {
-          final result = await Navigator.of(
-            context,
-          ).pushNamed(ScreenName.mapScreen);
-          if (result is MapSelectionResult) {
-            model.handleMapResult(result);
-          }
-        },
+    return InkWell(
+      onTap: () async {
+        final result =
+            await Navigator.of(context).pushNamed(ScreenName.mapScreen);
+        if (result is MapSelectionResult) {
+          widget.model.handleMapResult(result);
+        }
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
         child: Image.asset(
           ImagesManager.map,
-          height: 150,
+          height: context.screenHeight(150),
           width: double.infinity,
           fit: BoxFit.cover,
         ),
-      );
-    }
-    return GoogleMap(
-      key: ValueKey(model.shippingPosition),
-      initialCameraPosition: CameraPosition(
-        target: model.shippingPosition!,
-        zoom: 14.0,
       ),
-      markers: {
-        Marker(
-          markerId: const MarkerId("currentLocation"),
-          position: model.shippingPosition!,
-        ),
-      },
-      myLocationButtonEnabled: false,
-      zoomControlsEnabled: false,
-      scrollGesturesEnabled: false,
-      onTap: (LatLng position) async {
-        final result = await Navigator.of(
-          context,
-        ).pushNamed(ScreenName.mapScreen);
-        if (result is MapSelectionResult) {
-          model.handleMapResult(result);
-        }
-      },
     );
   }
 }
